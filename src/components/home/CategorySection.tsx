@@ -37,7 +37,7 @@ export function CategorySection() {
   }, [emblaApi]);
 
   return (
-    <section className="relative mx-auto max-w-site px-4 pb-16 pt-28 md:px-8 md:pt-32 lg:px-16 lg:py-36">
+    <section className="relative mx-auto max-w-site px-4 pb-16 pt-28 md:px-8 md:pt-32 lg:px-16 lg:py-36 lg:pb-0">
       <SectionHeader
         eyebrow="Sacred Services"
         heading="Explore by Category"

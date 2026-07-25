@@ -39,32 +39,54 @@ export const CATEGORIES = [
 
 export type MockService = {
   slug: string;
+  category: string;
+  categoryLabel: string;
   title: string;
   location: string;
   image: string;
+  gallery: string[];
   price: number;
   originalPrice: number;
   discountPercent: number;
   featured: boolean;
   tags: string[];
+  detailTags: string[];
+  rating: number;
+  reviewCount: number;
 };
+
+const DETAIL_GALLERY = [
+  "/images/services/service-shivling.png",
+  "/images/blog/blog-sidebar-1.png",
+  "/images/blog/blog-sidebar-4.png",
+];
 
 export const SERVICES: MockService[] = Array.from({ length: 21 }).map(
   (_, i) => ({
     slug: `shravana-special-parthiv-shivling-nirmaan-and-abhishek-${i + 1}`,
+    category: CATEGORIES[i % CATEGORIES.length].slug,
+    categoryLabel: CATEGORIES[i % CATEGORIES.length].name,
     title: "Shravana Special Parthiv Shivling Nirmaan and Abhishek",
     location: "Omkareshwar Region",
     image:
       i % 4 === 1
         ? "/images/services/service-shivling.png"
         : "/images/services/service-shivling-pour.png",
+    gallery: DETAIL_GALLERY,
     price: 899,
     originalPrice: 2000,
     discountPercent: 55,
     featured: true,
     tags: ["Debt Relief", "Debt Relief"],
+    detailTags: ["Health", "Marriage", "Business"],
+    rating: 5,
+    reviewCount: 5,
   })
 );
+
+export function getServiceBySlug(slug: string) {
+  return SERVICES.find((service) => service.slug === slug);
+}
 
 export const TESTIMONIALS = [
   {
@@ -93,39 +115,6 @@ export const TESTIMONIALS = [
   },
 ];
 
-export const BLOG_POSTS = [
-  {
-    slug: "what-to-pack-for-a-1-week-summer-road-trip",
-    title: "What to pack for a 1 week summer road trip",
-    excerpt:
-      "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.",
-    category: "Destinations",
-    date: "July 23, 2024",
-    author: "admin",
-    image: "/images/blog/blog-1.png",
-  },
-  {
-    slug: "10-safest-destinations-for-solo-female-travelers",
-    title: "10 Safest Destinations for Solo Female Travelers",
-    excerpt:
-      "Lorem ipsum is simply dummy text of the printing and typesetting industry.",
-    category: "Destinations",
-    date: "July 20, 2024",
-    author: "admin",
-    image: "/images/blog/blog-2.png",
-  },
-  {
-    slug: "the-ultimate-southwest-usa-road-trip-itinerary",
-    title: "The ultimate southwest USA road trip itinerary",
-    excerpt:
-      "Lorem ipsum is simply dummy text of the printing and typesetting industry.",
-    category: "Destinations",
-    date: "July 18, 2024",
-    author: "admin",
-    image: "/images/blog/blog-3.png",
-  },
-];
-
 export const FOOTER_LINKS = {
   services: [
     { label: "E-Puja", href: "/services?category=e-puja" },
@@ -142,5 +131,52 @@ export const FOOTER_LINKS = {
     { label: "Terms & condition", href: "/terms" },
     { label: "Privacy Policy", href: "/privacy" },
     { label: "Cookies Policy", href: "/cookies" },
+    { label: "Disclaimer", href: "/disclaimer" },
+    { label: "Return Policy", href: "/return-policy" },
   ],
 };
+
+// Mock signed-in user — swap for real session/auth data when available.
+// When null, checkout shows the WhatsApp number + OTP verification flow.
+export const MOCK_USER: { phone: string } | null = null;
+
+export const DEMO_PHONE = "+91 7984561235";
+
+export const CHECKOUT_ITEM = {
+  title: "Shravan Special Maha Mrityunjay Jaap and Abhishek",
+  location: "Omkareshwar Region",
+  date: "Monday. Jun 9,2026",
+  image: "/images/blog/blog-sidebar-3.png",
+  price: 899,
+};
+
+export type Coupon = {
+  code: string;
+  description: string;
+  discountPercent: number;
+  discountLabel: string;
+};
+
+export const COUPONS: Coupon[] = [
+  {
+    code: "BUY10",
+    description:
+      "Your Puja booking updates like Puja Photos, Videos and other",
+    discountPercent: 10,
+    discountLabel: "10% OFF",
+  },
+  {
+    code: "BUY10",
+    description:
+      "Your Puja booking updates like Puja Photos, Videos and other",
+    discountPercent: 10,
+    discountLabel: "10% OFF",
+  },
+  {
+    code: "BUY10",
+    description:
+      "Your Puja booking updates like Puja Photos, Videos and other",
+    discountPercent: 10,
+    discountLabel: "10% OFF",
+  },
+];

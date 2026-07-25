@@ -3,13 +3,15 @@
 import { X, Search } from "lucide-react";
 import { useEffect } from "react";
 import { NAV_LINKS } from "@/lib/constants";
-import { Logo } from "@/components/layout/Logo";
 import {
   FacebookIcon,
   InstagramIcon,
   TwitterIcon,
   YoutubeIcon,
 } from "@/components/ui/SocialIcons";
+import Image from "next/image";
+import { Input } from "@/components/ui/Input";
+import { ButtonLink } from "@/components/ui/Button";
 
 export function MobileDrawer({
   open,
@@ -35,7 +37,7 @@ export function MobileDrawer({
       />
       <div className="relative flex h-full w-80 max-w-[85vw] flex-col gap-6 overflow-y-auto bg-white p-6 shadow-modal animate-drawer-open">
         <div className="flex items-center justify-between">
-          <Logo />
+          <Image src="/images/logo/logo.svg" alt="logo" width={200} height={200} />
           <button
             onClick={onClose}
             aria-label="Close menu"
@@ -45,17 +47,13 @@ export function MobileDrawer({
           </button>
         </div>
 
-        <div className="relative">
-          <input
-            type="text"
-            placeholder="Search for Puja, Festival..."
-            className="w-full rounded-full border border-border bg-surface-muted py-3 pl-4 pr-11 text-sm outline-none"
-          />
-          <Search
-            size={18}
-            className="absolute right-4 top-1/2 -translate-y-1/2 text-text-muted"
-          />
-        </div>
+        <Input
+          variant="pill"
+          type="text"
+          placeholder="Search for Puja, Festival..."
+          containerClassName="min-h-[44px] py-1"
+          trailing={<Search size={18} className="text-text-muted" />}
+        />
 
         <nav className="flex flex-col gap-1">
           {NAV_LINKS.map((link) => (
@@ -71,12 +69,9 @@ export function MobileDrawer({
         </nav>
 
         <div className="mt-auto flex flex-col gap-4 border-t border-border pt-4">
-          <a
-            href="/login"
-            className="flex min-h-[44px] items-center justify-center rounded-full bg-brand-navy px-5 text-sm font-medium text-white"
-          >
+          <ButtonLink href="/login" variant="dark" className="rounded-full">
             Login / Register
-          </a>
+          </ButtonLink>
           <div className="flex items-center justify-center gap-4 text-text-muted">
             <FacebookIcon size={18} />
             <TwitterIcon size={18} />

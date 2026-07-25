@@ -1,11 +1,13 @@
 import Image from "next/image";
 import { Search } from "lucide-react";
+import { Input } from "@/components/ui/Input";
+import { Button } from "@/components/ui/Button";
 
 export function ServicesHero({ title }: { title: string }) {
   return (
-    <section className="relative flex min-h-[320px] items-center justify-center overflow-hidden md:min-h-[400px]">
+    <section className="relative flex min-h-[320px] items-center justify-center overflow-hidden md:min-h-[300px]">
       <Image
-        src="/images/hero-bg.png"
+        src="/images/misc/serivce-banner.png"
         alt=""
         fill
         priority
@@ -18,23 +20,19 @@ export function ServicesHero({ title }: { title: string }) {
         <h1 className="font-sans text-4xl font-semibold text-white md:text-6xl">
           {title}
         </h1>
+      </div>
 
-        <div className="flex w-full max-w-2xl flex-col gap-2 rounded-full bg-white p-2 shadow-card-hover sm:flex-row">
-          <div className="relative flex-1">
-            <Search
-              size={20}
-              className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-text-light"
-            />
-            <input
-              type="text"
-              placeholder="Search for Puja, Festival & Rituals..."
-              className="min-h-[44px] w-full rounded-full bg-transparent py-3 pl-11 pr-4 text-base font-medium text-text-primary outline-none"
-            />
-          </div>
-          <button className="min-h-[44px] rounded-full bg-brand-saffron-400 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-brand-saffron-500">
-            Search
-          </button>
-        </div>
+      <div className="absolute bottom-5 left-1/2 z-50 flex w-full max-w-2xl -translate-x-1/2 flex-col gap-2 rounded-full bg-white p-2 shadow-card-hover sm:flex-row">
+        <Input
+          variant="pill"
+          type="text"
+          placeholder="Search for Puja, Festival & Rituals..."
+          containerClassName="min-h-[44px] flex-1 bg-transparent"
+          leading={<Search size={20} />}
+        />
+        <Button size="md" className="rounded-full px-8">
+          Search
+        </Button>
       </div>
     </section>
   );

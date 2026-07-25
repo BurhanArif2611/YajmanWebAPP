@@ -3,32 +3,34 @@ import { FOOTER_LINKS } from "@/lib/constants";
 import {
   FacebookIcon,
   InstagramIcon,
-  TwitterIcon,
   YoutubeIcon,
 } from "@/components/ui/SocialIcons";
+import { TopoDoodle } from "@/components/ui/TopoDoodle";
+import Image from "next/image";
 
 export function Footer() {
   return (
-    <footer className="bg-brand-navy text-white">
-      <div className="mx-auto max-w-site px-4 py-16 md:px-8 lg:px-16">
+    <footer className="relative -mt-8 overflow-hidden rounded-t-[40px] bg-[#1f1f1f]">
+      <div className="h-[60px] w-full bg-white rounded-b-2xl"></div>
+      <Image src="/images/decor/decor-light.png" alt="decoration" width={200} height={200} className="absolute top-[60px] left-0 z-0 bg-no-repeat bg-left-top bg-contain bg-[length:300px_auto]" />
+      <Image src="/images/decor/decor-light.png" alt="decoration" width={200} height={200} className="absolute bottom-0 right-0 z-0 bg-no-repeat bg-right-top bg-contain bg-[length:300px_auto] rotate-180" />
+
+      <div className="relative mx-auto max-w-site px-4 pb-16 pt-14 md:px-8 lg:px-16">
         <div className="grid grid-cols-2 gap-10 sm:grid-cols-3 lg:grid-cols-5">
           <div className="col-span-2 flex flex-col gap-4 sm:col-span-3 lg:col-span-1">
-            <span className="font-sans text-2xl font-extrabold text-white">
-              yajman
-            </span>
+            <Image src="/images/logo/logo-white.svg" alt="logo" width={100} height={100} className="" />
             <p className="text-sm text-white/70">
               This service has taken my business to a whole new level. The
-              design and functionality are both outstanding and user
-              friendly.
+              design and functionality and user friendly.
             </p>
-            <div className="flex items-center gap-3">
-              {[FacebookIcon, TwitterIcon, YoutubeIcon, InstagramIcon].map((Icon, i) => (
+            <div className="flex items-center gap-4">
+              {[FacebookIcon, YoutubeIcon, InstagramIcon].map((Icon, i) => (
                 <a
                   key={i}
                   href="#"
-                  className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 transition-colors hover:bg-brand-saffron-400"
+                  className="text-white/80 transition-colors hover:text-brand-saffron-400"
                 >
-                  <Icon size={16} />
+                  <Icon size={18} />
                 </a>
               ))}
             </div>
@@ -40,32 +42,34 @@ export function Footer() {
 
           <div className="flex flex-col gap-4">
             <h3 className="font-sans text-base font-semibold">Contact</h3>
-            <div className="flex items-start gap-2 text-sm text-white/70">
-              <MapPin size={16} className="mt-0.5 shrink-0" />
-              <span>212 Satguru Parinay, AB Road, Vijay Nagar, Indore 452010</span>
-            </div>
             <a
               href="tel:+918109181057"
               className="flex items-center gap-2 text-sm text-white/70 hover:text-white"
             >
-              <Phone size={16} />
+              <Phone size={16} className="shrink-0 text-brand-saffron-400" />
               +918109181057
             </a>
             <a
               href="mailto:contact@yajmanapp.in"
               className="flex items-center gap-2 text-sm text-white/70 hover:text-white"
             >
-              <Mail size={16} />
+              <Mail size={16} className="shrink-0 text-brand-saffron-400" />
               contact@yajmanapp.in
             </a>
+            <div className="flex items-start gap-2 text-sm text-white/70">
+              <MapPin size={16} className="mt-0.5 shrink-0 text-brand-saffron-400" />
+              <span>212 Satguru Parinay, AB Road, Vijay Nagar, Indore 452010</span>
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="border-t border-white/10">
-        <div className="mx-auto flex max-w-site flex-col items-center justify-between gap-2 px-4 py-6 text-sm text-white/60 sm:flex-row md:px-8 lg:px-16">
-          <p>Copyright © 2026 Yajman. All rights reserved</p>
-          <p className="text-xs">Secure payments · UPI · Cards · NetBanking</p>
+      <div className="relative border-t border-white/10">
+        <div className="mx-auto flex max-w-site items-center px-4 py-6 text-sm text-white/60 md:px-8 lg:px-16">
+          <p>
+            Copyright © 2026 <span className="font-semibold text-white">Yajman</span>.
+            All rights reserved
+          </p>
         </div>
       </div>
     </footer>

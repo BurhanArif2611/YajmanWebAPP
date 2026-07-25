@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Star } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Checkbox } from "@/components/ui/Checkbox";
 
 const CATEGORIES = [
   "Astrology",
@@ -63,13 +64,9 @@ export function FilterSidebar() {
         <ul className="flex flex-col gap-3">
           {CATEGORIES.map((cat) => (
             <li key={cat}>
-              <label className="flex min-h-[24px] items-center gap-3 text-sm text-text-secondary">
-                <input
-                  type="checkbox"
-                  className="h-4 w-4 rounded border-border-dark accent-brand-saffron-400"
-                />
-                {cat}
-              </label>
+              <Checkbox
+                label={<span className="text-sm text-text-secondary">{cat}</span>}
+              />
             </li>
           ))}
         </ul>
@@ -79,22 +76,20 @@ export function FilterSidebar() {
         <ul className="flex flex-col gap-3">
           {[5, 4, 3, 2, 1].map((rating) => (
             <li key={rating}>
-              <label className="flex min-h-[24px] items-center gap-3 text-sm text-text-secondary">
-                <input
-                  type="checkbox"
-                  className="h-4 w-4 rounded border-border-dark accent-brand-saffron-400"
-                />
-                <span className="flex items-center gap-0.5 text-brand-gold-400">
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <Star
-                      key={i}
-                      size={14}
-                      fill={i < rating ? "currentColor" : "none"}
-                      className={cn(i >= rating && "text-border-dark")}
-                    />
-                  ))}
-                </span>
-              </label>
+              <Checkbox
+                label={
+                  <span className="flex items-center gap-0.5 text-brand-gold-400">
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <Star
+                        key={i}
+                        size={14}
+                        fill={i < rating ? "currentColor" : "none"}
+                        className={cn(i >= rating && "text-border-dark")}
+                      />
+                    ))}
+                  </span>
+                }
+              />
             </li>
           ))}
         </ul>
@@ -104,13 +99,9 @@ export function FilterSidebar() {
         <ul className="flex flex-col gap-3">
           {TYPES.map((type) => (
             <li key={type}>
-              <label className="flex min-h-[24px] items-center gap-3 text-sm text-text-secondary">
-                <input
-                  type="checkbox"
-                  className="h-4 w-4 rounded border-border-dark accent-brand-saffron-400"
-                />
-                {type}
-              </label>
+              <Checkbox
+                label={<span className="text-sm text-text-secondary">{type}</span>}
+              />
             </li>
           ))}
         </ul>

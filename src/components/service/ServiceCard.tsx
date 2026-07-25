@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { MapPin } from "lucide-react";
+import { ArrowRight, MapPin } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 import type { MockService } from "@/lib/constants";
 
@@ -52,10 +52,10 @@ export function ServiceCard({ service }: { service: MockService }) {
         </div>
 
         <Link
-          href={`/services/${service.slug}`}
-          className="mt-1 inline-flex min-h-[44px] items-center justify-center gap-2 rounded-lg bg-brand-navy px-5 py-3 text-sm font-medium text-white transition-colors duration-200 hover:bg-brand-navy-800"
+          href={`/services/${service.category}/${service.slug}`}
+          className="mt-1 inline-flex min-h-[44px] items-center justify-center gap-2 rounded-full bg-brand-navy px-5 py-3 text-sm font-medium text-white transition-colors duration-200 hover:bg-brand-navy-800"
         >
-          Book Now →
+          Book Now <ArrowRight size={16} />
         </Link>
       </div>
     </div>

@@ -4,11 +4,11 @@ import { SectionHeader } from "@/components/ui/SectionHeader";
 export function SupportSection() {
   return (
     <section className="bg-surface-peach">
-      <div className="mx-auto max-w-site px-4 py-16 text-center md:px-8 md:py-20 lg:px-16 lg:py-24">
+      <div className="mx-auto max-w-site px-4 py-16 text-center md:px-8 md:py-20 lg:px-16 lg:py-16">
         <SectionHeader
           eyebrow="our support team"
           heading="We're here to help!"
-          subtitle="Connect with our expert Puja consultants to plan your next ritual."
+          subtitle="Connect with our expert travel consultants to plan your next trip."
         />
 
         <div className="mt-10 flex flex-col items-center justify-center gap-6 sm:flex-row sm:gap-16">

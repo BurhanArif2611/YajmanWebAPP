@@ -3,10 +3,11 @@
 import { useState } from "react";
 import { ChevronDown, Menu, User } from "lucide-react";
 import { TopBar } from "@/components/layout/TopBar";
-import { Logo } from "@/components/layout/Logo";
 import { MobileDrawer } from "@/components/layout/MobileDrawer";
 import { NAV_LINKS } from "@/lib/constants";
 import { usePathname } from "next/navigation";
+import Image from "next/image";
+import { ButtonLink } from "@/components/ui/Button";
 
 export function Header() {
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -17,7 +18,7 @@ export function Header() {
       <TopBar />
       <div className="border-b border-border">
         <div className="mx-auto flex h-20 max-w-site items-center justify-between gap-6 px-4 md:px-8 lg:px-16">
-          <Logo />
+          <Image src="/images/logo/logo.svg" alt="logo" width={200} height={200} />
 
           <nav className="hidden items-center gap-5 xl:gap-8 lg:flex">
             {NAV_LINKS.map((link) => {
@@ -41,13 +42,10 @@ export function Header() {
               English
               <ChevronDown size={14} />
             </button>
-            <a
-              href="/login"
-              className="flex min-h-[44px] items-center gap-2 rounded-full bg-brand-navy px-5 text-sm font-medium text-white transition-colors hover:bg-brand-navy-800"
-            >
+            <ButtonLink href="/login" variant="dark" className="gap-2 rounded-full">
               <User size={16} />
               Login / Register
-            </a>
+            </ButtonLink>
           </div>
 
           <button

@@ -37,7 +37,7 @@ const theme: Config["theme"] = {
           500: "#f4a329",
         },
         navy: {
-          DEFAULT: "#1a1a2e", // ← PRIMARY text & dark backgrounds
+          DEFAULT: "#1f1f1f", // ← PRIMARY text & dark backgrounds
           50: "#f8f8fa",
           100: "#ebebf0",
           200: "#d1d5db",
@@ -46,9 +46,9 @@ const theme: Config["theme"] = {
           500: "#677489",
           600: "#6b7280",
           700: "#5f556a",
-          800: "#111729",
-          900: "#1a1a2e",
-          950: "#000d44",
+          800: "#232222",
+          900: "#1f1f1f",
+          950: "#212121ff",
         },
         magenta: {
           DEFAULT: "#e32682", // promotional badges
@@ -70,7 +70,7 @@ const theme: Config["theme"] = {
         muted: "#cccccc",
       },
       text: {
-        primary: "#1a1a2e",
+        primary: "#1f1f1f",
         secondary: "#5f556a",
         muted: "#6b7280",
         light: "#9ca3af",
