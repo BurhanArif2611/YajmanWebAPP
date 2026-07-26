@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import type { ButtonHTMLAttributes } from "react";
+import type { AnchorHTMLAttributes, ButtonHTMLAttributes } from "react";
 
 type Variant = "primary" | "outline" | "dark";
 type Size = "sm" | "md" | "lg";
@@ -52,15 +52,16 @@ export function ButtonLink({
   size = "md",
   className,
   children,
+  ...rest
 }: {
   href: string;
   variant?: Variant;
   size?: Size;
   className?: string;
   children: React.ReactNode;
-}) {
+} & AnchorHTMLAttributes<HTMLAnchorElement>) {
   return (
-    <Link href={href} className={buttonClasses(variant, size, className)}>
+    <Link href={href} className={buttonClasses(variant, size, className)} {...rest}>
       {children}
     </Link>
   );

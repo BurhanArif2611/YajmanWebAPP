@@ -12,6 +12,7 @@ import {
 import Image from "next/image";
 import { Input } from "@/components/ui/Input";
 import { ButtonLink } from "@/components/ui/Button";
+import { useAuth } from "@/hooks/useAuth";
 
 export function MobileDrawer({
   open,
@@ -20,6 +21,8 @@ export function MobileDrawer({
   open: boolean;
   onClose: () => void;
 }) {
+  const { isLoggedIn, logout } = useAuth();
+
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
     return () => {
@@ -69,9 +72,31 @@ export function MobileDrawer({
         </nav>
 
         <div className="mt-auto flex flex-col gap-4 border-t border-border pt-4">
-          <ButtonLink href="/login" variant="dark" className="rounded-full">
-            Login / Register
-          </ButtonLink>
+          {isLoggedIn ? (
+            <>
+              <ButtonLink
+                href="/profile"
+                variant="dark"
+                className="rounded-full"
+                onClick={onClose}
+              >
+                My Profile
+              </ButtonLink>
+              <button
+                onClick={() => {
+                  logout();
+                  onClose();
+                }}
+                className="min-h-[44px] rounded-full border border-border-dark text-sm font-medium text-error"
+              >
+                Log out
+              </button>
+            </>
+          ) : (
+            <ButtonLink href="/login" variant="dark" className="rounded-full" onClick={onClose}>
+              Login / Register
+            </ButtonLink>
+          )}
           <div className="flex items-center justify-center gap-4 text-text-muted">
             <FacebookIcon size={18} />
             <TwitterIcon size={18} />

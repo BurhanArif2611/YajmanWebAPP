@@ -14,10 +14,10 @@ export function AayojanHero() {
         sizes="100vw"
         className="object-cover"
       />
-      <div className="absolute inset-0 bg-black/55" />
+      <div className="absolute inset-0 bg-black/65" />
 
       <div className="relative mx-auto flex w-full max-w-site flex-col items-center gap-6 px-4 py-20 text-center md:px-8 lg:px-16">
-        <h1 className="max-w-3xl font-sans text-4xl font-bold leading-tight text-white md:text-5xl lg:text-6xl">
+        <h1 className="max-w-3xl font-sans text-4xl font-bold leading-tight text-white md:text-5xl lg:text-7xl">
           Celebrate Every Sacred Occasion with Yajman
         </h1>
         <p className="max-w-2xl text-base text-white/85 md:text-lg">

@@ -22,7 +22,7 @@ export function ServicesHero({ title }: { title: string }) {
         </h1>
       </div>
 
-      <div className="absolute bottom-5 left-1/2 z-50 flex w-full max-w-2xl -translate-x-1/2 flex-col gap-2 rounded-full bg-white p-2 shadow-card-hover sm:flex-row">
+      <div className="absolute bottom-5 left-1/2 z-20 flex w-full max-w-2xl -translate-x-1/2 flex-col gap-2 rounded-full bg-white p-2 shadow-card-hover sm:flex-row">
         <Input
           variant="pill"
           type="text"

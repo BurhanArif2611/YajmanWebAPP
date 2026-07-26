@@ -6,16 +6,15 @@ export function AboutSection() {
   return (
     <section className="mx-auto max-w-site px-4 py-16 md:px-8 md:py-20 lg:px-16 lg:py-24">
       <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
-        <div className="relative mx-auto grid w-fit max-w-md items-center justify-center grid-cols-2">
-          <div className="relative w-[300px] h-[350px] overflow-hidden ">
-            <Image
-              src="/images/ayongan/kalash-yatra-2.png"
-              alt="Kalash yatra procession"
-              fill
-              className="object-contain"
-            />
-          </div>
-          <div className="grid w-full items-end gap-4">
+        <div className="relative mx-auto items-center justify-center ">
+          {/* <div className="relative aspect-square w-[400px] h-[400px]"> */}
+          <img
+            src="/images/ayongan/about.png"
+            alt="Kalash yatra procession"
+            className="w-full h-full"
+          />
+          {/* </div> */}
+          {/* <div className="grid w-full items-end gap-4">
             <div className="relative w-[150px] h-[250px]  overflow-hidden  ">
               <Image
                 src="/images/ayongan/about-image-2.jpg.png"
@@ -33,20 +32,20 @@ export function AboutSection() {
                 className="object-cover"
               />
             </div>
-          </div>
+          </div> */}
 
-          <div className="absolute -bottom-4 left-1/2 flex -translate-x-1/2 flex-col items-center rounded-2xl bg-white px-6 py-3 text-center shadow-card-hover">
+          {/* <div className="absolute -bottom-4 left-1/2 flex -translate-x-1/2 flex-col items-center rounded-2xl bg-white px-6 py-3 text-center shadow-card-hover">
             <span className="font-sans text-2xl font-extrabold text-brand-saffron-400">
               10K+
             </span>
             <span className="text-xs font-medium text-text-muted">
               Happy Devotees
             </span>
-          </div>
+          </div> */}
         </div>
 
         <div className="flex flex-col gap-6">
-          <h2 className="font-sans text-3xl font-semibold text-text-primary md:text-4xl">
+          <h2 className="font-sans text-3xl font-bold text-text-primary md:text-6xl">
             Create Divine Experiences, Not Just Events
           </h2>
           <p className="text-base leading-relaxed text-text-muted">

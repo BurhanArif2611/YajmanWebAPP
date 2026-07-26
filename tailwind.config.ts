@@ -7,4 +7,5 @@ export default {
     "./src/components/**/*.{ts,tsx}",
   ],
   theme,
+  plugins: [require("@tailwindcss/typography")],
 } satisfies Config;

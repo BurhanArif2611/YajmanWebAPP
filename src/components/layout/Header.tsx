@@ -7,11 +7,14 @@ import { MobileDrawer } from "@/components/layout/MobileDrawer";
 import { NAV_LINKS } from "@/lib/constants";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
+import Link from "next/link";
 import { ButtonLink } from "@/components/ui/Button";
+import { useAuth } from "@/hooks/useAuth";
 
 export function Header() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const pathname = usePathname();
+  const { isLoggedIn } = useAuth();
 
   return (
     <header className="sticky top-0 z-40 bg-white">
@@ -42,10 +45,20 @@ export function Header() {
               English
               <ChevronDown size={14} />
             </button>
-            <ButtonLink href="/login" variant="dark" className="gap-2 rounded-full">
-              <User size={16} />
-              Login / Register
-            </ButtonLink>
+            {isLoggedIn ? (
+              <Link
+                href="/profile"
+                aria-label="My profile"
+                className="flex h-11 w-11 items-center justify-center rounded-full bg-brand-navy text-white transition-colors hover:bg-brand-navy-800"
+              >
+                <User size={18} />
+              </Link>
+            ) : (
+              <ButtonLink href="/login" variant="dark" className="gap-2 rounded-full">
+                <User size={16} />
+                Login / Register
+              </ButtonLink>
+            )}
           </div>
 
           <button

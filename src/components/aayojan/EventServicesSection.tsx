@@ -12,12 +12,12 @@ const EVENTS = Array.from({ length: 3 }).map(() => ({
   description: DESCRIPTION,
   date: "24, Sep 2026",
   location: "Ujjain, Madhya pradesh",
-  image: "/images/ayongan/about-image-3.jpg.png",
+  image: "/images/ayongan/image-4.png",
 }));
 
 export function EventServicesSection() {
   return (
-    <section className="bg-gradient-to-b from-white via-surface-peach to-white">
+    <section className="bg-[url(/images/ayongan/service-bg.png)] bg-cover bg-center bg-no-repeat">
       <div className="mx-auto max-w-site px-4 py-16 md:px-8 md:py-20 lg:px-16 lg:py-24">
         <SectionHeader
           eyebrow="Our Devotional Events"
@@ -31,7 +31,7 @@ export function EventServicesSection() {
               key={i}
               className="flex flex-col gap-6 rounded-2xl bg-white p-6 shadow-card md:p-8 lg:flex-row lg:items-center"
             >
-              <div className="relative h-64 w-full shrink-0 overflow-hidden rounded-2xl lg:h-52 lg:w-[420px]">
+              <div className="relative h-64 w-full shrink-0 overflow-hidden rounded-2xl lg:h-72 lg:w-[420px]">
                 <Image
                   src={event.image}
                   alt={event.title}
@@ -57,19 +57,22 @@ export function EventServicesSection() {
                   <span className="font-semibold text-text-primary">Location:</span>{" "}
                   {event.location}
                 </p>
-                <ButtonLink
-                  href="/contact"
-                  size="sm"
-                  className="mt-2 w-fit gap-2 rounded-full uppercase tracking-wide"
-                >
-                  Contact Us
-                  <ArrowUpRight size={16} />
-                </ButtonLink>
+                <div className="flex items-start justify-between gap-2 mt-2">
+                  <ButtonLink
+                    href="/contact"
+                    size="sm"
+                    className="mt-2 w-fit gap-2 rounded-full  tracking-wide"
+                  >
+                    Contact Us
+                    <ArrowUpRight size={16} />
+                  </ButtonLink>
+                  <div className="lg:self-center">
+                    <AvatarCluster count="10+" label="1K + Reviews" />
+                  </div>
+                </div>
               </div>
 
-              <div className="lg:self-center">
-                <AvatarCluster count="10+" label="1K + Reviews" />
-              </div>
+
             </div>
           ))}
         </div>

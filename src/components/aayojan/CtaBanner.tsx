@@ -14,8 +14,8 @@ export function CtaBanner() {
       />
       <div className="absolute inset-0 bg-black/55" />
 
-      <div className="relative mx-auto flex w-full max-w-site flex-col gap-5 px-4 py-16 md:px-8 lg:px-16">
-        <h2 className="max-w-xl font-sans text-4xl font-bold leading-tight text-white md:text-5xl">
+      <div className="relative mx-auto flex w-full max-w-7xl flex-col gap-5 px-4 py-16 md:px-8 lg:px-16">
+        <h2 className="max-w-xl font-sans text-4xl font-bold leading-tight text-white md:text-7xl">
           Planning a
           <br />
           Devotional Event?
@@ -28,7 +28,7 @@ export function CtaBanner() {
         <ButtonLink
           href="/contact"
           size="lg"
-          className="mt-2 w-fit gap-2 rounded-full uppercase tracking-wide"
+          className="mt-2 w-fit gap-2 rounded-full  tracking-wide"
         >
           Contact Us Now
           <ArrowUpRight size={18} />

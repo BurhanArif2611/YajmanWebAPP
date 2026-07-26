@@ -5,13 +5,14 @@ import Image from "next/image";
 import { Input } from "@/components/ui/Input";
 import { Checkbox } from "@/components/ui/Checkbox";
 import { OtpInput } from "@/components/auth/OtpInput";
-import { MOCK_USER, DEMO_PHONE } from "@/lib/constants";
+import { useAuth } from "@/hooks/useAuth";
+import { DEMO_PHONE } from "@/lib/constants";
 
 export function ContactDetailsSection() {
   const [otpSent, setOtpSent] = useState(false);
   const [differentNumber, setDifferentNumber] = useState(false);
-  const isLoggedIn = Boolean(MOCK_USER);
-  const phone = MOCK_USER?.phone ?? DEMO_PHONE;
+  const { isLoggedIn, phone: authPhone } = useAuth();
+  const phone = authPhone ?? DEMO_PHONE;
 
   return (
     <>
@@ -26,6 +27,7 @@ export function ContactDetailsSection() {
       </div>
 
       <Input
+        key={phone}
         type="tel"
         defaultValue={phone}
         readOnly={isLoggedIn}

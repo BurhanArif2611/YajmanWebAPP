@@ -12,9 +12,9 @@ const EVENT_TYPES = [
 
 export function ContactFormSection() {
   return (
-    <section className="mx-auto max-w-site px-4 py-16 md:px-8 md:py-20 lg:px-16 lg:py-24">
-      <div className="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:items-center">
-        <div className="relative h-72 w-full overflow-hidden rounded-[32px] md:h-[420px]">
+    <section className="mx-auto max-w-site px-4 py-16 md:px-8 md:py-20 lg:px-16 lg:py-8 lg:pt-0">
+      <div className="mx-auto grid grid-cols-1 gap-0 lg:grid-cols-2 lg:items-center max-w-6xl">
+        <div className="relative h-72 w-full overflow-hidden rounded-l-2xl md:h-[670px]">
           <Image
             src="/images/ayongan/image-3.png"
             alt="Kalash yatra procession"
@@ -24,7 +24,7 @@ export function ContactFormSection() {
           />
         </div>
 
-        <div className="rounded-2xl bg-surface-peach p-6 md:p-10">
+        <div className="rounded-r-2xl bg-surface-peach p-6 md:p-10 md:py-24">
           <span className="font-decorative text-2xl text-brand-saffron-400">
             Contact us
           </span>
@@ -47,7 +47,7 @@ export function ContactFormSection() {
                 <Input type="email" placeholder="Enter email" containerClassName="bg-white" />
               </Field>
               <Field label="Event">
-                <div className="relative flex min-h-[56px] items-center rounded-xl border border-border-dark bg-white px-4">
+                <div className="relative flex min-h-[56px] items-center rounded-md border border-border-dark bg-white px-4">
                   <select className="w-full appearance-none bg-transparent text-base font-medium text-text-primary outline-none">
                     <option value="">Select event</option>
                     {EVENT_TYPES.map((type) => (

@@ -1,9 +1,21 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { AuthLayout } from "@/components/auth/AuthLayout";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
+import { DEMO_PHONE } from "@/lib/constants";
 
 export default function LoginPage() {
+  const router = useRouter();
+  const [phone, setPhone] = useState(DEMO_PHONE);
+
+  const handleSendOtp = () => {
+    router.push(`/verify-otp?phone=${encodeURIComponent(phone)}`);
+  };
+
   return (
     <AuthLayout>
       <div>
@@ -17,14 +29,15 @@ export default function LoginPage() {
 
       <Input
         type="tel"
-        defaultValue="+91 7984561235"
+        value={phone}
+        onChange={(e) => setPhone(e.target.value)}
         placeholder="+91 00000 00000"
         leading={
           <Image src="/icons/whatsapp.png" alt="WhatsApp" width={22} height={22} />
         }
       />
 
-      <Button size="lg" className="w-full justify-center rounded-full">
+      <Button size="lg" className="w-full justify-center rounded-full" onClick={handleSendOtp}>
         Send OTP
       </Button>
 
