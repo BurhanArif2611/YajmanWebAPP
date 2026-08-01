@@ -1,21 +1,117 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Input } from "@/components/ui/Input";
 import { Checkbox } from "@/components/ui/Checkbox";
 import { OtpInput } from "@/components/auth/OtpInput";
 import { useAuth } from "@/hooks/useAuth";
-import { DEMO_PHONE } from "@/lib/constants";
+import { sendOtp, verifyOtp } from "@/lib/api/auth";
+import { setSession } from "@/lib/auth";
+import { ApiError } from "@/lib/apiError";
 
-export function ContactDetailsSection() {
-  const [otpSent, setOtpSent] = useState(false);
-  const [differentNumber, setDifferentNumber] = useState(false);
+const RESEND_COOLDOWN = 30;
+
+function digitsOnly(phone: string) {
+  return phone.replace(/\D/g, "").slice(-10);
+}
+
+export function ContactDetailsSection({
+  name,
+  onNameChange,
+  callingNumber,
+  onCallingNumberChange,
+  useDifferentNumber,
+  onUseDifferentNumberChange,
+}: {
+  name: string;
+  onNameChange: (value: string) => void;
+  callingNumber: string;
+  onCallingNumberChange: (value: string) => void;
+  useDifferentNumber: boolean;
+  onUseDifferentNumberChange: (value: boolean) => void;
+}) {
   const { isLoggedIn, phone: authPhone } = useAuth();
-  const phone = authPhone ?? DEMO_PHONE;
+  const [phone, setPhone] = useState("");
+  const [otpSent, setOtpSent] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [verifying, setVerifying] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [resendCooldown, setResendCooldown] = useState(0);
+
+  useEffect(() => {
+    if (resendCooldown <= 0) return;
+    const id = setInterval(() => setResendCooldown((s) => s - 1), 1000);
+    return () => clearInterval(id);
+  }, [resendCooldown]);
+
+  const displayPhone = isLoggedIn ? authPhone ?? "" : phone;
+
+  const handleSendOtp = async () => {
+    const phoneDigits = digitsOnly(phone);
+    if (phoneDigits.length !== 10) {
+      setError("Enter a valid 10-digit phone number.");
+      return;
+    }
+    setError(null);
+    setSending(true);
+    try {
+      await sendOtp(phoneDigits);
+      setOtpSent(true);
+      setResendCooldown(RESEND_COOLDOWN);
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : "Couldn't send OTP. Try again.");
+    } finally {
+      setSending(false);
+    }
+  };
+
+  const handleVerify = async (code: string) => {
+    setError(null);
+    setVerifying(true);
+    try {
+      const result = await verifyOtp(digitsOnly(phone), code);
+      setSession(
+        {
+          access_token: result.access_token,
+          refresh_token: result.refresh_token,
+          expires_in: result.expires_in,
+        },
+        result.user
+      );
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : "Invalid OTP. Try again.");
+    } finally {
+      setVerifying(false);
+    }
+  };
+
+  const handleResend = async () => {
+    if (resendCooldown > 0) return;
+    setError(null);
+    try {
+      await sendOtp(digitsOnly(phone));
+      setResendCooldown(RESEND_COOLDOWN);
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : "Couldn't resend the code.");
+    }
+  };
 
   return (
     <>
+      <div>
+        <h3 className="font-sans text-lg font-semibold text-text-primary">
+          Your Name
+        </h3>
+      </div>
+      <Input
+        type="text"
+        value={name}
+        onChange={(e) => onNameChange(e.target.value)}
+        placeholder="Full name"
+        containerClassName="bg-white"
+      />
+
       <div>
         <h3 className="font-sans text-lg font-semibold text-text-primary">
           Your WhatsApp Number
@@ -27,10 +123,12 @@ export function ContactDetailsSection() {
       </div>
 
       <Input
-        key={phone}
+        key={isLoggedIn ? "locked" : "editable"}
         type="tel"
-        defaultValue={phone}
-        readOnly={isLoggedIn}
+        value={displayPhone}
+        onChange={(e) => setPhone(e.target.value)}
+        readOnly={isLoggedIn || otpSent}
+        placeholder="+91 00000 00000"
         containerClassName="bg-white"
         leading={
           <Image src="/icons/whatsapp.png" alt="WhatsApp" width={22} height={22} />
@@ -39,38 +137,57 @@ export function ContactDetailsSection() {
           !isLoggedIn &&
           !otpSent && (
             <button
-              onClick={() => setOtpSent(true)}
-              className="whitespace-nowrap text-sm font-semibold text-brand-saffron-400"
+              onClick={handleSendOtp}
+              disabled={sending}
+              className="whitespace-nowrap text-sm font-semibold text-brand-saffron-400 disabled:text-text-light"
             >
-              Send OTP
+              {sending ? "Sending..." : "Send OTP"}
             </button>
           )
         }
       />
 
+      {error && <p className="text-sm font-medium text-error">{error}</p>}
+
       {!isLoggedIn && otpSent && (
         <div className="flex flex-col gap-3">
           <p className="text-sm font-medium text-text-primary">
-            Enter OTP ({phone} )
+            Enter OTP ({phone})
           </p>
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <OtpInput />
-            <button className="text-xs font-semibold text-text-muted">
-              Didn&apos;t Receive Code?{" "}
-              <span className="text-brand-saffron-400">Resend OTP</span>
+            <OtpInput onComplete={handleVerify} disabled={verifying} error={Boolean(error)} />
+            <button
+              onClick={handleResend}
+              disabled={resendCooldown > 0}
+              className="text-xs font-semibold text-text-muted disabled:text-text-light"
+            >
+              {resendCooldown > 0 ? (
+                `Resend OTP (${resendCooldown}s)`
+              ) : (
+                <>
+                  Didn&apos;t Receive Code?{" "}
+                  <span className="text-brand-saffron-400">Resend OTP</span>
+                </>
+              )}
             </button>
           </div>
         </div>
       )}
 
       <Checkbox
-        checked={differentNumber}
-        onChange={(e) => setDifferentNumber(e.target.checked)}
+        checked={useDifferentNumber}
+        onChange={(e) => onUseDifferentNumberChange(e.target.checked)}
         label="I have a different number for calling"
       />
 
-      {differentNumber && (
-        <Input type="tel" placeholder="+91 0000000000" containerClassName="bg-white" />
+      {useDifferentNumber && (
+        <Input
+          type="tel"
+          value={callingNumber}
+          onChange={(e) => onCallingNumberChange(e.target.value)}
+          placeholder="+91 0000000000"
+          containerClassName="bg-white"
+        />
       )}
     </>
   );

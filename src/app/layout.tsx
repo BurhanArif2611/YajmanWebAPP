@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Dancing_Script } from "next/font/google";
 import "./globals.css";
+import { QueryProvider } from "@/components/providers/QueryProvider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -32,7 +33,9 @@ export default function RootLayout({
       lang="en"
       className={`${inter.variable} ${dancingScript.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <QueryProvider>{children}</QueryProvider>
+      </body>
     </html>
   );
 }

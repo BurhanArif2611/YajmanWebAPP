@@ -3,13 +3,31 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import useEmblaCarousel from "embla-carousel-react";
 import { SectionHeader } from "@/components/ui/SectionHeader";
-import { CATEGORIES } from "@/lib/constants";
+import { Skeleton } from "@/components/ui/Skeleton";
+import { getCategories } from "@/lib/api/catalog";
 
 export function CategorySection() {
+  const categoriesQuery = useQuery({
+    queryKey: ["categories"],
+    queryFn: getCategories,
+    staleTime: 5 * 60_000,
+  });
+
+  // Fall back to the local pixel-matched set while loading or if the API
+  // is empty/unavailable, so this section never renders broken or blank.
+  const categories = categoriesQuery.data?.length
+    ? categoriesQuery.data.map((c) => ({
+      slug: c.slug,
+      name: c.name,
+      image: c.image_url || "",
+    }))
+    : [];
+
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: true,
     align: "start",
@@ -44,6 +62,17 @@ export function CategorySection() {
         subtitle="This service has taken my business to a whole new level. The design & functionality are both outstanding and user friendly."
       />
 
+      {categoriesQuery.isLoading ? (
+        <div className="mt-14 grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-5">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <div key={i} className="flex flex-col items-center gap-4">
+              <Skeleton className="aspect-square w-full rounded-xl" />
+              <Skeleton className="h-5 w-2/3" />
+            </div>
+          ))}
+        </div>
+      ) : (
+      <>
       <div className="relative mt-14">
         <button
           aria-label="Previous categories"
@@ -55,9 +84,9 @@ export function CategorySection() {
 
         <div ref={emblaRef} className="overflow-hidden">
           <div className="-ml-5 flex">
-            {[...CATEGORIES, ...CATEGORIES].map((category, i) => (
+            {[...categories].map((category, i) => (
               <div
-                key={category.slug}
+                key={`${category.slug}-${i}`}
                 className="flex-[0_0_45%] pl-5 sm:flex-[0_0_31%] lg:flex-[0_0_19%]"
               >
                 <motion.div
@@ -121,6 +150,8 @@ export function CategorySection() {
           </button>
         ))}
       </div>
+      </>
+      )}
     </section>
   );
 }

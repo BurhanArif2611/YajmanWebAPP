@@ -6,18 +6,27 @@ import { BookingWidget } from "@/components/service/BookingWidget";
 import { DetailTabs } from "@/components/service/DetailTabs";
 import { StickyBookBar } from "@/components/service/StickyBookBar";
 import { Badge } from "@/components/ui/Badge";
-import { getServiceBySlug } from "@/lib/constants";
+import { getServiceBySlug } from "@/lib/api/services";
+import { mapServiceToCard, resolveImageUrl } from "@/lib/mappers/service";
 
 type Params = Promise<{ category: string; slug: string }>;
 
+async function fetchService(slug: string) {
+  try {
+    return await getServiceBySlug(slug);
+  } catch {
+    return null;
+  }
+}
+
 export async function generateMetadata({ params }: { params: Params }) {
   const { slug } = await params;
-  const service = getServiceBySlug(slug);
-  if (!service) return {};
+  const detail = await fetchService(slug);
+  if (!detail) return {};
 
   return {
-    title: `${service.title} | Yajman`,
-    description: service.location,
+    title: detail.meta_title || `${detail.title} | Yajman`,
+    description: detail.meta_description || detail.short_description || undefined,
   };
 }
 
@@ -27,10 +36,13 @@ export default async function ServiceDetailPage({
   params: Params;
 }) {
   const { category, slug } = await params;
-  const service = getServiceBySlug(slug);
-  if (!service || service.category !== category) {
+  const detail = await fetchService(slug);
+  if (!detail || detail.category_slug !== category) {
     notFound();
   }
+
+  const service = mapServiceToCard(detail);
+  const temple = detail.temples?.[0];
 
   return (
     <>
@@ -85,27 +97,32 @@ export default async function ServiceDetailPage({
           <div className="flex flex-col gap-8">
             <ImageGallery images={service.gallery} alt={service.title} />
 
-            <p className="text-sm leading-relaxed text-text-muted">
-              Discover the perfect escape with our carefully curated travel
-              packages. Whether you&apos;re seeking adventure, relaxation, or
-              cultural discovery, our tours are designed to offer
-              unforgettable experiences. Explore breath-taking landscapes,
-              meet friendly locals, and create lasting memories in some of
-              the world&apos;s most stunning destinations. Every journey is
-              crafted with comfort, excitement, and authenticity in mind. Get
-              ready for the journey of a lifetime! Our travel packages
-              combine comfort, culture, and adventure to ensure you enjoy
-              every moment of your vacation.
-            </p>
+            {(detail.description || detail.short_description) && (
+              <p className="text-sm leading-relaxed text-text-muted">
+                {detail.description || detail.short_description}
+              </p>
+            )}
           </div>
 
           <div id="booking-widget" className="scroll-mt-24">
-            <BookingWidget service={service} />
+            <BookingWidget
+              service={service}
+              about={detail.about_puja || detail.short_description}
+              minAdvanceDays={detail.advance_booking_days ?? 0}
+              availabilityStart={detail.availability_start_date}
+              availabilityEnd={detail.availability_end_date}
+              availableDates={detail.available_dates}
+            />
           </div>
         </div>
 
         <div className="mt-12 lg:mt-16">
-          <DetailTabs />
+          <DetailTabs
+            keyFeatures={detail.key_features}
+            templeName={temple?.name}
+            photos={detail.images?.length ? detail.images.map((img) => resolveImageUrl(img.url)) : undefined}
+            faqs={detail.faqs?.length ? detail.faqs : undefined}
+          />
         </div>
       </div>
 

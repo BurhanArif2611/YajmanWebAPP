@@ -3,11 +3,13 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Star } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
+import { getCategories, getTypes } from "@/lib/api/catalog";
 import { Checkbox } from "@/components/ui/Checkbox";
+import { Skeleton } from "@/components/ui/Skeleton";
 
-const CATEGORIES = [
+const FALLBACK_CATEGORIES = [
   "Astrology",
   "PanditJi At Home",
   "Premium Puja",
@@ -16,7 +18,7 @@ const CATEGORIES = [
   "Aarti & Katha",
 ];
 
-const TYPES = ["Health", "Marriage", "Business", "Navgrah", "Festival"];
+const FALLBACK_TYPES = ["Health", "Marriage", "Business", "Navgrah", "Festival"];
 
 const TOP_RATED = Array.from({ length: 4 }).map((_, i) => ({
   slug: `top-rated-${i}`,
@@ -42,7 +44,54 @@ function FilterBlock({
 }
 
 export function FilterSidebar() {
-  const [price, setPrice] = useState(181);
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const currentCategory = searchParams.get("category");
+  const currentTypes = (searchParams.get("type") ?? "").split(",").filter(Boolean);
+  const maxPriceParam = searchParams.get("max_price");
+  const [price, setPrice] = useState(maxPriceParam ? Number(maxPriceParam) : 2000);
+
+  const setParam = (key: string, value: string | null) => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (value) params.set(key, value);
+    else params.delete(key);
+    params.delete("page");
+    router.push(`${pathname}?${params.toString()}`, { scroll: false });
+  };
+
+  const toggleCategory = (id: string) => {
+    setParam("category", currentCategory === id ? null : id);
+  };
+
+  const toggleType = (id: string) => {
+    const next = currentTypes.includes(id)
+      ? currentTypes.filter((t) => t !== id)
+      : [...currentTypes, id];
+    setParam("type", next.length ? next.join(",") : null);
+  };
+
+  // Public, unauthenticated catalog data — fall back to the static lists
+  // while loading or if the API call fails, so filters never disappear.
+  const categoriesQuery = useQuery({
+    queryKey: ["categories"],
+    queryFn: getCategories,
+    staleTime: 5 * 60_000,
+  });
+  const typesQuery = useQuery({
+    queryKey: ["types"],
+    queryFn: getTypes,
+    staleTime: 5 * 60_000,
+  });
+
+  const categories = categoriesQuery.data?.length
+    ? categoriesQuery.data.map((c) => ({ id: c.id, label: c.name }))
+    : FALLBACK_CATEGORIES.map((label) => ({ id: label, label }));
+
+  const types = typesQuery.data?.length
+    ? typesQuery.data.map((t) => ({ id: t.id, label: t.name }))
+    : FALLBACK_TYPES.map((label) => ({ id: label, label }));
 
   return (
     <aside className="flex flex-col gap-5">
@@ -50,9 +99,11 @@ export function FilterSidebar() {
         <input
           type="range"
           min={98}
-          max={181}
+          max={2000}
           value={price}
           onChange={(e) => setPrice(Number(e.target.value))}
+          onMouseUp={() => setParam("max_price", String(price))}
+          onTouchEnd={() => setParam("max_price", String(price))}
           className="w-full accent-brand-saffron-400"
         />
         <p className="mt-2 text-sm text-text-secondary">
@@ -62,17 +113,25 @@ export function FilterSidebar() {
 
       <FilterBlock title="Category">
         <ul className="flex flex-col gap-3">
-          {CATEGORIES.map((cat) => (
-            <li key={cat}>
-              <Checkbox
-                label={<span className="text-sm text-text-secondary">{cat}</span>}
-              />
-            </li>
-          ))}
+          {categoriesQuery.isLoading
+            ? Array.from({ length: 6 }).map((_, i) => (
+                <li key={i}>
+                  <Skeleton className="h-5 w-3/4" />
+                </li>
+              ))
+            : categories.map((cat) => (
+                <li key={cat.id}>
+                  <Checkbox
+                    checked={currentCategory === cat.id}
+                    onChange={() => toggleCategory(cat.id)}
+                    label={<span className="text-sm text-text-secondary">{cat.label}</span>}
+                  />
+                </li>
+              ))}
         </ul>
       </FilterBlock>
 
-      <FilterBlock title="Reviews">
+      {/* <FilterBlock title="Reviews">
         <ul className="flex flex-col gap-3">
           {[5, 4, 3, 2, 1].map((rating) => (
             <li key={rating}>
@@ -93,17 +152,25 @@ export function FilterSidebar() {
             </li>
           ))}
         </ul>
-      </FilterBlock>
+      </FilterBlock> */}
 
       <FilterBlock title="Types">
         <ul className="flex flex-col gap-3">
-          {TYPES.map((type) => (
-            <li key={type}>
-              <Checkbox
-                label={<span className="text-sm text-text-secondary">{type}</span>}
-              />
-            </li>
-          ))}
+          {typesQuery.isLoading
+            ? Array.from({ length: 5 }).map((_, i) => (
+                <li key={i}>
+                  <Skeleton className="h-5 w-2/3" />
+                </li>
+              ))
+            : types.map((type) => (
+                <li key={type.id}>
+                  <Checkbox
+                    checked={currentTypes.includes(type.id)}
+                    onChange={() => toggleType(type.id)}
+                    label={<span className="text-sm text-text-secondary">{type.label}</span>}
+                  />
+                </li>
+              ))}
         </ul>
       </FilterBlock>
 

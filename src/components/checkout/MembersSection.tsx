@@ -1,11 +1,14 @@
 "use client";
 
-import { useState } from "react";
 import { Input } from "@/components/ui/Input";
 
-export function MembersSection() {
-  const [members, setMembers] = useState([""]);
-
+export function MembersSection({
+  members,
+  onChange,
+}: {
+  members: string[];
+  onChange: (members: string[]) => void;
+}) {
   return (
     <>
       <p className="text-sm text-text-muted">
@@ -17,17 +20,23 @@ export function MembersSection() {
           Members
         </span>
         <button
-          onClick={() => setMembers((m) => [...m, ""])}
+          onClick={() => onChange([...members, ""])}
           className="text-sm font-bold text-brand-saffron-400 underline"
         >
           + Add new
         </button>
       </div>
 
-      {members.map((_, i) => (
+      {members.map((value, i) => (
         <Input
           key={i}
           type="text"
+          value={value}
+          onChange={(e) => {
+            const next = [...members];
+            next[i] = e.target.value;
+            onChange(next);
+          }}
           placeholder={`${i + 1}. member`}
           containerClassName="bg-white"
         />

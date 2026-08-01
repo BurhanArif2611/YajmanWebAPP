@@ -1,9 +1,14 @@
-export const NAV_LINKS = [
+/** `category` marks nav items that should resolve to a live category id via useNavLinks. */
+export const NAV_LINKS: { label: string; href: string; category?: string }[] = [
   { label: "Home", href: "/" },
-  { label: "E-Puja", href: "/services?category=e-puja" },
-  { label: "PanditJi At Home", href: "/services?category=pandit-ji-at-home" },
-  { label: "Premium Puja", href: "/services?category=premium-puja" },
-  { label: "Astrology", href: "/services?category=astrology" },
+  { label: "E-Puja", href: "/services?category=e-puja", category: "E-Puja" },
+  {
+    label: "PanditJi At Home",
+    href: "/services?category=panditji-at-home",
+    category: "PanditJi At Home",
+  },
+  { label: "Premium Puja", href: "/services?category=premium-puja", category: "Premium Puja" },
+  { label: "Astrology", href: "/services?category=astrology", category: "Astrology" },
   { label: "Aayojan", href: "/aayojan" },
   { label: "Articles", href: "/articles" },
   { label: "Contact", href: "/contact" },
@@ -38,6 +43,8 @@ export const CATEGORIES = [
 ];
 
 export type MockService = {
+  /** Only set for live API services — used as `service_id` for coupon validation. */
+  id?: string;
   slug: string;
   category: string;
   categoryLabel: string;
@@ -119,7 +126,7 @@ export const FOOTER_LINKS = {
   services: [
     { label: "E-Puja", href: "/services?category=e-puja" },
     { label: "Premium Puja", href: "/services?category=premium-puja" },
-    { label: "Pandit Ji At Home", href: "/services?category=pandit-ji-at-home" },
+    { label: "Pandit Ji At Home", href: "/services?category=panditji-at-home" },
     { label: "Astrology", href: "/services?category=astrology" },
   ],
   quickLinks: [
@@ -138,45 +145,6 @@ export const FOOTER_LINKS = {
 
 // Placeholder number shown before a real phone is verified via /login.
 export const DEMO_PHONE = "+91 7984561235";
-
-export const CHECKOUT_ITEM = {
-  title: "Shravan Special Maha Mrityunjay Jaap and Abhishek",
-  location: "Omkareshwar Region",
-  date: "Monday. Jun 9,2026",
-  image: "/images/blog/blog-sidebar-3.png",
-  price: 899,
-};
-
-export type Coupon = {
-  code: string;
-  description: string;
-  discountPercent: number;
-  discountLabel: string;
-};
-
-export const COUPONS: Coupon[] = [
-  {
-    code: "BUY10",
-    description:
-      "Your Puja booking updates like Puja Photos, Videos and other",
-    discountPercent: 10,
-    discountLabel: "10% OFF",
-  },
-  {
-    code: "BUY10",
-    description:
-      "Your Puja booking updates like Puja Photos, Videos and other",
-    discountPercent: 10,
-    discountLabel: "10% OFF",
-  },
-  {
-    code: "BUY10",
-    description:
-      "Your Puja booking updates like Puja Photos, Videos and other",
-    discountPercent: 10,
-    discountLabel: "10% OFF",
-  },
-];
 
 const BLOG_DESCRIPTION =
   "A beautifully organized devotional gathering featuring live bhajans, experienced pandits, traditional rituals, floral decoration, and seamless event management. A beautifully organized devotional gathering featuring live bhajans, experienced pandits, traditional rituals, floral decoration, and seamless event management.A beautifully organized devotional gathering featuring live bhajans, experienced pandits, traditional rituals, floral decoration, and seamless event management.";
@@ -321,84 +289,6 @@ export const PROFILE_USER = {
   timeOfBirth: "12:00 pm",
   placeOfBirth: "",
 };
-
-export type BookingStatus = "Completed" | "Upcoming" | "Pending" | "Cancelled";
-
-export type Booking = {
-  id: string;
-  bookingId: string;
-  title: string;
-  excerpt: string;
-  image: string;
-  status: BookingStatus;
-  date: string;
-  isoDate: string;
-  time: string;
-  panditAssigned: boolean;
-  pandit?: { name: string; experience: string; avatar: string };
-  address: string;
-  price: number;
-  discountPercent: number;
-};
-
-const BOOKING_DESCRIPTION =
-  "Om Jai Jagdish Hare is a prayer to Lord Vishnu. It tells about his kindness and power. People sing this aarti to show love an";
-
-export const BOOKINGS: Booking[] = [
-  {
-    id: "173826",
-    bookingId: "#YAJ2026071901",
-    title: "Shravana Special Parthiv",
-    excerpt: BOOKING_DESCRIPTION,
-    image: "/images/services/service-shivling-pour.png",
-    status: "Completed",
-    date: "17 July 2026",
-    isoDate: "Sun, 17 Jul 2026",
-    time: "7:00 AM",
-    panditAssigned: true,
-    pandit: {
-      name: "Sandeep Sharma",
-      experience: "Experience: 11+Years",
-      avatar: "/images/testimonials/avatar-2.png",
-    },
-    address: "212 Satguru Parinay, AB Road, Vijay Nagar, Indore",
-    price: 899,
-    discountPercent: 10,
-  },
-  {
-    id: "173826",
-    bookingId: "#YAJ2026071902",
-    title: "Shravana Special Parthiv",
-    excerpt: BOOKING_DESCRIPTION,
-    image: "/images/services/service-shivling-pour.png",
-    status: "Upcoming",
-    date: "19 July 2026",
-    isoDate: "Sun, 19 Jul 2026",
-    time: "7:00 AM",
-    panditAssigned: true,
-    address: "212 Satguru Parinay, AB Road, Vijay Nagar, Indore",
-    price: 899,
-    discountPercent: 10,
-  },
-  {
-    id: "859675",
-    bookingId: "#YAJ2026071903",
-    title: "Shravana Special Parthiv",
-    excerpt: BOOKING_DESCRIPTION,
-    image: "/images/services/service-shivling-pour.png",
-    status: "Pending",
-    date: "19 July 2026",
-    isoDate: "Sun, 19 Jul 2026",
-    time: "7:00 AM",
-    panditAssigned: false,
-    address: "212 Satguru Parinay, AB Road, Vijay Nagar, Indore",
-    price: 899,
-    discountPercent: 10,
-  },
-];
-
-// No cancelled bookings in the demo account — renders the empty state.
-export const CANCELLED_BOOKINGS: Booking[] = [];
 
 export const NOTIFICATIONS = [
   {

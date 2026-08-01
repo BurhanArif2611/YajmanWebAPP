@@ -1,4 +1,7 @@
 .next
+.env*.local
+.env
+!.env.example
 .vscode/
 .idea/
 package-lock.json

@@ -6,14 +6,45 @@ import Image from "next/image";
 import { AuthLayout } from "@/components/auth/AuthLayout";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
+import { sendOtp } from "@/lib/api/auth";
+import { ApiError } from "@/lib/apiError";
 import { DEMO_PHONE } from "@/lib/constants";
+
+function digitsOnly(phone: string) {
+  return phone.replace(/\D/g, "").slice(-10);
+}
 
 export default function LoginPage() {
   const router = useRouter();
   const [phone, setPhone] = useState(DEMO_PHONE);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSendOtp = () => {
-    router.push(`/verify-otp?phone=${encodeURIComponent(phone)}`);
+  const handleSendOtp = async () => {
+    const phoneDigits = digitsOnly(phone);
+    if (phoneDigits.length !== 10) {
+      setError("Enter a valid 10-digit phone number.");
+      return;
+    }
+
+    setError(null);
+    setLoading(true);
+    try {
+      await sendOtp(phoneDigits);
+      router.push(`/verify-otp?phone=${encodeURIComponent(phoneDigits)}`);
+    } catch (err) {
+      if (err instanceof ApiError) {
+        setError(
+          err.isRateLimited
+            ? "Too many attempts. Please wait a few minutes and try again."
+            : err.message
+        );
+      } else {
+        setError("Something went wrong. Please try again.");
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -30,15 +61,25 @@ export default function LoginPage() {
       <Input
         type="tel"
         value={phone}
-        onChange={(e) => setPhone(e.target.value)}
+        onChange={(e) => {
+          setPhone(e.target.value);
+          setError(null);
+        }}
         placeholder="+91 00000 00000"
         leading={
           <Image src="/icons/whatsapp.png" alt="WhatsApp" width={22} height={22} />
         }
       />
 
-      <Button size="lg" className="w-full justify-center rounded-full" onClick={handleSendOtp}>
-        Send OTP
+      {error && <p className="text-sm font-medium text-error">{error}</p>}
+
+      <Button
+        size="lg"
+        className="w-full justify-center rounded-full"
+        onClick={handleSendOtp}
+        disabled={loading}
+      >
+        {loading ? "Sending..." : "Send OTP"}
       </Button>
 
       <p className="text-center text-sm text-text-muted">

@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" \"http://localhost:3000/services?x=2\")",
+      "Bash(curl -s \"http://localhost:3000/services?x=3\" -o /tmp/services_ok.html)",
+      "Bash(curl -s \"http://localhost:5000/api/v1/services?limit=1\")",
+      "Bash(node -e ' *)",
+      "Bash(curl -s -m 5 http://localhost:3000/ -o /dev/null -w \"%{http_code}\\\\n\")",
+      "Bash(tasklist //FI \"IMAGENAME eq node.exe\")",
+      "Bash(curl -s -m 8 http://localhost:3000/ -o /dev/null -w \"%{http_code}\\\\n\")",
+      "Bash(curl -s -m 10 http://localhost:3000/ -o /dev/null -w \"%{http_code}\\\\n\")"
+    ]
+  }
+}

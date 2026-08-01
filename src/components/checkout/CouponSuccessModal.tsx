@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import Confetti from "react-confetti";
 import { Gift } from "lucide-react";
 import { Button } from "@/components/ui/Button";
-import type { Coupon } from "@/lib/constants";
 
 const CONFETTI_COLORS = ["#fb6000", "#10b981", "#e32682", "#facc15", "#4d40ca"];
 
@@ -13,7 +12,7 @@ export function CouponSuccessModal({
   onClose,
   onConfirm,
 }: {
-  coupon: Coupon;
+  coupon: { code: string; discountLabel: string };
   onClose: () => void;
   onConfirm: () => void;
 }) {

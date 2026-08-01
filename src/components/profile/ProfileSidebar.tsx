@@ -5,8 +5,8 @@ import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Bell, ChevronDown, Headphones, LogOut, Ticket, User } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { PROFILE_USER } from "@/lib/constants";
 import { useAuth } from "@/hooks/useAuth";
+import { useUnreadCount } from "@/hooks/useUnreadCount";
 
 const BOOKING_TABS = [
   { label: "All", value: "all" },
@@ -19,7 +19,8 @@ export function ProfileSidebar() {
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
+  const { data: unread } = useUnreadCount();
   const activeTab = searchParams.get("tab") ?? "active";
 
   const isPersonalData = pathname === "/profile";
@@ -30,10 +31,10 @@ export function ProfileSidebar() {
   return (
     <aside className="flex flex-col gap-6 rounded-2xl bg-white p-6 shadow-card">
       <div className="flex items-center gap-3 border-b border-border pb-6">
-        <div className="relative h-14 w-14 overflow-hidden rounded-full">
+        <div className="relative h-14 w-14 overflow-hidden rounded-full bg-surface-muted">
           <Image
-            src={PROFILE_USER.avatar}
-            alt={PROFILE_USER.name}
+            src={user?.avatar_url || "/images/testimonials/avatar-3.png"}
+            alt={user?.name ?? "Profile photo"}
             fill
             sizes="56px"
             className="object-cover"
@@ -41,9 +42,9 @@ export function ProfileSidebar() {
         </div>
         <div>
           <p className="font-sans text-lg font-semibold text-text-primary">
-            {PROFILE_USER.name}
+            {user?.name || "Your Account"}
           </p>
-          <p className="text-sm text-text-muted">{PROFILE_USER.role}</p>
+          <p className="text-sm text-text-muted">{user?.phone}</p>
         </div>
       </div>
 
@@ -105,14 +106,21 @@ export function ProfileSidebar() {
         <Link
           href="/profile/notifications"
           className={cn(
-            "flex min-h-[44px] items-center gap-3 rounded-lg px-3 text-base font-medium transition-colors",
+            "flex min-h-[44px] items-center justify-between gap-3 rounded-lg px-3 text-base font-medium transition-colors",
             isNotifications
               ? "bg-surface-peach text-brand-saffron-400"
               : "text-text-primary hover:bg-surface-muted"
           )}
         >
-          <Bell size={18} />
-          Notifications
+          <span className="flex items-center gap-3">
+            <Bell size={18} />
+            Notifications
+          </span>
+          {Boolean(unread?.count) && (
+            <span className="flex h-5 min-w-[20px] items-center justify-center rounded-full bg-brand-magenta px-1.5 text-xs font-semibold text-white">
+              {unread!.count > 9 ? "9+" : unread!.count}
+            </span>
+          )}
         </Link>
 
         <Link

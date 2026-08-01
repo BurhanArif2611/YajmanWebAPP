@@ -43,7 +43,7 @@ export function InstantBookingSection() {
               src="/images/misc/promo-items.png"
               alt=""
               fill
-              sizes=""
+              sizes="(max-width: 1024px) 50vw, 25vw"
               className="object-cover"
             />
             <div className="relative flex items-start gap-1">
@@ -67,7 +67,7 @@ export function InstantBookingSection() {
               src="/images/blog/blog-sidebar-3.png"
               alt="Puja samagri and sacred texts"
               fill
-              sizes=""
+              sizes="(max-width: 1024px) 100vw, 50vw"
               className="object-cover h-full"
             />
           </div>

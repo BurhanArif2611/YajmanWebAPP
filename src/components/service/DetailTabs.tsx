@@ -83,8 +83,25 @@ const FAQS = Array.from({ length: 4 }).map(() => ({
     "If you don't know your Gotra, our Pandit ji can help identify a common Gotra during the puja, or you may check with family elders beforehand.",
 }));
 
-export function DetailTabs() {
+export type DetailTabsProps = {
+  keyFeatures?: string[];
+  templeName?: string | null;
+  templeDescription?: string | null;
+  photos?: string[];
+  faqs?: { question: string; answer: string }[];
+};
+
+export function DetailTabs({
+  keyFeatures,
+  templeName,
+  templeDescription,
+  photos,
+  faqs,
+}: DetailTabsProps) {
   const [active, setActive] = useState<Tab>(TABS[0]);
+  const features = keyFeatures?.length ? keyFeatures : KEY_FEATURES;
+  const gallery = photos?.length ? photos : PHOTOS;
+  const faqItems = faqs?.length ? faqs : FAQS;
   const sectionRefs = useRef<Partial<Record<Tab, HTMLDivElement | null>>>({});
   const isClickScrolling = useRef(false);
 
@@ -153,7 +170,7 @@ export function DetailTabs() {
           Key Features of the Ritual
         </h2>
         <ul className="mt-4 flex flex-col gap-2">
-          {KEY_FEATURES.map((feature, i) => (
+          {features.map((feature, i) => (
             <li key={i} className="flex gap-2 text-sm text-text-muted">
               <span className="text-brand-saffron-400">•</span>
               {feature}
@@ -171,11 +188,12 @@ export function DetailTabs() {
         className="scroll-mt-40"
       >
         <h2 className="font-sans text-2xl font-semibold text-text-primary">
-          Omkareshwar Temple
+          {templeName ?? "Omkareshwar Temple"}
         </h2>
         <div className="mt-4 flex flex-col gap-4">
-          <p className="text-sm leading-relaxed text-text-muted">{TEMPLE_PARAGRAPH}</p>
-          <p className="text-sm leading-relaxed text-text-muted">{TEMPLE_PARAGRAPH}</p>
+          <p className="text-sm leading-relaxed text-text-muted">
+            {templeDescription ?? TEMPLE_PARAGRAPH}
+          </p>
         </div>
       </div>
 
@@ -220,7 +238,7 @@ export function DetailTabs() {
           Pooja Photos
         </h2>
         <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
-          {PHOTOS.map((src, i) => (
+          {gallery.map((src, i) => (
             <div key={i} className="relative aspect-square overflow-hidden rounded-xl">
               <Image
                 src={src}
@@ -290,7 +308,7 @@ export function DetailTabs() {
           Frequently Asked Questions
         </h2>
         <div className="mt-4">
-          <FaqAccordion items={FAQS} />
+          <FaqAccordion items={faqItems} />
         </div>
       </div>
     </section>

@@ -1,21 +1,47 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { cn } from "@/lib/utils";
 
 const LENGTH = 6;
 
-export function OtpInput() {
+export function OtpInput({
+  onChange,
+  onComplete,
+  error,
+  disabled,
+}: {
+  onChange?: (value: string) => void;
+  onComplete?: (value: string) => void;
+  error?: boolean;
+  disabled?: boolean;
+}) {
   const [values, setValues] = useState<string[]>(Array(LENGTH).fill(""));
   const inputsRef = useRef<(HTMLInputElement | null)[]>([]);
+
+  // Clear the boxes whenever the parent flags an invalid attempt so the
+  // user isn't stuck editing a known-wrong code digit by digit.
+  useEffect(() => {
+    if (!error) return;
+    queueMicrotask(() => {
+      setValues(Array(LENGTH).fill(""));
+      inputsRef.current[0]?.focus();
+    });
+  }, [error]);
 
   const handleChange = (index: number, raw: string) => {
     const digit = raw.replace(/\D/g, "").slice(-1);
     const next = [...values];
     next[index] = digit;
     setValues(next);
+    onChange?.(next.join(""));
 
     if (digit && index < LENGTH - 1) {
       inputsRef.current[index + 1]?.focus();
+    }
+    if (digit && index === LENGTH - 1) {
+      const joined = next.join("");
+      if (joined.length === LENGTH) onComplete?.(joined);
     }
   };
 
@@ -25,6 +51,22 @@ export function OtpInput() {
   ) => {
     if (e.key === "Backspace" && !values[index] && index > 0) {
       inputsRef.current[index - 1]?.focus();
+    }
+  };
+
+  const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+    const pasted = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, LENGTH);
+    if (!pasted) return;
+    e.preventDefault();
+    const next = Array(LENGTH).fill("");
+    for (let i = 0; i < pasted.length; i++) next[i] = pasted[i];
+    setValues(next);
+    onChange?.(next.join(""));
+    if (pasted.length === LENGTH) {
+      onComplete?.(next.join(""));
+      inputsRef.current[LENGTH - 1]?.focus();
+    } else {
+      inputsRef.current[pasted.length]?.focus();
     }
   };
 
@@ -40,9 +82,14 @@ export function OtpInput() {
           inputMode="numeric"
           maxLength={1}
           value={value}
+          disabled={disabled}
           onChange={(e) => handleChange(i, e.target.value)}
           onKeyDown={(e) => handleKeyDown(i, e)}
-          className="h-14 w-12 rounded-lg border border-border-dark text-center text-lg font-semibold text-text-primary outline-none focus:border-brand-saffron-400"
+          onPaste={handlePaste}
+          className={cn(
+            "h-14 w-12 rounded-lg border text-center text-lg font-semibold text-text-primary outline-none focus:border-brand-saffron-400 disabled:opacity-50",
+            error ? "border-error" : "border-border-dark"
+          )}
         />
       ))}
     </div>

@@ -1,13 +1,20 @@
 "use client";
 
-import { useState } from "react";
 import { AlertCircle } from "lucide-react";
 import { Input } from "@/components/ui/Input";
 import { Checkbox } from "@/components/ui/Checkbox";
 
-export function GotraSection() {
-  const [unknown, setUnknown] = useState(true);
-
+export function GotraSection({
+  gotra,
+  onGotraChange,
+  unknown,
+  onUnknownChange,
+}: {
+  gotra: string;
+  onGotraChange: (value: string) => void;
+  unknown: boolean;
+  onUnknownChange: (value: boolean) => void;
+}) {
   return (
     <>
       <p className="text-sm text-text-muted">
@@ -20,6 +27,8 @@ export function GotraSection() {
         </p>
         <Input
           type="text"
+          value={gotra}
+          onChange={(e) => onGotraChange(e.target.value)}
           placeholder="Bharadwaja"
           disabled={unknown}
           containerClassName="bg-white"
@@ -29,7 +38,7 @@ export function GotraSection() {
 
       <Checkbox
         checked={unknown}
-        onChange={(e) => setUnknown(e.target.checked)}
+        onChange={(e) => onUnknownChange(e.target.checked)}
         label="I do not know gotra"
       />
     </>

@@ -1,21 +1,33 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { Camera, Star, X } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { submitReview } from "@/lib/api/bookings";
+import { resolveImageUrl } from "@/lib/mappers/service";
+import { ApiError } from "@/lib/apiError";
 import { cn } from "@/lib/utils";
-import type { Booking } from "@/lib/constants";
+import type { BookingDetail } from "@/types/api";
+
+const MAX_PHOTOS = 5;
 
 export function RateExperienceModal({
   booking,
   onClose,
+  onSubmitted,
 }: {
-  booking: Booking;
+  booking: BookingDetail;
   onClose: () => void;
+  onSubmitted: () => void;
 }) {
-  const [rating, setRating] = useState(4);
-  const [photos, setPhotos] = useState<number[]>([1, 2, 3]);
+  const [rating, setRating] = useState(5);
+  const [title, setTitle] = useState("");
+  const [comment, setComment] = useState("");
+  const [photos, setPhotos] = useState<File[]>([]);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
@@ -29,12 +41,32 @@ export function RateExperienceModal({
     };
   }, [onClose]);
 
+  const handleFiles = (files: FileList | null) => {
+    if (!files) return;
+    setPhotos((current) => [...current, ...Array.from(files)].slice(0, MAX_PHOTOS));
+  };
+
+  const handleSubmit = async () => {
+    setError(null);
+    setSubmitting(true);
+    try {
+      const formData = new FormData();
+      formData.set("rating", String(rating));
+      if (title.trim()) formData.set("title", title.trim());
+      if (comment.trim()) formData.set("comment", comment.trim());
+      photos.forEach((file) => formData.append("photos", file));
+
+      await submitReview(booking.id, formData);
+      onSubmitted();
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : "Couldn't submit your review. Try again.");
+      setSubmitting(false);
+    }
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div
-        className="absolute inset-0 bg-black/40 animate-overlay-in"
-        onClick={onClose}
-      />
+      <div className="absolute inset-0 bg-black/40 animate-overlay-in" onClick={onClose} />
 
       <div className="relative w-full max-w-lg rounded-2xl bg-white p-6 shadow-modal animate-scale-in md:p-8">
         <div className="flex items-center justify-between">
@@ -53,15 +85,15 @@ export function RateExperienceModal({
         <div className="mt-6 flex flex-col items-center gap-3 text-center">
           <div className="relative h-14 w-14 overflow-hidden rounded-full">
             <Image
-              src={booking.image}
-              alt={booking.title}
+              src={resolveImageUrl(booking.service_image)}
+              alt={booking.service_title}
               fill
               sizes="56px"
               className="object-cover"
             />
           </div>
           <p className="font-sans text-lg font-bold text-text-primary">
-            {booking.title}...
+            {booking.service_title}
           </p>
 
           <div className="flex gap-1">
@@ -77,31 +109,50 @@ export function RateExperienceModal({
           </div>
         </div>
 
-        <textarea
-          placeholder="Tell us about your experience..."
-          rows={4}
-          className="mt-6 w-full resize-none rounded-xl border border-border-dark p-4 text-sm text-text-primary outline-none placeholder:text-text-light"
+        <input
+          type="text"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="Give your review a title (optional)"
+          maxLength={200}
+          className="mt-6 w-full rounded-xl border border-border-dark p-4 text-sm text-text-primary outline-none placeholder:text-text-light"
         />
 
+        <textarea
+          value={comment}
+          onChange={(e) => setComment(e.target.value)}
+          placeholder="Tell us about your experience..."
+          rows={4}
+          className="mt-3 w-full resize-none rounded-xl border border-border-dark p-4 text-sm text-text-primary outline-none placeholder:text-text-light"
+        />
+
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          multiple
+          hidden
+          onChange={(e) => handleFiles(e.target.files)}
+        />
         <button
-          onClick={() => setPhotos((p) => [...p, p.length + 1])}
-          className="mt-4 flex min-h-[44px] w-full items-center justify-center gap-2 rounded-full border border-brand-saffron-400 text-sm font-semibold text-brand-saffron-400"
+          onClick={() => fileInputRef.current?.click()}
+          disabled={photos.length >= MAX_PHOTOS}
+          className="mt-4 flex min-h-[44px] w-full items-center justify-center gap-2 rounded-full border border-brand-saffron-400 text-sm font-semibold text-brand-saffron-400 disabled:opacity-50"
         >
           <Camera size={18} />
-          Add Photos
+          Add Photos ({photos.length}/{MAX_PHOTOS})
         </button>
 
         {photos.length > 0 && (
           <div className="mt-4 flex flex-wrap gap-3">
-            {photos.map((id) => (
+            {photos.map((file, i) => (
               <div
-                key={id}
-                className="relative flex h-16 w-16 items-center justify-center gap-1 rounded-lg bg-surface-muted text-xs text-text-muted"
+                key={i}
+                className="relative flex h-16 w-16 items-center justify-center rounded-lg bg-surface-muted text-xs text-text-muted"
               >
                 <Camera size={16} />
-                Photo
                 <button
-                  onClick={() => setPhotos((p) => p.filter((x) => x !== id))}
+                  onClick={() => setPhotos((p) => p.filter((_, idx) => idx !== i))}
                   aria-label="Remove photo"
                   className="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-text-primary text-white"
                 >
@@ -112,8 +163,15 @@ export function RateExperienceModal({
           </div>
         )}
 
-        <Button size="lg" className="mt-6 w-full justify-center rounded-full">
-          Submit Review
+        {error && <p className="mt-4 text-sm font-medium text-error">{error}</p>}
+
+        <Button
+          size="lg"
+          className="mt-6 w-full justify-center rounded-full"
+          onClick={handleSubmit}
+          disabled={submitting}
+        >
+          {submitting ? "Submitting..." : "Submit Review"}
         </Button>
       </div>
     </div>

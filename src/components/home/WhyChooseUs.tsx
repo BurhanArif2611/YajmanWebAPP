@@ -55,7 +55,7 @@ export function WhyChooseUs() {
                 src="/images/misc/promo-items.png"
                 alt="Puja samagri and sacred texts"
                 fill
-                sizes=""
+                sizes="(max-width: 1024px) 100vw, 25vw"
                 className="object-cover rounded-b-lg bottom-0"
               />
             </div>

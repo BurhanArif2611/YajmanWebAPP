@@ -2,7 +2,7 @@
 
 import { X, Search } from "lucide-react";
 import { useEffect } from "react";
-import { NAV_LINKS } from "@/lib/constants";
+import { useNavLinks } from "@/hooks/useNavLinks";
 import {
   FacebookIcon,
   InstagramIcon,
@@ -22,6 +22,7 @@ export function MobileDrawer({
   onClose: () => void;
 }) {
   const { isLoggedIn, logout } = useAuth();
+  const navLinks = useNavLinks();
 
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
@@ -59,7 +60,7 @@ export function MobileDrawer({
         />
 
         <nav className="flex flex-col gap-1">
-          {NAV_LINKS.map((link) => (
+          {navLinks.map((link) => (
             <a
               key={link.href}
               href={link.href}
