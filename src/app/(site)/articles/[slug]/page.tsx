@@ -1,24 +1,51 @@
-import Image from "next/image";
+import { notFound } from "next/navigation";
 import { Share2, Star } from "lucide-react";
 import { Breadcrumb } from "@/components/layout/Breadcrumb";
+import { Badge } from "@/components/ui/Badge";
 import { ArticleDetailHero } from "@/components/articles/ArticleDetailHero";
-import { RelatedArticles } from "@/components/blogs/RelatedArticles";
-import { ARTICLE_DETAIL } from "@/lib/constants";
+import { ArticleEnquireButton } from "@/components/articles/ArticleEnquireButton";
+import { RelatedServices } from "@/components/articles/RelatedServices";
+import { getServiceBySlug } from "@/lib/api/services";
+import { resolveImageUrl } from "@/lib/mappers/service";
 
 type Params = Promise<{ slug: string }>;
 
+async function fetchService(slug: string) {
+  try {
+    return await getServiceBySlug(slug);
+  } catch {
+    return null;
+  }
+}
+
 export async function generateMetadata({ params }: { params: Params }) {
   const { slug } = await params;
+  const service = await fetchService(slug);
+  if (!service) return {};
+
   return {
-    title: `${ARTICLE_DETAIL.title} | Yajman Articles`,
-    description: ARTICLE_DETAIL.excerpt,
+    title: service.meta_title || `${service.title} | Yajman Articles`,
+    description: service.meta_description || service.short_description || undefined,
     alternates: { canonical: `/articles/${slug}` },
   };
 }
 
 export default async function ArticleDetailPage({ params }: { params: Params }) {
-  await params;
-  const article = ARTICLE_DETAIL;
+  const { slug } = await params;
+  const service = await fetchService(slug);
+
+  if (!service) {
+    notFound();
+  }
+
+  const primaryText = service.short_description || service.description || service.about_puja;
+
+  const images = service.images?.length
+    ? service.images
+        .slice()
+        .sort((a, b) => a.display_order - b.display_order)
+        .map((img) => resolveImageUrl(img.url))
+    : [resolveImageUrl(service.feature_image_url)];
 
   return (
     <>
@@ -26,15 +53,20 @@ export default async function ArticleDetailPage({ params }: { params: Params }) 
         <Breadcrumb
           items={[
             { label: "Articles", href: "/articles" },
-            { label: article.breadcrumbCategory, href: "/articles" },
-            { label: article.title },
+            { label: service.category_name, href: "/articles" },
+            { label: service.title },
           ]}
         />
 
         <div className="flex flex-wrap items-start justify-between gap-4">
-          <h1 className="font-sans text-3xl font-bold text-text-primary md:text-4xl">
-            {article.title}
-          </h1>
+          <div>
+            <h1 className="font-sans text-3xl font-bold text-text-primary md:text-4xl">
+              {service.title}
+            </h1>
+            <Badge variant="peach" className="mt-3">
+              {service.category_name}
+            </Badge>
+          </div>
           <div className="flex items-center gap-6">
             <span className="flex items-center gap-1.5 text-sm text-text-muted">
               <span className="flex gap-0.5 text-brand-gold-400">
@@ -42,11 +74,11 @@ export default async function ArticleDetailPage({ params }: { params: Params }) 
                   <Star
                     key={i}
                     size={14}
-                    fill={i < article.rating ? "currentColor" : "none"}
+                    fill={i < Math.round(Number(service.rating_avg)) ? "currentColor" : "none"}
                   />
                 ))}
               </span>
-              ( {String(article.reviewCount).padStart(2, "0")} Reviews )
+              ( {String(service.total_reviews).padStart(2, "0")} Reviews )
             </span>
             <button className="flex items-center gap-2 text-sm font-medium text-text-secondary hover:text-brand-saffron-400">
               <Share2 size={16} />
@@ -56,34 +88,45 @@ export default async function ArticleDetailPage({ params }: { params: Params }) 
         </div>
 
         <div className="mt-6">
-          <ArticleDetailHero images={article.images} alt={article.title} />
+          <ArticleDetailHero images={images} alt={service.title} />
         </div>
 
-        <p className="mt-6 text-base leading-relaxed text-text-muted">
-          {article.excerpt}
-        </p>
+        {primaryText && (
+          <p className="mt-6 text-base leading-relaxed text-text-muted">{primaryText}</p>
+        )}
 
-        <article
-          className="prose prose-neutral mt-8 max-w-none prose-headings:font-sans prose-headings:font-semibold prose-headings:text-text-primary prose-p:text-text-muted prose-p:leading-relaxed prose-a:text-brand-saffron-400"
-          // Content is authored in a rich-text editor (CMS) and delivered as
-          // sanitized HTML by the articles API — rendered as-is here.
-          dangerouslySetInnerHTML={{ __html: article.contentHtml }}
-        />
+        {service.description && service.description !== primaryText && (
+          <p className="mt-4 text-base leading-relaxed text-text-muted">{service.description}</p>
+        )}
 
-        <div className="mt-10 flex items-center gap-2 border-t border-border pt-6 text-sm text-text-muted">
-          <Image
-            src="/images/logo/logo.svg"
-            alt=""
-            width={20}
-            height={20}
-            className="h-5 w-5 object-contain"
+        {service.about_puja &&
+          service.about_puja !== primaryText &&
+          service.about_puja !== service.description && (
+            <p className="mt-4 text-base leading-relaxed text-text-muted">{service.about_puja}</p>
+          )}
+
+        {Boolean(service.key_features?.length) && (
+          <ul className="mt-6 flex flex-col gap-2">
+            {service.key_features!.map((feature, i) => (
+              <li key={i} className="flex items-start gap-2 text-sm text-text-muted">
+                <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-saffron-400" />
+                {feature}
+              </li>
+            ))}
+          </ul>
+        )}
+
+        <div className="mt-10 flex items-center gap-4 border-t border-border pt-6">
+          <ArticleEnquireButton
+            serviceId={service.id}
+            category={service.category_name}
+            serviceName={service.title}
           />
-          Published by {article.publishedBy} · {article.publishedDate}
         </div>
       </div>
 
       <div className="lg:-mt-4">
-        <RelatedArticles basePath="/articles" />
+        <RelatedServices excludeSlug={service.slug} />
       </div>
     </>
   );

@@ -58,14 +58,6 @@ const PROCESS_STEPS = [
   },
 ];
 
-const PHOTOS = [
-  "/images/gallery/gallery-5.png",
-  "/images/gallery/gallery-1.png",
-  "/images/blog/blog-sidebar-1.png",
-  "/images/blog/blog-sidebar-4.png",
-  "/images/gallery/gallery-4.png",
-];
-
 const REVIEWS = [
   { name: "Eleanor Fanta", date: "06 March, 2025", avatar: "/images/testimonials/avatar-1.png" },
   { name: "Duc Trung", date: "06 March, 2025", avatar: "/images/testimonials/avatar-2.png" },
@@ -87,7 +79,7 @@ export type DetailTabsProps = {
   keyFeatures?: string[];
   templeName?: string | null;
   templeDescription?: string | null;
-  photos?: string[];
+  photos: string[];
   faqs?: { question: string; answer: string }[];
 };
 
@@ -100,7 +92,6 @@ export function DetailTabs({
 }: DetailTabsProps) {
   const [active, setActive] = useState<Tab>(TABS[0]);
   const features = keyFeatures?.length ? keyFeatures : KEY_FEATURES;
-  const gallery = photos?.length ? photos : PHOTOS;
   const faqItems = faqs?.length ? faqs : FAQS;
   const sectionRefs = useRef<Partial<Record<Tab, HTMLDivElement | null>>>({});
   const isClickScrolling = useRef(false);
@@ -238,7 +229,7 @@ export function DetailTabs({
           Pooja Photos
         </h2>
         <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
-          {gallery.map((src, i) => (
+          {photos.map((src, i) => (
             <div key={i} className="relative aspect-square overflow-hidden rounded-xl">
               <Image
                 src={src}

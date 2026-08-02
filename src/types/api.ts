@@ -85,6 +85,9 @@ export type Category = {
   is_active: boolean;
   types?: CategoryType[];
   type_count?: number;
+  /** Whether services in this category require online payment (false = e.g. free/pay-later categories). */
+  requires_payment?: boolean;
+  requires_pandit?: boolean;
 };
 
 /** The small shape nested inside `Category.types[]`. */
@@ -277,15 +280,15 @@ export type Coupon = {
 
 export type CouponValidation =
   | {
-      valid: true;
-      discount_amount: number;
-      final_amount: number;
-      coupon: { id: string; code: string; title: string };
-    }
+    valid: true;
+    discount_amount: number;
+    final_amount: number;
+    coupon: { id: string; code: string; title: string };
+  }
   | {
-      valid: false;
-      message: string;
-    };
+    valid: false;
+    message: string;
+  };
 
 // ─── Bookings ────────────────────────────────────────────────────
 
@@ -473,4 +476,222 @@ export type ServiceDetail = Service & {
   packages: ServicePackage[];
   faqs: ServiceFaq[];
   addons: ServiceAddon[];
+};
+
+// ─── Aayojan ─────────────────────────────────────────────────────
+
+export type AayojanContentBlock = {
+  id: string;
+  section_key: string;
+  title: string | null;
+  subtitle: string | null;
+  description: string | null;
+  image_url: string | null;
+  cta_text: string | null;
+  cta_link: string | null;
+  display_order: number;
+  is_active: boolean;
+};
+
+export type AayojanEvent = {
+  id: string;
+  title: string;
+  slug: string;
+  description?: string | null;
+  short_description?: string | null;
+  feature_image_url?: string | null;
+  location?: string | null;
+  city?: string | null;
+  event_date: string | null;
+  event_time?: string | null;
+  /** Decimal fields — pg returns these as strings. Number() before math/display. */
+  price: string;
+  original_price?: string | null;
+  max_capacity?: number | null;
+  rating_avg: string;
+  total_reviews: number;
+  is_active: boolean;
+  status: string;
+  created_at: string;
+  updated_at: string;
+};
+
+export type AayojanEventImage = {
+  id: string;
+  url: string;
+};
+
+export type AayojanEventDetail = AayojanEvent & {
+  images: AayojanEventImage[];
+};
+
+export type AayojanBanner = {
+  id: string;
+  title: string | null;
+  image_url: string;
+  link_url?: string | null;
+  display_order: number;
+  is_active: boolean;
+};
+
+export type AayojanGallery = {
+  id: string;
+  image_url: string;
+  display_order: number;
+  is_active: boolean;
+  created_at: string;
+};
+
+export type AayojanTestimonial = {
+  id: string;
+  name: string;
+  message: string;
+  rating: number;
+};
+
+export type AayojanPageData = {
+  content: AayojanContentBlock[];
+  events: AayojanEvent[];
+  banners: AayojanBanner[];
+  gallery: AayojanGallery[];
+  testimonials: AayojanTestimonial[];
+};
+
+export type AayojanContactPayload = {
+  name: string;
+  phone: string;
+  email?: string;
+  city?: string;
+  event_name?: string;
+  number_of_people?: number;
+  preferred_date?: string;
+};
+
+export type ContactEntry = {
+  id: string;
+  form_type: string;
+  name: string;
+  email: string | null;
+  phone: string;
+  city: string | null;
+  message: string | null;
+  event_name: string | null;
+  number_of_people: number | null;
+  preferred_date: string | null;
+  service_id: string | null;
+  service_name: string | null;
+  category_id?: string | null;
+  category_name?: string | null;
+  is_read: boolean;
+  admin_notes?: string | null;
+  assigned_to?: string | null;
+  status: string;
+  created_at: string;
+  updated_at: string;
+};
+
+// ─── Service inquiry ─────────────────────────────────────────────
+
+export type ServiceInquiryPayload = {
+  name: string;
+  phone: string;
+  email?: string;
+  message?: string;
+};
+
+// ─── General contact form ─────────────────────────────────────────
+
+export type ContactPayload = {
+  name: string;
+  phone: string;
+  email?: string;
+  city?: string;
+  message?: string;
+};
+
+// ─── Blogs ───────────────────────────────────────────────────────
+
+export type BlogCategory = {
+  id: string;
+  name: string;
+  slug: string;
+  description?: string | null;
+  display_order: number;
+  is_active: boolean;
+  created_at: string;
+};
+
+export type BlogListFilters = {
+  page?: number;
+  limit?: number;
+  category?: string;
+  featured?: boolean;
+};
+
+export type Blog = {
+  id: string;
+  title: string;
+  slug: string;
+  category_id: string;
+  author_id: string;
+  excerpt?: string | null;
+  content: string;
+  feature_image_url?: string | null;
+  is_featured: boolean;
+  status: string;
+  published_at: string | null;
+  created_at: string;
+  meta_title?: string | null;
+  meta_description?: string | null;
+  category_name: string;
+  category_slug: string;
+  author_name: string;
+};
+
+export type BlogImage = {
+  id: string;
+  url: string;
+  alt_text?: string | null;
+};
+
+export type RelatedBlog = {
+  id: string;
+  title: string;
+  slug: string;
+  feature_image_url?: string | null;
+};
+
+export type BlogSidebarService = {
+  id: string;
+  title: string;
+  slug: string;
+  /** Decimal fields — pg returns these as strings. Number() before math/display. */
+  price: string;
+  feature_image_url?: string | null;
+  rating_avg: string;
+};
+
+export type BlogDetail = Blog & {
+  author_bio?: string | null;
+  author_avatar_url?: string | null;
+  images: BlogImage[];
+  related_blogs: RelatedBlog[];
+  sidebar_services: BlogSidebarService[];
+};
+
+// ─── Testimonials ────────────────────────────────────────────────
+
+export type TestimonialPage = "home" | "aayojan";
+
+export type Testimonial = {
+  id: string;
+  author_name: string;
+  author_designation?: string | null;
+  author_avatar_url?: string | null;
+  quote: string;
+  rating: number;
+  page: string;
+  display_order: number;
+  is_active: boolean;
+  created_at: string;
 };

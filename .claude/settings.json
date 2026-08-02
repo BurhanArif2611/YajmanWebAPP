@@ -8,7 +8,9 @@
       "Bash(curl -s -m 5 http://localhost:3000/ -o /dev/null -w \"%{http_code}\\\\n\")",
       "Bash(tasklist //FI \"IMAGENAME eq node.exe\")",
       "Bash(curl -s -m 8 http://localhost:3000/ -o /dev/null -w \"%{http_code}\\\\n\")",
-      "Bash(curl -s -m 10 http://localhost:3000/ -o /dev/null -w \"%{http_code}\\\\n\")"
+      "Bash(curl -s -m 10 http://localhost:3000/ -o /dev/null -w \"%{http_code}\\\\n\")",
+      "Bash(curl -s -m 5 \"http://localhost:5000/api/v1/services/minus-eiusmod-offici\")",
+      "Bash(node -e \"let d='';process.stdin.on\\('data',c=>d+=c\\);process.stdin.on\\('end',\\(\\)=>{const j=JSON.parse\\(d\\).data;console.log\\('images:',JSON.stringify\\(j.images\\)\\);console.log\\('feature_image_url:',j.feature_image_url\\)}\\)\")"
     ]
   }
 }

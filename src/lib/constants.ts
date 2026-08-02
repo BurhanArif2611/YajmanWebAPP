@@ -50,6 +50,8 @@ export type MockService = {
   categoryLabel: string;
   title: string;
   location: string;
+  /** Only set for live API services. */
+  shortDescription?: string;
   image: string;
   gallery: string[];
   price: number;
@@ -95,33 +97,6 @@ export function getServiceBySlug(slug: string) {
   return SERVICES.find((service) => service.slug === slug);
 }
 
-export const TESTIMONIALS = [
-  {
-    quote:
-      "This service has taken my business to a whole new level. The design and functionality are both outstanding and user friendly. The team consistently delivered timely support and exceeded my expectations.",
-    name: "Michael Lewis",
-    designation: "Product Designer",
-    avatar: "/images/testimonials/avatar-1.png",
-    label: "Travel-friendly modern features",
-  },
-  {
-    quote:
-      "This service has taken my business to a whole new level. The design and functionality are both outstanding and user friendly. The team consistently delivered timely support and exceeded my expectations.",
-    name: "Michael Lewis",
-    designation: "Product Designer",
-    avatar: "/images/testimonials/avatar-2.png",
-    label: "Easy customization for travel",
-  },
-  {
-    quote:
-      "This service has taken my business to a whole new level. The design and functionality are both outstanding and user friendly. The team consistently delivered timely support and exceeded my expectations.",
-    name: "Michael Lewis",
-    designation: "Product Designer",
-    avatar: "/images/testimonials/avatar-3.png",
-    label: "Perfect travel website design",
-  },
-];
-
 export const FOOTER_LINKS = {
   services: [
     { label: "E-Puja", href: "/services?category=e-puja" },
@@ -146,27 +121,6 @@ export const FOOTER_LINKS = {
 // Placeholder number shown before a real phone is verified via /login.
 export const DEMO_PHONE = "+91 7984561235";
 
-const BLOG_DESCRIPTION =
-  "A beautifully organized devotional gathering featuring live bhajans, experienced pandits, traditional rituals, floral decoration, and seamless event management. A beautifully organized devotional gathering featuring live bhajans, experienced pandits, traditional rituals, floral decoration, and seamless event management.A beautifully organized devotional gathering featuring live bhajans, experienced pandits, traditional rituals, floral decoration, and seamless event management.";
-
-export const BLOG_POSTS = Array.from({ length: 4 }).map((_, i) => ({
-  slug: `grand-sundarkand-mahotsav-${i + 1}`,
-  title: "Grand Sundarkand Mahotsav",
-  description: BLOG_DESCRIPTION,
-  date: "24, Sep 2026",
-  category: "Darshan",
-  image: "/images/misc/promo-items.png",
-}));
-
-export const TOP_RATED_SERVICES = Array.from({ length: 4 }).map((_, i) => ({
-  slug: `top-rated-${i}`,
-  title: "New York in 5 Days Guided Sightseeing",
-  image:
-    i % 2 === 0
-      ? "/images/blog/blog-sidebar-1.png"
-      : "/images/blog/blog-sidebar-4.png",
-}));
-
 export const BLOG_PROMO_CARDS = [
   {
     title: "Shravana Special Parthiv Shivling Nirmaan and Abhishek",
@@ -177,103 +131,6 @@ export const BLOG_PROMO_CARDS = [
     image: "/images/services/service-shivling-pour.png",
   },
 ];
-
-// Mock of what a CMS / rich-text editor would return for a blog body —
-// rendered as raw HTML via the `prose` typography classes.
-const PUJA_DETAILS_HTML = `
-  <p>Om Jai Jagdish Hare, Swami Jai Jagdish Hare. Bhakt janon ke sankat, Daas janon ke sankat, Kshan mein door kare.</p>
-  <p style="margin-left:2rem">Om Jai Jagdish Hare..</p>
-  <p>Jo dhyave phal paave, Dukh binse man ka, Swami dukh binse man ka. Sukh sampati ghar aave, sukh sampati ghar aave, Kasht mite tan ka.</p>
-  <p style="margin-left:2rem">Om Jai Jagdish Hare..</p>
-  <p>Maat pita tum mere, Sharan gahu kiski, Swami sharan gahu main kiski. Tum bin aur na dooja, tum bin aur na dooja, Aas karu main jiski.</p>
-  <p style="margin-left:2rem">Om Jai Jagdish Hare..</p>
-  <p>Tum poorn parmatma, Tum antaryami. Swami tum antaryami. Parbrahm parmeshwar, parbrahm parmeshwar, Tum sab ke swami.</p>
-  <p style="margin-left:2rem">Om Jai Jagdish Hare..</p>
-  <p>Tum karuna ke saagar, Tum palanharta. Swami tum palanharta. Main moorkh phalkami, main sevak tum swami, Kripa karo bharta.</p>
-  <p style="margin-left:2rem">Om Jai Jagdish Hare..</p>
-  <p>Tum ho ek agochar, Sabke pranpati. Swami sabke pranpati. Kis vidhi milu dayamay, kis vidhi milu dayamay, Tumko main kumati.</p>
-  <p style="margin-left:2rem">Om Jai Jagdish Hare..</p>
-  <p>Deen-bandhu dukh-harta, Thakur tum mere. Swami rakshak tum mere. Apne haath uthao, apne sharan lagao, Dwaar pada tere.</p>
-  <p style="margin-left:2rem">Om Jai Jagdish Hare..</p>
-  <p>Vishay-vikaar mitao, Paap haro deva. Swami paap (kasht) haro deva. Shraddha bhakti badhao, shraddha bhakti badhao, Santan ki seva.</p>
-  <p style="margin-left:2rem">Om Jai Jagdish Hare..</p>
-  <p>Om Jai Jagdish Hare, Swami Jai Jagdish Hare. Bhakt janon ke sankat, Daas janon ke sankat, Kshan mein door kare.</p>
-  <p style="margin-left:2rem">Om Jai Jagdish Hare..</p>
-`;
-
-export const BLOG_DETAIL = {
-  slug: "om-jai-jagdish-hare-aarti",
-  title: "Grand Sundarkand Mahotsav",
-  breadcrumbCategory: "Category-1",
-  publishedBy: "Yajman",
-  publishedDate: "July 7, 2026",
-  excerpt:
-    "Sing Om Jai Jagdish Hare with devotion to praise Lord Vishnu. Bring peace, positivity, and blessings into your home. Start this divine aarti today!",
-  images: [
-    "/images/misc/promo-items.png",
-    "/images/blog/blog-sidebar-1.png",
-    "/images/blog/blog-sidebar-4.png",
-  ],
-  contentHtml: `
-    <h2>Om Jai Jagdish Hare Aarti Lyrics</h2>
-    <p>Om Jai Jagdish Hare is a prayer to Lord Vishnu. It tells about his kindness and power. People sing this aarti to show love and respect to God. It brings peace, happiness, and removes problems. Many people sing it in the morning and evening during prayers. This aarti makes the mind calm and fills the heart with devotion. It also makes the home peaceful and full of positive energy. When we sing with love, God blesses us. This aarti helps us feel close to God and thank him for everything. It is a simple and beautiful way to pray.</p>
-    <h2>Puja Details</h2>
-    ${PUJA_DETAILS_HTML}
-    <h2>Puja Details</h2>
-    <p>Om Jai Jagdish Hare, Swami Jai Jagdish Hare. Bhakt janon ke sankat, Daas janon ke sankat, Kshan mein door kare.</p>
-    <p style="margin-left:2rem">Om Jai Jagdish Hare..</p>
-    <p>Jo dhyave phal paave, Dukh binse man ka, Swami dukh binse man ka. Sukh sampati ghar aave, sukh sampati ghar aave, Kasht mite tan ka.</p>
-    <p style="margin-left:2rem">Om Jai Jagdish Hare..</p>
-    <p>Maat pita tum mere, Sharan gahu kiski, Swami sharan gahu main kiski. Tum bin aur na dooja, tum bin aur na dooja, Aas karu main jiski.</p>
-    <p style="margin-left:2rem">Om Jai Jagdish Hare..</p>
-    <p>Tum poorn parmatma,Tum antaryami. Swami tum antaryami. Parbrahm parmeshwar, parbrahm parmeshwar, Tum sab ke swami.</p>
-    <p style="margin-left:2rem">Om Jai Jagdish Hare..</p>
-    <p>Tum karuna ke</p>
-  `,
-};
-
-export const RELATED_ARTICLES = Array.from({ length: 4 }).map((_, i) => ({
-  slug: `om-jai-jagdish-hare-aarti-related-${i}`,
-  title: "Om Jai Jagdish Hare Aarti",
-  excerpt:
-    "Sing Om Jai Jagdish Hare with devotion to praise Lord Vishnu. Bring peace, positivity, and blessings",
-  image: "/images/blog/blog-sidebar-2.png",
-}));
-
-export const ARTICLE_DETAIL = {
-  slug: "om-jai-jagdish-hare-aarti",
-  title: "Om Jai Jagdish Hare Aarti",
-  breadcrumbCategory: "Aarti",
-  publishedBy: "Yajman",
-  publishedDate: "July 7, 2026",
-  rating: 5,
-  reviewCount: 5,
-  excerpt:
-    "Sing Om Jai Jagdish Hare with devotion to praise Lord Vishnu. Bring peace, positivity, and blessings into your home. Start this divine aarti today!",
-  images: [
-    "/images/misc/promo-items.png",
-    "/images/blog/blog-sidebar-1.png",
-    "/images/blog/blog-sidebar-4.png",
-  ],
-  // Rendered from raw HTML delivered by the articles API (rich-text editor
-  // output) — no duplication here, unlike the blog-post mock content.
-  contentHtml: `
-    <h2>Om Jai Jagdish Hare Aarti Lyrics</h2>
-    <p>Om Jai Jagdish Hare is a prayer to Lord Vishnu. It tells about his kindness and power. People sing this aarti to show love and respect to God. It brings peace, happiness, and removes problems. Many people sing it in the morning and evening during prayers. This aarti makes the mind calm and fills the heart with devotion. It also makes the home peaceful and full of positive energy. When we sing with love, God blesses us. This aarti helps us feel close to God and thank him for everything. It is a simple and beautiful way to pray.</p>
-    <h2>Om Jai Jagdish Hare Aarti in English</h2>
-    ${PUJA_DETAILS_HTML}
-  `,
-};
-
-export const ARTICLE_TABS = ["Katha", "Aarti", "Important muhurat", "Bhajan"];
-
-export const ARTICLES = Array.from({ length: 9 }).map((_, i) => ({
-  slug: `om-jai-jagdish-hare-aarti-${i}`,
-  title: "Om Jai Jagdish Hare Aarti",
-  excerpt:
-    "Sing Om Jai Jagdish Hare with devotion to praise Lord Vishnu. Bring peace, positivity, and blessings",
-  image: "/images/blog/blog-sidebar-2.png",
-}));
 
 // ─── Profile / Dashboard ────────────────────────────────────────
 

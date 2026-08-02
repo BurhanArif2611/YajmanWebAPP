@@ -22,9 +22,12 @@ export function CategorySection() {
   // is empty/unavailable, so this section never renders broken or blank.
   const categories = categoriesQuery.data?.length
     ? categoriesQuery.data.map((c) => ({
+      id: c.id,
       slug: c.slug,
       name: c.name,
       image: c.image_url || "",
+      // Payment-free categories (e.g. Astrology) live under Articles, not Services.
+      href: c.requires_payment === false ? "/articles" : `/services?category=${c.id}`,
     }))
     : [];
 
@@ -96,7 +99,7 @@ export function CategorySection() {
                   transition={{ duration: 0.4, delay: i * 0.08, ease: "easeOut" }}
                 >
                   <Link
-                    href={`/services?category=${category.slug}`}
+                    href={category.href}
                     className="group flex flex-col items-center gap-4"
                   >
                     <motion.div

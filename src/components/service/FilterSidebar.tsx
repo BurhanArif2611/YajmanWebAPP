@@ -9,8 +9,8 @@ import { getCategories, getTypes } from "@/lib/api/catalog";
 import { Checkbox } from "@/components/ui/Checkbox";
 import { Skeleton } from "@/components/ui/Skeleton";
 
+// Payment-required categories only — payment-free ones (e.g. Astrology) live under Articles.
 const FALLBACK_CATEGORIES = [
-  "Astrology",
   "PanditJi At Home",
   "Premium Puja",
   "E-Puja",
@@ -86,7 +86,9 @@ export function FilterSidebar() {
   });
 
   const categories = categoriesQuery.data?.length
-    ? categoriesQuery.data.map((c) => ({ id: c.id, label: c.name }))
+    ? categoriesQuery.data
+        .filter((c) => c.requires_payment === true)
+        .map((c) => ({ id: c.id, label: c.name }))
     : FALLBACK_CATEGORIES.map((label) => ({ id: label, label }));
 
   const types = typesQuery.data?.length

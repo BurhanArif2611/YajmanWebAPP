@@ -1,9 +1,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight, Calendar } from "lucide-react";
-import type { BLOG_POSTS } from "@/lib/constants";
+import { format, parseISO } from "date-fns";
+import { resolveImageUrl } from "@/lib/mappers/service";
+import type { Blog } from "@/types/api";
 
-export function BlogCard({ post }: { post: (typeof BLOG_POSTS)[number] }) {
+export function BlogCard({ post }: { post: Blog }) {
+  const dateSource = post.published_at ?? post.created_at;
+
   return (
     <Link
       href={`/blogs/${post.slug}`}
@@ -11,7 +15,7 @@ export function BlogCard({ post }: { post: (typeof BLOG_POSTS)[number] }) {
     >
       <div className="relative h-72 w-full shrink-0 overflow-hidden rounded-2xl sm:h-56 sm:w-64">
         <Image
-          src={post.image}
+          src={resolveImageUrl(post.feature_image_url)}
           alt={post.title}
           fill
           sizes="(max-width: 640px) 100vw, 356px"
@@ -26,15 +30,15 @@ export function BlogCard({ post }: { post: (typeof BLOG_POSTS)[number] }) {
           </h3>
           <span className="flex shrink-0 items-center gap-1.5 rounded-full bg-surface-muted px-3 py-1 text-xs font-semibold text-text-primary">
             <Calendar size={12} className="text-brand-saffron-400" />
-            {post.date}
+            {format(parseISO(dateSource), "d MMM yyyy")}
           </span>
         </div>
-        <p className="text-sm leading-relaxed text-text-muted">
-          {post.description}
-        </p>
+        {post.excerpt && (
+          <p className="text-sm leading-relaxed text-text-muted">{post.excerpt}</p>
+        )}
         <p className="text-sm text-text-muted">
           <span className="font-semibold text-text-primary">Category :</span>{" "}
-          {post.category}
+          {post.category_name}
         </p>
         <span className="mt-auto flex w-fit items-center gap-1 text-sm font-semibold text-brand-saffron-400">
           Read More

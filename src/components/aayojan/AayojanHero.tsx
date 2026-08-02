@@ -46,7 +46,6 @@ export function AayojanHero() {
           </ButtonLink>
         </div>
 
-        <AvatarCluster count="10+" label="Speakers" labelClassName="text-white/90" />
       </div>
     </section>
   );

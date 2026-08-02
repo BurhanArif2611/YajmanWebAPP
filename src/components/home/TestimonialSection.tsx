@@ -3,23 +3,37 @@
 import { useEffect, useRef } from "react";
 import Image from "next/image";
 import { Star } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
 import useEmblaCarousel from "embla-carousel-react";
 import { SectionHeader } from "@/components/ui/SectionHeader";
-import { TESTIMONIALS } from "@/lib/constants";
+import { getTestimonials } from "@/lib/api/testimonials";
+import type { Testimonial } from "@/types/api";
 
 const ROW_SIZE = 6;
 const AUTOPLAY_DELAY = 2200;
+const FALLBACK_AVATAR = "/images/testimonials/avatar-1.png";
 
-function buildRow(offset: number) {
-  return Array.from({ length: ROW_SIZE }).map(
-    (_, i) => TESTIMONIALS[(i + offset) % TESTIMONIALS.length]
+function buildRow(testimonials: Testimonial[], offset: number) {
+  if (!testimonials.length) return [];
+  return Array.from(
+    { length: ROW_SIZE },
+    (_, i) => testimonials[(i + offset) % testimonials.length]
   );
 }
 
-const ROW_1 = buildRow(0);
-const ROW_2 = buildRow(1);
-
 export function TestimonialSection() {
+  const testimonialsQuery = useQuery({
+    queryKey: ["testimonials", "home"],
+    queryFn: () => getTestimonials("home"),
+    staleTime: 5 * 60_000,
+  });
+
+  const testimonials = testimonialsQuery.data ?? [];
+  if (!testimonialsQuery.isLoading && !testimonials.length) return null;
+
+  const row1 = buildRow(testimonials, 0);
+  const row2 = buildRow(testimonials, 1);
+
   return (
     <section className="overflow-hidden bg-white">
       <div className="mx-auto max-w-site px-4 py-16 md:px-8 md:py-20 lg:px-16 lg:py-8">
@@ -32,9 +46,9 @@ export function TestimonialSection() {
 
       <div className="mt-14 flex flex-col gap-6">
         {/* left to right */}
-        <MarqueeRow items={ROW_1} reverse />
+        <MarqueeRow items={row1} reverse />
         {/* right to left */}
-        <MarqueeRow items={ROW_2} />
+        <MarqueeRow items={row2} />
       </div>
     </section>
   );
@@ -44,7 +58,7 @@ function MarqueeRow({
   items,
   reverse = false,
 }: {
-  items: typeof TESTIMONIALS;
+  items: Testimonial[];
   reverse?: boolean;
 }) {
   const [emblaRef, emblaApi] = useEmblaCarousel({
@@ -84,7 +98,7 @@ function MarqueeRow({
     >
       <div className="flex gap-6 pl-4 md:pl-8 lg:pl-16">
         {items.map((testimonial, i) => (
-          <div key={i} className="min-w-0 shrink-0">
+          <div key={`${testimonial.id}-${i}`} className="min-w-0 shrink-0">
             <TestimonialCard testimonial={testimonial} />
           </div>
         ))}
@@ -93,21 +107,19 @@ function MarqueeRow({
   );
 }
 
-function TestimonialCard({
-  testimonial,
-}: {
-  testimonial: (typeof TESTIMONIALS)[number];
-}) {
+function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
   return (
     <div className="flex w-[320px] shrink-0 flex-col gap-4 rounded-2xl bg-white p-6 shadow-card sm:w-[360px]">
       <div className="flex gap-1 text-brand-saffron-400">
         {Array.from({ length: 5 }).map((_, s) => (
-          <Star key={s} size={16} fill="currentColor" strokeWidth={0} />
+          <Star
+            key={s}
+            size={16}
+            fill={s < testimonial.rating ? "currentColor" : "none"}
+            strokeWidth={s < testimonial.rating ? 0 : 1.5}
+          />
         ))}
       </div>
-      <h3 className="font-sans text-lg font-bold text-text-primary">
-        {testimonial.label}
-      </h3>
       <p className="text-sm leading-relaxed text-text-secondary">
         &ldquo;{testimonial.quote}&rdquo;
       </p>
@@ -118,8 +130,8 @@ function TestimonialCard({
           </span>
           <div className="relative -ml-4 h-11 w-11 overflow-hidden rounded-full ring-2 ring-white">
             <Image
-              src={testimonial.avatar}
-              alt={testimonial.name}
+              src={testimonial.author_avatar_url || FALLBACK_AVATAR}
+              alt={testimonial.author_name}
               fill
               sizes="44px"
               className="object-cover"
@@ -128,9 +140,11 @@ function TestimonialCard({
         </div>
         <div>
           <p className="font-sans text-sm font-semibold text-text-primary">
-            {testimonial.name}
+            {testimonial.author_name}
           </p>
-          <p className="text-xs text-text-muted">{testimonial.designation}</p>
+          {testimonial.author_designation && (
+            <p className="text-xs text-text-muted">{testimonial.author_designation}</p>
+          )}
         </div>
       </div>
     </div>

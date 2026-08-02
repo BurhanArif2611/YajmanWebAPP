@@ -21,6 +21,10 @@ export function useNavLinks() {
       (c) => normalizeName(c.name) === normalizeName(link.category!)
     );
 
-    return match ? { ...link, href: `/services?category=${match.id}` } : link;
+    if (!match) return link;
+
+    // Payment-free categories (e.g. Astrology) live under Articles, not Services.
+    const href = match.requires_payment === false ? "/articles" : `/services?category=${match.id}`;
+    return { ...link, href };
   });
 }

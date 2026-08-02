@@ -1,9 +1,18 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { RELATED_ARTICLES } from "@/lib/constants";
+import { resolveImageUrl } from "@/lib/mappers/service";
+import type { RelatedBlog } from "@/types/api";
 
-export function RelatedArticles({ basePath = "/blogs" }: { basePath?: string }) {
+export function RelatedArticles({
+  posts,
+  basePath = "/blogs",
+}: {
+  posts: RelatedBlog[];
+  basePath?: string;
+}) {
+  if (!posts.length) return null;
+
   return (
     <section className="mx-auto max-w-site px-4 pb-16 md:px-8 md:pb-20 lg:px-16 lg:pb-24">
       <div className="relative rounded-2xl bg-surface-peach p-6 md:p-16">
@@ -13,7 +22,7 @@ export function RelatedArticles({ basePath = "/blogs" }: { basePath?: string }) 
             Related Articles
           </h2>
           <Link
-            href="/articles"
+            href="/blogs"
             className="flex items-center gap-1 text-sm font-semibold text-brand-saffron-400"
           >
             View More
@@ -21,16 +30,16 @@ export function RelatedArticles({ basePath = "/blogs" }: { basePath?: string }) 
           </Link>
         </div>
 
-        <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {RELATED_ARTICLES.map((article) => (
+        <div className="relative mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {posts.map((post) => (
             <div
-              key={article.slug}
+              key={post.id}
               className="flex flex-col overflow-hidden rounded-xl bg-white"
             >
               <div className="relative h-56 w-full overflow-hidden">
                 <Image
-                  src={article.image}
-                  alt={article.title}
+                  src={resolveImageUrl(post.feature_image_url)}
+                  alt={post.title}
                   fill
                   sizes="(max-width: 768px) 100vw, 25vw"
                   className="object-cover"
@@ -38,14 +47,11 @@ export function RelatedArticles({ basePath = "/blogs" }: { basePath?: string }) 
               </div>
               <div className="flex flex-1 flex-col gap-2 p-5">
                 <h3 className="font-sans text-base font-bold text-text-primary">
-                  {article.title}
+                  {post.title}
                 </h3>
-                <p className="text-sm text-text-muted line-clamp-3">
-                  {article.excerpt}
-                </p>
                 <Link
-                  href={`${basePath}/${article.slug}`}
-                  className="mt-2 flex min-h-[44px] items-center justify-center gap-2 rounded-full bg-brand-navy text-sm font-medium text-white transition-colors hover:bg-brand-navy-800"
+                  href={`${basePath}/${post.slug}`}
+                  className="mt-auto flex min-h-[44px] items-center justify-center gap-2 rounded-full bg-brand-navy text-sm font-medium text-white transition-colors hover:bg-brand-navy-800"
                 >
                   View Details
                   <ArrowRight size={16} />

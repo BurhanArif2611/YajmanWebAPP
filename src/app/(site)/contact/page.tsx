@@ -1,7 +1,6 @@
 import { Mail, MapPin, Phone } from "lucide-react";
 import { Breadcrumb } from "@/components/layout/Breadcrumb";
-import { Input } from "@/components/ui/Input";
-import { Button } from "@/components/ui/Button";
+import { ContactForm } from "@/components/contact/ContactForm";
 
 export const metadata = {
   title: "Contact Us | Yajman",
@@ -76,48 +75,9 @@ export default function ContactPage() {
             })}
           </div>
 
-          <form className="flex flex-col gap-5 rounded-2xl bg-surface-peach p-6 md:p-10">
-            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-              <Field label="Name">
-                <Input placeholder="Enter your name" containerClassName="bg-white" />
-              </Field>
-              <Field label="Email">
-                <Input type="email" placeholder="Enter your email" containerClassName="bg-white" />
-              </Field>
-            </div>
-
-            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-              <Field label="Phone">
-                <Input type="tel" placeholder="Enter your phone number" containerClassName="bg-white" />
-              </Field>
-              <Field label="Subject">
-                <Input placeholder="How can we help?" containerClassName="bg-white" />
-              </Field>
-            </div>
-
-            <Field label="Message">
-              <textarea
-                rows={5}
-                placeholder="Tell us more about your requirement..."
-                className="w-full resize-none rounded-xl border border-border-dark bg-white p-4 text-base font-medium text-text-primary outline-none placeholder:text-text-light"
-              />
-            </Field>
-
-            <Button type="submit" size="lg" className="w-full justify-center rounded-full">
-              Send Message
-            </Button>
-          </form>
+          <ContactForm />
         </div>
       </div>
     </>
-  );
-}
-
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <label className="flex flex-col gap-2">
-      <span className="text-sm font-semibold text-text-primary">{label}</span>
-      {children}
-    </label>
   );
 }

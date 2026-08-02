@@ -27,6 +27,7 @@ export function mapServiceToCard(service: Service): MockService {
     categoryLabel: service.category_name,
     title: service.title,
     location: service.pincode ? `Pincode ${service.pincode}` : service.category_name,
+    shortDescription: service.short_description ?? undefined,
     image,
     gallery: detail.images?.length
       ? detail.images

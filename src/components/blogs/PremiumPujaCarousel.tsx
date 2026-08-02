@@ -2,18 +2,61 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useQuery } from "@tanstack/react-query";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { ServiceCard } from "@/components/service/ServiceCard";
-import { SERVICES } from "@/lib/constants";
+import { Skeleton } from "@/components/ui/Skeleton";
+import { getCategories } from "@/lib/api/catalog";
+import { getServices } from "@/lib/api/services";
+import { mapServiceToCard } from "@/lib/mappers/service";
+import { normalizeName } from "@/lib/utils";
 
 const VISIBLE = 4;
+const FETCH_LIMIT = 8;
+const CATEGORY_NAME = "Premium Puja";
+
+function ServiceCardSkeleton() {
+  return (
+    <div className="flex flex-col gap-3 rounded-xl bg-white p-3 shadow-card">
+      <Skeleton className="aspect-square w-full rounded-lg" />
+      <Skeleton className="h-4 w-1/3" />
+      <Skeleton className="h-5 w-full" />
+      <Skeleton className="h-4 w-1/2" />
+      <Skeleton className="mt-2 h-10 w-full rounded-full" />
+    </div>
+  );
+}
 
 export function PremiumPujaCarousel() {
   const [offset, setOffset] = useState(0);
-  const services = Array.from(
-    { length: VISIBLE },
-    (_, i) => SERVICES[(offset + i) % SERVICES.length]
+
+  // Shares the ["categories"] cache with CategorySection/BestSellers so this doesn't refetch.
+  const categoriesQuery = useQuery({
+    queryKey: ["categories"],
+    queryFn: getCategories,
+    staleTime: 5 * 60_000,
+  });
+
+  const category = categoriesQuery.data?.find(
+    (c) => normalizeName(c.name) === normalizeName(CATEGORY_NAME)
   );
+
+  const servicesQuery = useQuery({
+    queryKey: ["services", "premium-puja-carousel", category?.id],
+    queryFn: () => getServices({ category: category?.id, limit: FETCH_LIMIT }),
+    enabled: !!category,
+    staleTime: 5 * 60_000,
+  });
+
+  const pool = servicesQuery.data?.data.map(mapServiceToCard) ?? [];
+  const isLoading = categoriesQuery.isLoading || servicesQuery.isLoading;
+
+  const services = pool.length
+    ? Array.from(
+        { length: VISIBLE },
+        (_, i) => pool[(((offset + i) % pool.length) + pool.length) % pool.length]
+      )
+    : [];
 
   return (
     <section className="mx-auto max-w-site px-4 py-16 md:px-8 md:py-20 lg:px-16 lg:py-24">
@@ -27,7 +70,7 @@ export function PremiumPujaCarousel() {
           </h2>
         </div>
         <Link
-          href="/services?category=premium-puja"
+          href={category ? `/services?category=${category.id}` : "/services"}
           className="text-sm font-semibold text-brand-saffron-400 hover:text-brand-saffron-500"
         >
           View More →
@@ -35,28 +78,40 @@ export function PremiumPujaCarousel() {
       </div>
 
       <div className="relative mt-10">
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {services.map((service, i) => (
-            <div key={`${service.slug}-${offset + i}`}>
-              <ServiceCard service={service} />
+        {isLoading ? (
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {Array.from({ length: VISIBLE }).map((_, i) => (
+              <ServiceCardSkeleton key={i} />
+            ))}
+          </div>
+        ) : services.length ? (
+          <>
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+              {services.map((service, i) => (
+                <div key={`${service.slug}-${offset + i}`}>
+                  <ServiceCard service={service} />
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
 
-        <button
-          aria-label="Previous"
-          onClick={() => setOffset((o) => o - 1)}
-          className="absolute left-0 top-1/2 hidden h-11 w-11 -translate-x-5 -translate-y-1/2 items-center justify-center rounded-full bg-white text-text-primary shadow-card-hover lg:flex"
-        >
-          <ChevronLeft size={20} />
-        </button>
-        <button
-          aria-label="Next"
-          onClick={() => setOffset((o) => o + 1)}
-          className="absolute right-0 top-1/2 hidden h-11 w-11 -translate-y-1/2 translate-x-5 items-center justify-center rounded-full bg-brand-saffron-400 text-white shadow-card-hover lg:flex"
-        >
-          <ChevronRight size={20} />
-        </button>
+            <button
+              aria-label="Previous"
+              onClick={() => setOffset((o) => o - 1)}
+              className="absolute left-0 top-1/2 hidden h-11 w-11 -translate-x-5 -translate-y-1/2 items-center justify-center rounded-full bg-white text-text-primary shadow-card-hover lg:flex"
+            >
+              <ChevronLeft size={20} />
+            </button>
+            <button
+              aria-label="Next"
+              onClick={() => setOffset((o) => o + 1)}
+              className="absolute right-0 top-1/2 hidden h-11 w-11 -translate-y-1/2 translate-x-5 items-center justify-center rounded-full bg-brand-saffron-400 text-white shadow-card-hover lg:flex"
+            >
+              <ChevronRight size={20} />
+            </button>
+          </>
+        ) : (
+          <p className="text-center text-text-muted">No premium puja services right now.</p>
+        )}
       </div>
     </section>
   );

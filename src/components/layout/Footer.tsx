@@ -85,7 +85,7 @@ function FooterColumn({
 }) {
   return (
     <div className="flex flex-col gap-4">
-      <h3 className="font-sans text-base font-semibold">{heading}</h3>
+      <h3 className="font-sans text-base font-semibold text-white">{heading}</h3>
       <ul className="flex flex-col gap-3">
         {links.map((link) => (
           <li key={link.href}>

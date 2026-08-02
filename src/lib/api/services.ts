@@ -1,5 +1,11 @@
 import { apiFetch, apiFetchPaginated } from "@/lib/fetch";
-import type { Service, ServiceDetail, ServiceListFilters } from "@/types/api";
+import type {
+  ContactEntry,
+  Service,
+  ServiceDetail,
+  ServiceInquiryPayload,
+  ServiceListFilters,
+} from "@/types/api";
 
 export function getServices(filters: ServiceListFilters = {}) {
   return apiFetchPaginated<Service[]>("/services", {
@@ -22,4 +28,11 @@ export function getServices(filters: ServiceListFilters = {}) {
 
 export function getServiceBySlug(slug: string) {
   return apiFetch<ServiceDetail>(`/services/${slug}`);
+}
+
+export function submitServiceInquiry(serviceId: string, payload: ServiceInquiryPayload) {
+  return apiFetch<ContactEntry>(`/services/${serviceId}/inquiry`, {
+    method: "POST",
+    body: payload,
+  });
 }

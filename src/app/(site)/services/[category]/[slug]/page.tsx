@@ -7,7 +7,7 @@ import { DetailTabs } from "@/components/service/DetailTabs";
 import { StickyBookBar } from "@/components/service/StickyBookBar";
 import { Badge } from "@/components/ui/Badge";
 import { getServiceBySlug } from "@/lib/api/services";
-import { mapServiceToCard, resolveImageUrl } from "@/lib/mappers/service";
+import { mapServiceToCard } from "@/lib/mappers/service";
 
 type Params = Promise<{ category: string; slug: string }>;
 
@@ -120,7 +120,7 @@ export default async function ServiceDetailPage({
           <DetailTabs
             keyFeatures={detail.key_features}
             templeName={temple?.name}
-            photos={detail.images?.length ? detail.images.map((img) => resolveImageUrl(img.url)) : undefined}
+            photos={service.gallery}
             faqs={detail.faqs?.length ? detail.faqs : undefined}
           />
         </div>
