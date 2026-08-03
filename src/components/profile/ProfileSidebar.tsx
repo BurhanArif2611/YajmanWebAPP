@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { Bell, ChevronDown, Headphones, LogOut, Ticket, User } from "lucide-react";
+import { Bell, ChevronDown, ClipboardList, Headphones, LogOut, Ticket, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
 import { useUnreadCount } from "@/hooks/useUnreadCount";
@@ -25,8 +25,10 @@ export function ProfileSidebar() {
 
   const isPersonalData = pathname === "/profile";
   const isBookings = pathname.startsWith("/profile/bookings");
+  const isAssignments = pathname.startsWith("/profile/assignments");
   const isNotifications = pathname === "/profile/notifications";
   const isSupport = pathname === "/profile/support";
+  const isPandit = user?.role === "pandit";
 
   return (
     <aside className="flex flex-col gap-6 rounded-2xl bg-white p-6 shadow-card">
@@ -102,6 +104,21 @@ export function ProfileSidebar() {
             </ul>
           )}
         </div>
+
+        {isPandit && (
+          <Link
+            href="/profile/assignments"
+            className={cn(
+              "flex min-h-[44px] items-center gap-3 rounded-lg px-3 text-base font-medium transition-colors",
+              isAssignments
+                ? "bg-surface-peach text-brand-saffron-400"
+                : "text-text-primary hover:bg-surface-muted"
+            )}
+          >
+            <ClipboardList size={18} />
+            Assignments
+          </Link>
+        )}
 
         <Link
           href="/profile/notifications"

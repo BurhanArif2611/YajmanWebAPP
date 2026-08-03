@@ -22,6 +22,7 @@ export function getServices(filters: ServiceListFilters = {}) {
       sort: filters.sort,
       is_featured: filters.is_featured,
       is_bestseller: filters.is_bestseller,
+      requires_payment: filters.requires_payment,
     },
   });
 }

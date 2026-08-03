@@ -11,6 +11,7 @@ export const NAV_LINKS: { label: string; href: string; category?: string }[] = [
   { label: "Astrology", href: "/services?category=astrology", category: "Astrology" },
   { label: "Aayojan", href: "/aayojan" },
   { label: "Articles", href: "/articles" },
+  { label: "Blogs", href: "/blogs" },
   { label: "Contact", href: "/contact" },
 ];
 

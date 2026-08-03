@@ -36,7 +36,8 @@ export function RelatedServices({ excludeSlug }: { excludeSlug?: string }) {
 
   const servicesQuery = useQuery({
     queryKey: ["services", "related-articles", freeCategory?.id],
-    queryFn: () => getServices({ category: freeCategory?.id, limit: LIMIT + 1 }),
+    queryFn: () =>
+      getServices({ category: freeCategory?.id, limit: LIMIT + 1, requires_payment: false }),
     enabled: !!freeCategory,
     staleTime: 5 * 60_000,
   });

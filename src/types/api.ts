@@ -30,7 +30,7 @@ export type User = {
   id: string;
   phone: string;
   country_code?: string;
-  role: "customer" | string;
+  role: "customer" | "pandit" | string;
   name: string | null;
   email?: string | null;
   whatsapp_number?: string | null;
@@ -158,6 +158,7 @@ export type ServiceListFilters = {
   sort?: ServiceSortOption;
   is_featured?: boolean;
   is_bestseller?: boolean;
+  requires_payment?: boolean;
 };
 
 export type Service = {
@@ -415,6 +416,46 @@ export type ReviewSubmission = {
   admin_reply?: string | null;
   created_at: string;
   updated_at: string;
+};
+
+// ─── Pandit Assignments ──────────────────────────────────────────
+
+export type PanditAssignmentStatus =
+  | "pending"
+  | "accepted"
+  | "rejected"
+  | "expired"
+  | "completed";
+
+export type PanditAssignmentListFilters = {
+  status?: PanditAssignmentStatus;
+  page?: number;
+  limit?: number;
+};
+
+export type PanditAssignment = {
+  id: string;
+  booking_id: string;
+  order_number: string;
+  booking_date: string;
+  booking_time: string;
+  customer_name: string;
+  address?: string | null;
+  city?: string | null;
+  service_title: string;
+  service_slug: string;
+  status: PanditAssignmentStatus;
+  respond_by?: string | null;
+  notes?: string | null;
+  reason?: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export type PanditAssignmentDetail = PanditAssignment & {
+  customer_phone: string;
+  pincode?: string | null;
+  total_amount: string;
 };
 
 // ─── Checkout / Payment ──────────────────────────────────────────

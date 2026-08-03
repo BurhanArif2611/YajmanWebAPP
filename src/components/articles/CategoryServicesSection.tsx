@@ -48,7 +48,8 @@ export function CategoryServicesSection() {
 
   const servicesQuery = useQuery({
     queryKey: ["services", "articles-category", activeCategoryId, page],
-    queryFn: () => getServices({ category: activeCategoryId!, page, limit: PAGE_SIZE }),
+    queryFn: () =>
+      getServices({ category: activeCategoryId!, page, limit: PAGE_SIZE, requires_payment: false }),
     enabled: !!activeCategoryId,
     staleTime: 5 * 60_000,
   });

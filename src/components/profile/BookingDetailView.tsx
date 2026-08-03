@@ -25,7 +25,7 @@ export function BookingDetailView({ booking }: { booking: BookingDetail }) {
   const [cancelOpen, setCancelOpen] = useState(false);
   const [invoiceLoading, setInvoiceLoading] = useState(false);
   const [invoiceError, setInvoiceError] = useState<string | null>(null);
-
+  console.log('booking', booking)
   const datetime = parseISO(booking.booking_datetime);
   const hoursUntilBooking = differenceInHours(datetime, new Date());
   const isCancellable = CANCELLABLE_STATUSES.has(booking.status);

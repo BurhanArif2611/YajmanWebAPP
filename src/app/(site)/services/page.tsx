@@ -46,6 +46,7 @@ export default async function ServicesPage({
       max_price: maxPrice ? Number(maxPrice) : undefined,
       rating: rating ? Number(rating) : undefined,
       sort,
+      requires_payment: true,
     });
 
     services = result.data.map(mapServiceToCard);
