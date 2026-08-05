@@ -11,7 +11,7 @@ export function getAayojanPage() {
 }
 
 export function getAayojanEventBySlug(slug: string) {
-  return apiFetch<AayojanEventDetail>(`/aayojan/events/${slug}`);
+  return apiFetch<AayojanEventDetail>(`/aayojan/events/${slug}`, { auth: true });
 }
 
 export function submitAayojanContact(payload: AayojanContactPayload) {

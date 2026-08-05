@@ -17,5 +17,5 @@ export function getBlogs(filters: BlogListFilters = {}) {
 }
 
 export function getBlogBySlug(slug: string) {
-  return apiFetch<BlogDetail>(`/blogs/${slug}`);
+  return apiFetch<BlogDetail>(`/blogs/${slug}`, { auth: true });
 }

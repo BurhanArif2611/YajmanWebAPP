@@ -28,7 +28,7 @@ export function getServices(filters: ServiceListFilters = {}) {
 }
 
 export function getServiceBySlug(slug: string) {
-  return apiFetch<ServiceDetail>(`/services/${slug}`);
+  return apiFetch<ServiceDetail>(`/services/${slug}`, { auth: true });
 }
 
 export function submitServiceInquiry(serviceId: string, payload: ServiceInquiryPayload) {
