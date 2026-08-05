@@ -30,7 +30,7 @@ export default async function AayojanPage() {
 
   return (
     <>
-      <AayojanHero />
+      <AayojanHero banners={data.banners} />
 
       <RevealOnScroll>
         <AboutSection />

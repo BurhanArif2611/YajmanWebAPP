@@ -23,6 +23,8 @@ export function ContactDetailsSection({
   onCallingNumberChange,
   useDifferentNumber,
   onUseDifferentNumberChange,
+  specialInstructions,
+  onSpecialInstructionsChange,
 }: {
   name: string;
   onNameChange: (value: string) => void;
@@ -30,6 +32,8 @@ export function ContactDetailsSection({
   onCallingNumberChange: (value: string) => void;
   useDifferentNumber: boolean;
   onUseDifferentNumberChange: (value: boolean) => void;
+  specialInstructions: string;
+  onSpecialInstructionsChange: (value: string) => void;
 }) {
   const { isLoggedIn, phone: authPhone } = useAuth();
   const [phone, setPhone] = useState("");
@@ -189,6 +193,22 @@ export function ContactDetailsSection({
           containerClassName="bg-white"
         />
       )}
+
+      <div>
+        <h3 className="font-sans text-lg font-semibold text-text-primary">
+          Special Instructions
+        </h3>
+        <p className="mt-1 text-sm text-text-muted">
+          Anything else the pandit or our team should know? (optional)
+        </p>
+      </div>
+      <textarea
+        value={specialInstructions}
+        onChange={(e) => onSpecialInstructionsChange(e.target.value)}
+        placeholder="E.g. gate code, preferred language, allergies..."
+        rows={3}
+        className="w-full resize-none rounded-md border border-border-dark bg-white p-4 text-base font-medium text-text-primary outline-none placeholder:text-text-light"
+      />
     </>
   );
 }

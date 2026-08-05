@@ -16,14 +16,10 @@ import {
 } from "lucide-react";
 import { getBanners } from "@/lib/api/banners";
 import { getTypes } from "@/lib/api/catalog";
+import { getPopularSearches } from "@/lib/api/popularSearches";
 import { Skeleton } from "@/components/ui/Skeleton";
 
-const POPULAR_SEARCHES = [
-  "Pandit ji at Home",
-  "Brahmin Bhoj",
-  "Puja at Pilgrimage",
-  "Bhajan Sandhya",
-];
+const POPULAR_SEARCH_ROW = 1;
 
 const QUICK_LINKS = [
   { label: "Bhajan Lyrics", icon: Music },
@@ -51,6 +47,16 @@ export function HeroSection() {
     queryFn: getTypes,
     staleTime: 5 * 60_000,
   });
+
+  const popularSearchesQuery = useQuery({
+    queryKey: ["popular-searches"],
+    queryFn: getPopularSearches,
+    staleTime: 5 * 60_000,
+  });
+
+  const popularSearches = (popularSearchesQuery.data ?? [])
+    .filter((s) => s.row_number === POPULAR_SEARCH_ROW)
+    .sort((a, b) => a.display_order - b.display_order);
 
   // Fall back to the static lucide-icon set while loading or if the API
   // is empty/unavailable, so the quick-links row is never blank.
@@ -104,20 +110,30 @@ export function HeroSection() {
             Verified Pandit | Authentic Rituals | Peace Of Mind
           </p>
 
-          <div className="flex flex-wrap items-center gap-2 text-sm">
-            <span className="font-medium text-text-secondary">
-              Popular Search:
-            </span>
-            {POPULAR_SEARCHES.map((tag) => (
-              <a
-                key={tag}
-                href={`/services?search=${encodeURIComponent(tag)}`}
-                className="rounded-full border border-border-dark px-3 py-1 text-text-secondary text-sm transition-colors hover:border-brand-saffron-400 hover:text-brand-saffron-400"
-              >
-                {tag}
-              </a>
-            ))}
-          </div>
+          {popularSearchesQuery.isLoading ? (
+            <div className="flex flex-wrap items-center gap-2">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <Skeleton key={i} className="h-7 w-28 rounded-full" />
+              ))}
+            </div>
+          ) : (
+            popularSearches.length > 0 && (
+              <div className="flex flex-wrap items-center gap-2 text-sm">
+                <span className="font-medium text-text-secondary">
+                  Popular Search:
+                </span>
+                {popularSearches.map((item) => (
+                  <Link
+                    key={item.id}
+                    href={item.link_url}
+                    className="rounded-full border border-border-dark px-3 py-1 text-text-secondary text-sm transition-colors hover:border-brand-saffron-400 hover:text-brand-saffron-400"
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+              </div>
+            )
+          )}
         </div>
       </div>
 

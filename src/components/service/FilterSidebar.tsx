@@ -6,6 +6,8 @@ import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { getCategories, getTypes } from "@/lib/api/catalog";
+import { getBlogs } from "@/lib/api/blogs";
+import { resolveImageUrl } from "@/lib/mappers/service";
 import { Checkbox } from "@/components/ui/Checkbox";
 import { Skeleton } from "@/components/ui/Skeleton";
 
@@ -20,11 +22,7 @@ const FALLBACK_CATEGORIES = [
 
 const FALLBACK_TYPES = ["Health", "Marriage", "Business", "Navgrah", "Festival"];
 
-const TOP_RATED = Array.from({ length: 4 }).map((_, i) => ({
-  slug: `top-rated-${i}`,
-  title: "New York in 5 Days Guided Sightseeing",
-  image: "/images/services/service-shivling.png",
-}));
+const TOP_RATED_LIMIT = 4;
 
 function FilterBlock({
   title,
@@ -84,6 +82,12 @@ export function FilterSidebar() {
     queryFn: getTypes,
     staleTime: 5 * 60_000,
   });
+  const blogsQuery = useQuery({
+    queryKey: ["blogs", "sidebar-top-rated"],
+    queryFn: () => getBlogs({ limit: TOP_RATED_LIMIT }),
+    staleTime: 5 * 60_000,
+  });
+  const topRated = blogsQuery.data?.data ?? [];
 
   const categories = categoriesQuery.data?.length
     ? categoriesQuery.data
@@ -178,30 +182,40 @@ export function FilterSidebar() {
 
       <FilterBlock title="Top Rated News">
         <ul className="flex flex-col gap-4">
-          {TOP_RATED.map((item) => (
-            <li key={item.slug} className="flex gap-3">
-              <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-lg">
-                <Image
-                  src={item.image}
-                  alt={item.title}
-                  fill
-                  sizes="56px"
-                  className="object-cover"
-                />
-              </div>
-              <div>
-                <p className="text-sm font-semibold leading-snug text-text-primary">
-                  {item.title}
-                </p>
-                <Link
-                  href="#"
-                  className="text-xs font-semibold text-brand-saffron-400"
-                >
-                  Read More →
-                </Link>
-              </div>
-            </li>
-          ))}
+          {blogsQuery.isLoading
+            ? Array.from({ length: TOP_RATED_LIMIT }).map((_, i) => (
+                <li key={i} className="flex gap-3">
+                  <Skeleton className="h-14 w-14 shrink-0 rounded-lg" />
+                  <div className="flex-1">
+                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className="mt-2 h-3 w-1/3" />
+                  </div>
+                </li>
+              ))
+            : topRated.map((post) => (
+                <li key={post.id} className="flex gap-3">
+                  <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-lg">
+                    <Image
+                      src={resolveImageUrl(post.feature_image_url)}
+                      alt={post.title}
+                      fill
+                      sizes="56px"
+                      className="object-cover"
+                    />
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold leading-snug text-text-primary line-clamp-2">
+                      {post.title}
+                    </p>
+                    <Link
+                      href={`/blogs/${post.slug}`}
+                      className="text-xs font-semibold text-brand-saffron-400"
+                    >
+                      Read More →
+                    </Link>
+                  </div>
+                </li>
+              ))}
         </ul>
       </FilterBlock>
     </aside>

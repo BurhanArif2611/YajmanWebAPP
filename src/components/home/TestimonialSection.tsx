@@ -125,10 +125,10 @@ function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
       </p>
       <div className="mt-auto flex items-center gap-3 pt-2">
         <div className="flex items-center">
-          <span className="flex h-11 w-11 items-center justify-center rounded-full bg-brand-navy text-sm font-semibold text-white">
+          {/* <span className="flex h-11 w-11 items-center justify-center rounded-full bg-brand-navy text-sm font-semibold text-white">
             99
-          </span>
-          <div className="relative -ml-4 h-11 w-11 overflow-hidden rounded-full ring-2 ring-white">
+          </span> */}
+          <div className="relative h-11 w-11 overflow-hidden rounded-full ring-2 ring-white">
             <Image
               src={testimonial.author_avatar_url || FALLBACK_AVATAR}
               alt={testimonial.author_name}

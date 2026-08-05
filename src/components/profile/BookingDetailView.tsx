@@ -219,7 +219,7 @@ export function BookingDetailView({ booking }: { booking: BookingDetail }) {
             {booking.payment && (
               <Row
                 label="Payment"
-                value={`${booking.payment.method.toUpperCase()} · ${booking.payment.status}`}
+                value={`${booking?.payment?.method?.toUpperCase()} · ${booking?.payment?.status}`}
               />
             )}
             {booking.cancellation_reason && (

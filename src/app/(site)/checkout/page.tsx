@@ -31,6 +31,7 @@ export default async function CheckoutPage({
           service={mapServiceToCard(detail)}
           date={date}
           addons={detail.is_addon_available ? detail.addons : []}
+          requiresPandit={detail.requires_pandit}
         />
       ) : (
         <p className="mt-8 text-text-muted">

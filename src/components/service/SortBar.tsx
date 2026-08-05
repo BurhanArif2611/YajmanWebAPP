@@ -2,6 +2,7 @@
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ArrowUpDown } from "lucide-react";
+import { Select } from "@/components/ui/Select";
 import type { ServiceSortOption } from "@/types/api";
 
 const SORT_OPTIONS: { value: ServiceSortOption; label: string }[] = [
@@ -41,21 +42,16 @@ export function SortBar({
         )}{" "}
         results
       </p>
-      <label className="flex items-center gap-2 text-sm text-text-secondary">
+      <div className="flex items-center gap-2 text-sm text-text-secondary">
         <ArrowUpDown size={16} />
         Sort by
-        <select
+        <Select
           value={currentSort}
-          onChange={(e) => handleSortChange(e.target.value)}
-          className="min-h-[44px] rounded-lg border border-border bg-white px-3 py-2 text-sm font-medium text-text-primary outline-none"
-        >
-          {SORT_OPTIONS.map((opt) => (
-            <option key={opt.value} value={opt.value}>
-              {opt.label}
-            </option>
-          ))}
-        </select>
-      </label>
+          onChange={handleSortChange}
+          options={SORT_OPTIONS}
+          containerClassName="min-h-[44px] w-44"
+        />
+      </div>
     </div>
   );
 }

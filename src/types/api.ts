@@ -110,6 +110,18 @@ export type Type = {
   updated_at: string;
 };
 
+export type PopularSearch = {
+  id: string;
+  label: string;
+  slug: string | null;
+  link_url: string;
+  display_order: number;
+  /** Which row this pill belongs to on the home hero — row 1 is the "Popular Search" tag list. */
+  row_number: number;
+  is_active: boolean;
+  created_at: string;
+};
+
 export type Tag = {
   id: string;
   name: string;
@@ -581,6 +593,15 @@ export type AayojanGallery = {
   display_order: number;
   is_active: boolean;
   created_at: string;
+};
+
+// ─── Home gallery ────────────────────────────────────────────────
+
+export type GalleryImage = {
+  id: string;
+  image_url: string;
+  title: string | null;
+  display_order: number;
 };
 
 export type AayojanTestimonial = {

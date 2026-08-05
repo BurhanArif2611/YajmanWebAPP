@@ -1,19 +1,46 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { ArrowUpRight } from "lucide-react";
 import { ButtonLink } from "@/components/ui/Button";
 import { AvatarCluster } from "@/components/aayojan/AvatarCluster";
+import type { AayojanBanner } from "@/types/api";
 
-export function AayojanHero() {
+const FALLBACK_BG = "/images/ayongan/image-4.png";
+const SLIDE_INTERVAL = 6000;
+
+export function AayojanHero({ banners = [] }: { banners?: AayojanBanner[] }) {
+  const slides = banners.length
+    ? [...banners].sort((a, b) => a.display_order - b.display_order).map((b) => b.image_url)
+    : [FALLBACK_BG];
+
+  const [active, setActive] = useState(0);
+
+  useEffect(() => {
+    setActive(0);
+    if (slides.length <= 1) return;
+    const id = setInterval(() => {
+      setActive((i) => (i + 1) % slides.length);
+    }, SLIDE_INTERVAL);
+    return () => clearInterval(id);
+  }, [slides.length]);
+
   return (
     <section className="relative flex min-h-[560px] items-center overflow-hidden md:min-h-[640px]">
-      <Image
-        src="/images/ayongan/image-4.png"
-        alt="Decorated devotional event mandap"
-        fill
-        priority
-        sizes="100vw"
-        className="object-cover"
-      />
+      {slides.map((src, i) => (
+        <Image
+          key={src + i}
+          src={src}
+          alt="Decorated devotional event mandap"
+          fill
+          priority={i === 0}
+          sizes="100vw"
+          className={`object-cover transition-opacity duration-1000 ${
+            i === active ? "opacity-100" : "opacity-0"
+          }`}
+        />
+      ))}
       <div className="absolute inset-0 bg-black/65" />
 
       <div className="relative mx-auto flex w-full max-w-site flex-col items-center gap-6 px-4 py-20 text-center md:px-8 lg:px-16">

@@ -4,15 +4,21 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Camera, ChevronDown, Loader2 } from "lucide-react";
+import { Camera, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { Skeleton } from "@/components/ui/Skeleton";
+import { Select } from "@/components/ui/Select";
 import { useAuth } from "@/hooks/useAuth";
 import { getProfile, updateProfile, uploadAvatar, type UpdateProfileInput } from "@/lib/api/profile";
 import { updateStoredUser } from "@/lib/auth";
 import { ApiError } from "@/lib/apiError";
 import type { User } from "@/types/api";
+
+const GENDER_OPTIONS = ["Male", "Female", "Other"].map((label) => ({
+  value: label,
+  label,
+}));
 
 function Field({
   label,
@@ -224,21 +230,11 @@ export function PersonalDataForm() {
 
 
             <Field label="Gender">
-              <div className="relative flex min-h-[56px] items-center rounded-xl border border-border-dark px-4">
-                <select
-                  value={form.gender ?? "Male"}
-                  onChange={handleField("gender")}
-                  className="w-full appearance-none bg-transparent text-base font-medium text-text-primary outline-none"
-                >
-                  <option>Male</option>
-                  <option>Female</option>
-                  <option>Other</option>
-                </select>
-                <ChevronDown
-                  size={16}
-                  className="pointer-events-none absolute right-4 text-text-muted"
-                />
-              </div>
+              <Select
+                value={form.gender ?? "Male"}
+                onChange={(value) => setForm((f) => ({ ...f, gender: value }))}
+                options={GENDER_OPTIONS}
+              />
             </Field>
             <Field label="Place of birth">
               <Input

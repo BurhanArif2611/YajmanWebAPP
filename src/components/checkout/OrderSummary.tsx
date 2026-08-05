@@ -7,6 +7,7 @@ import { Calendar, ChevronRight, MapPin, Ticket, X } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/Button";
 import { Skeleton } from "@/components/ui/Skeleton";
+import { Select } from "@/components/ui/Select";
 import { CouponSuccessModal } from "@/components/checkout/CouponSuccessModal";
 import { getCoupons, validateCoupon } from "@/lib/api/coupons";
 import { createOrder, verifyPayment } from "@/lib/api/checkout";
@@ -25,6 +26,10 @@ export type BookingInfo = {
   members: string[];
   gotra: string;
   gotraUnknown: boolean;
+  address: string;
+  city: string;
+  pincode: string;
+  specialInstructions: string;
 };
 
 const TIME_SLOTS = [
@@ -55,11 +60,13 @@ export function OrderSummary({
   date,
   addons,
   bookingInfo,
+  requiresPandit,
 }: {
   service: MockService;
   date?: string;
   addons: ServiceAddon[];
   bookingInfo: BookingInfo;
+  requiresPandit: boolean;
 }) {
   const router = useRouter();
   const { isLoggedIn, phone } = useAuth();
@@ -159,6 +166,13 @@ export function OrderSummary({
       setPayError("Add at least one member name.");
       return;
     }
+    if (
+      requiresPandit &&
+      (!bookingInfo.address.trim() || !bookingInfo.city.trim() || !bookingInfo.pincode.trim())
+    ) {
+      setPayError("Address, city and pincode are required for this puja.");
+      return;
+    }
     if (!service.id) {
       setPayError("This service can't be booked right now.");
       return;
@@ -184,6 +198,10 @@ export function OrderSummary({
         gotra: bookingInfo.gotraUnknown ? undefined : bookingInfo.gotra.trim() || undefined,
         gotra_unknown: bookingInfo.gotraUnknown,
         coupon_code: applied?.code,
+        address: requiresPandit ? bookingInfo.address.trim() || undefined : undefined,
+        city: requiresPandit ? bookingInfo.city.trim() || undefined : undefined,
+        pincode: requiresPandit ? bookingInfo.pincode.trim() || undefined : undefined,
+        special_instructions: bookingInfo.specialInstructions.trim() || undefined,
       });
 
       if (result.payment_required && result.razorpay) {
@@ -279,18 +297,12 @@ export function OrderSummary({
           <p className="mb-2 text-sm font-semibold text-text-primary">
             Puja Time
           </p>
-          <select
+          <Select
             value={bookingTime}
-            onChange={(e) => setBookingTime(e.target.value)}
-            className="min-h-[44px] w-full rounded-md border border-border-dark bg-white px-4 text-sm font-medium text-text-primary outline-none focus:border-brand-saffron-400"
-          >
-            <option value="">Select a time</option>
-            {TIME_SLOTS.map((slot) => (
-              <option key={slot.value} value={slot.value}>
-                {slot.label}
-              </option>
-            ))}
-          </select>
+            onChange={setBookingTime}
+            options={TIME_SLOTS}
+            placeholder="Select a time"
+          />
         </div>
 
         {addons.length > 0 && (
