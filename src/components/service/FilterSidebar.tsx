@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -41,7 +41,7 @@ function FilterBlock({
   );
 }
 
-export function FilterSidebar() {
+function FilterSidebarInner() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -219,5 +219,21 @@ export function FilterSidebar() {
         </ul>
       </FilterBlock>
     </aside>
+  );
+}
+
+export function FilterSidebar() {
+  return (
+    <Suspense
+      fallback={
+        <aside className="flex flex-col gap-5">
+          <div className="rounded-xl bg-white p-5 shadow-card">
+            <Skeleton className="h-6 w-1/2" />
+          </div>
+        </aside>
+      }
+    >
+      <FilterSidebarInner />
+    </Suspense>
   );
 }

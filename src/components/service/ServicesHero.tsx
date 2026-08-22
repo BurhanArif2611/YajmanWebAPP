@@ -1,15 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import Image from "next/image";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 
-export function ServicesHero({ title }: { title: string }) {
+function SearchForm({ pathname }: { pathname: string }) {
   const router = useRouter();
-  const pathname = usePathname();
   const searchParams = useSearchParams();
   const [search, setSearch] = useState(searchParams.get("search") ?? "");
 
@@ -21,6 +20,51 @@ export function ServicesHero({ title }: { title: string }) {
     params.delete("page");
     router.push(`${pathname}?${params.toString()}`, { scroll: false });
   };
+
+  return (
+    <form
+      onSubmit={handleSearch}
+      className="absolute bottom-5 left-1/2 z-20 flex w-full max-w-2xl -translate-x-1/2 flex-col gap-2 rounded-full bg-white p-2 shadow-card-hover sm:flex-row"
+    >
+      <Input
+        variant="pill"
+        type="text"
+        placeholder="Search for Puja, Festival & Rituals..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        containerClassName="min-h-[44px] flex-1 bg-transparent"
+        leading={<Search size={20} />}
+      />
+      <Button type="submit" size="md" className="rounded-full px-8">
+        Search
+      </Button>
+    </form>
+  );
+}
+
+function SearchFormFallback() {
+  return (
+    <form
+      onSubmit={(e) => e.preventDefault()}
+      className="absolute bottom-5 left-1/2 z-20 flex w-full max-w-2xl -translate-x-1/2 flex-col gap-2 rounded-full bg-white p-2 shadow-card-hover sm:flex-row"
+    >
+      <Input
+        variant="pill"
+        type="text"
+        placeholder="Search for Puja, Festival & Rituals..."
+        defaultValue=""
+        containerClassName="min-h-[44px] flex-1 bg-transparent"
+        leading={<Search size={20} />}
+      />
+      <Button type="submit" size="md" className="rounded-full px-8">
+        Search
+      </Button>
+    </form>
+  );
+}
+
+export function ServicesHero({ title }: { title: string }) {
+  const pathname = usePathname();
 
   return (
     <section className="relative flex min-h-[320px] items-center justify-center overflow-hidden md:min-h-[300px]">
@@ -40,23 +84,9 @@ export function ServicesHero({ title }: { title: string }) {
         </h1>
       </div>
 
-      <form
-        onSubmit={handleSearch}
-        className="absolute bottom-5 left-1/2 z-20 flex w-full max-w-2xl -translate-x-1/2 flex-col gap-2 rounded-full bg-white p-2 shadow-card-hover sm:flex-row"
-      >
-        <Input
-          variant="pill"
-          type="text"
-          placeholder="Search for Puja, Festival & Rituals..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          containerClassName="min-h-[44px] flex-1 bg-transparent"
-          leading={<Search size={20} />}
-        />
-        <Button type="submit" size="md" className="rounded-full px-8">
-          Search
-        </Button>
-      </form>
+      <Suspense fallback={<SearchFormFallback />}>
+        <SearchForm pathname={pathname} />
+      </Suspense>
     </section>
   );
 }

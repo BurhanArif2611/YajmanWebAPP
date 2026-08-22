@@ -1,12 +1,13 @@
 "use client";
 
+import { Suspense } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { cn } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { getBlogCategories } from "@/lib/api/blogs";
 
-export function BlogCategoryTabs() {
+function BlogCategoryTabsInner() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -66,5 +67,21 @@ export function BlogCategoryTabs() {
         </button>
       ))}
     </div>
+  );
+}
+
+export function BlogCategoryTabs() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex flex-wrap items-center justify-center gap-8 border-b border-border pb-4">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <Skeleton key={i} className="h-6 w-24" />
+          ))}
+        </div>
+      }
+    >
+      <BlogCategoryTabsInner />
+    </Suspense>
   );
 }

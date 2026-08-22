@@ -17,6 +17,10 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "yajman.s3.ap-south-1.amazonaws.com",
       },
+      {
+        protocol: "https",
+        hostname: "yajmanbucket.blr1.digitaloceanspaces.com",
+      },
     ],
   },
 };

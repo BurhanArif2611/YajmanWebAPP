@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ArrowUpDown } from "lucide-react";
 import { Select } from "@/components/ui/Select";
@@ -13,7 +14,7 @@ const SORT_OPTIONS: { value: ServiceSortOption; label: string }[] = [
   { value: "newest", label: "Newest" },
 ];
 
-export function SortBar({
+function SortBarInner({
   resultCount,
   total,
 }: {
@@ -53,5 +54,25 @@ export function SortBar({
         />
       </div>
     </div>
+  );
+}
+
+export function SortBar(props: { resultCount: number; total?: number }) {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex items-center justify-between gap-4">
+          <p className="text-sm text-text-muted">
+            Showing <span className="font-medium text-text-primary">{props.resultCount}</span>
+            {typeof props.total === "number" && props.total !== props.resultCount && (
+              <> of <span className="font-medium text-text-primary">{props.total}</span></>
+            )}{" "}
+            results
+          </p>
+        </div>
+      }
+    >
+      <SortBarInner {...props} />
+    </Suspense>
   );
 }

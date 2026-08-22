@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { Bell, ChevronDown, Menu, User } from "lucide-react";
 import { TopBar } from "@/components/layout/TopBar";
 import { MobileDrawer } from "@/components/layout/MobileDrawer";
@@ -24,13 +24,60 @@ function isNavLinkActive(href: string, pathname: string, searchParams: URLSearch
   return Array.from(linkParams.entries()).every(([key, value]) => searchParams.get(key) === value);
 }
 
-export function Header() {
-  const [drawerOpen, setDrawerOpen] = useState(false);
+function NavLinks() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const navLinks = useNavLinks();
+
+  return (
+    <nav className="hidden items-center gap-5 xl:gap-8 lg:flex">
+      {navLinks.map((link) => {
+        const isActive = isNavLinkActive(link.href, pathname, searchParams);
+        return (
+          <Link
+            key={link.href}
+            href={link.href}
+            className={`whitespace-nowrap text-sm font-medium transition-colors hover:text-brand-saffron-400 xl:text-sm ${
+              isActive ? "text-brand-saffron-400" : "text-text-primary"
+            }`}
+          >
+            {link.label}
+          </Link>
+        );
+      })}
+    </nav>
+  );
+}
+
+function NavLinksFallback() {
+  const pathname = usePathname();
+  const navLinks = useNavLinks();
+
+  return (
+    <nav className="hidden items-center gap-5 xl:gap-8 lg:flex">
+      {navLinks.map((link) => {
+        const [linkPath] = link.href.split("?");
+        const isActive = pathname === linkPath;
+        return (
+          <Link
+            key={link.href}
+            href={link.href}
+            className={`whitespace-nowrap text-sm font-medium transition-colors hover:text-brand-saffron-400 xl:text-sm ${
+              isActive ? "text-brand-saffron-400" : "text-text-primary"
+            }`}
+          >
+            {link.label}
+          </Link>
+        );
+      })}
+    </nav>
+  );
+}
+
+export function Header() {
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const { isLoggedIn } = useAuth();
   const { data: unread } = useUnreadCount();
-  const navLinks = useNavLinks();
 
   return (
     <header className="sticky top-0 z-40 bg-white">
@@ -39,21 +86,9 @@ export function Header() {
         <div className="mx-auto flex h-20 max-w-site items-center justify-between gap-6 px-4 md:px-8 lg:px-16">
           <Image src="/images/logo/logo.svg" alt="logo" width={200} height={200} />
 
-          <nav className="hidden items-center gap-5 xl:gap-8 lg:flex">
-            {navLinks.map((link) => {
-              const isActive = isNavLinkActive(link.href, pathname, searchParams);
-              return (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={`whitespace-nowrap text-sm font-medium transition-colors hover:text-brand-saffron-400 xl:text-sm ${isActive ? "text-brand-saffron-400" : "text-text-primary"
-                    }`}
-                >
-                  {link.label}
-                </Link>
-              );
-            })}
-          </nav>
+          <Suspense fallback={<NavLinksFallback />}>
+            <NavLinks />
+          </Suspense>
 
           <div className="hidden items-center gap-5 lg:flex">
             <button className="flex items-center gap-1 text-sm font-medium text-text-primary">
