@@ -1,4 +1,4 @@
-import Image from "next/image";
+import Image from "@/components/ui/AppImage";
 import Link from "next/link";
 import { ArrowUpRight, Calendar } from "lucide-react";
 import { format, parseISO } from "date-fns";

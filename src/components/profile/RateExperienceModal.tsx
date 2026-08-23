@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Image from "next/image";
+import Image from "@/components/ui/AppImage";
 import { Camera, Star, X } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { submitReview } from "@/lib/api/bookings";

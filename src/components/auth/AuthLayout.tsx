@@ -1,4 +1,4 @@
-import Image from "next/image";
+import Image from "@/components/ui/AppImage";
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
 import { TopoDoodle } from "@/components/ui/TopoDoodle";

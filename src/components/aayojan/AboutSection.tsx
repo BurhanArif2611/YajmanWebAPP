@@ -1,4 +1,4 @@
-import Image from "next/image";
+import Image from "@/components/ui/AppImage";
 import { ClipboardList, MapPin } from "lucide-react";
 import { ButtonLink } from "@/components/ui/Button";
 

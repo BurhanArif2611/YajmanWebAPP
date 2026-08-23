@@ -5,7 +5,7 @@ import { Bell, ChevronDown, Menu, User } from "lucide-react";
 import { TopBar } from "@/components/layout/TopBar";
 import { MobileDrawer } from "@/components/layout/MobileDrawer";
 import { usePathname, useSearchParams } from "next/navigation";
-import Image from "next/image";
+import Image from "@/components/ui/AppImage";
 import Link from "next/link";
 import { ButtonLink } from "@/components/ui/Button";
 import { useAuth } from "@/hooks/useAuth";

@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import Image from "next/image";
+import Image from "@/components/ui/AppImage";
 import { Share2 } from "lucide-react";
 import { format, parseISO } from "date-fns";
 import { Breadcrumb } from "@/components/layout/Breadcrumb";

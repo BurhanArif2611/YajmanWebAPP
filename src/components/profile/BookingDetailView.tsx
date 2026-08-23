@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
+import Image from "@/components/ui/AppImage";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { differenceInHours, format, parseISO } from "date-fns";

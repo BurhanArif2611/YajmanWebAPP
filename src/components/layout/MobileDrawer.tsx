@@ -9,7 +9,7 @@ import {
   TwitterIcon,
   YoutubeIcon,
 } from "@/components/ui/SocialIcons";
-import Image from "next/image";
+import Image from "@/components/ui/AppImage";
 import Link from "next/link";
 import { Input } from "@/components/ui/Input";
 import { ButtonLink } from "@/components/ui/Button";

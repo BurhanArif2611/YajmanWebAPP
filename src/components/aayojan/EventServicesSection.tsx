@@ -1,4 +1,4 @@
-import Image from "next/image";
+import Image from "@/components/ui/AppImage";
 import { format, parseISO } from "date-fns";
 import { ArrowUpRight, Calendar, MapPin } from "lucide-react";
 import { SectionHeader } from "@/components/ui/SectionHeader";

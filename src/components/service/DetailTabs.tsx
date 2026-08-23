@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import Image from "next/image";
+import Image from "@/components/ui/AppImage";
 import { Star } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { FaqAccordion } from "@/components/service/FaqAccordion";

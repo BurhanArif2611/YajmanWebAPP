@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Image from "next/image";
+import Image from "@/components/ui/AppImage";
 import { useRouter } from "next/navigation";
 import { Calendar, ChevronRight, MapPin, Ticket, X } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
