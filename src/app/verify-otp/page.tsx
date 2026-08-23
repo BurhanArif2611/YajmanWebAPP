@@ -8,14 +8,14 @@ import { OtpInput } from "@/components/auth/OtpInput";
 import { verifyOtp, sendOtp } from "@/lib/api/auth";
 import { setSession } from "@/lib/auth";
 import { ApiError } from "@/lib/apiError";
-import { DEMO_PHONE } from "@/lib/constants";
+import { digitsOnly } from "@/lib/utils";
 
 const RESEND_COOLDOWN = 30;
 
 function VerifyOtpForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const phone = searchParams.get("phone") ?? DEMO_PHONE;
+  const phone = digitsOnly(searchParams.get("phone"));
 
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
@@ -30,7 +30,11 @@ function VerifyOtpForm() {
   }, [resendCooldown]);
 
   const handleVerify = async (code: string = otp) => {
-    if (code.length !== 6) {
+    if (!phone) {
+      setError("Phone number is missing. Go back and request a new OTP.");
+      return;
+    }
+    if (!code.trim() || code.length !== 6) {
       setError("Enter the 6-digit code sent to your phone.");
       return;
     }
@@ -62,6 +66,10 @@ function VerifyOtpForm() {
     setResending(true);
     setError(null);
     try {
+      if (!phone) {
+        setError("Phone number is missing. Go back and request a new OTP.");
+        return;
+      }
       await sendOtp(phone);
       setResendCooldown(RESEND_COOLDOWN);
     } catch (err) {
@@ -85,23 +93,38 @@ function VerifyOtpForm() {
         </p>
       </div>
 
-      <OtpInput
-        onChange={setOtp}
-        onComplete={handleVerify}
-        error={Boolean(error)}
-        disabled={loading}
-      />
-
-      {error && <p className="text-sm font-medium text-error">{error}</p>}
-
-      <Button
-        size="lg"
-        className="w-full justify-center rounded-full"
-        onClick={() => handleVerify()}
-        disabled={loading}
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          void handleVerify();
+        }}
+        className="flex flex-col gap-6"
+        noValidate
       >
-        {loading ? "Verifying..." : "Verify"}
-      </Button>
+        <div>
+          <OtpInput
+            onChange={(value) => {
+              setOtp(value);
+              setError(null);
+            }}
+            onComplete={handleVerify}
+            error={Boolean(error)}
+            disabled={loading}
+          />
+          {error ? (
+            <p className="mt-2 text-sm font-medium text-error">{error}</p>
+          ) : null}
+        </div>
+
+        <Button
+          type="submit"
+          size="lg"
+          className="w-full justify-center rounded-full"
+          disabled={loading}
+        >
+          {loading ? "Verifying..." : "Verify"}
+        </Button>
+      </form>
 
       <p className="text-center text-sm text-text-muted">
         Didn&apos;t Receive Code?{" "}

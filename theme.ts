@@ -171,6 +171,11 @@ const theme: Config["theme"] = {
         "0%": { opacity: "1" },
         "100%": { opacity: "0" },
       },
+      // Bottom sheet: slides in from bottom
+      "sheet-open": {
+        "0%": { transform: "translateY(100%)" },
+        "100%": { transform: "translateY(0)" },
+      },
       // Stagger children (for card grids, list items)
       "stagger-in": {
         "0%": { opacity: "0", transform: "translateY(12px)" },
@@ -183,6 +188,7 @@ const theme: Config["theme"] = {
       "scale-in": "scale-in 0.3s ease-out forwards",
       "drawer-open": "drawer-open 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards",
       "drawer-close": "drawer-close 0.25s ease-in forwards",
+      "sheet-open": "sheet-open 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards",
       "overlay-in": "overlay-in 0.3s ease-out forwards",
       "overlay-out": "overlay-out 0.25s ease-in forwards",
       "stagger-in": "stagger-in 0.4s ease-out forwards",

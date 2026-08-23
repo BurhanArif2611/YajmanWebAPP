@@ -1,5 +1,4 @@
 import { ServicesHero } from "@/components/service/ServicesHero";
-import { Breadcrumb } from "@/components/layout/Breadcrumb";
 import { FilterSidebar } from "@/components/service/FilterSidebar";
 import { SortBar } from "@/components/service/SortBar";
 import { ServiceCard } from "@/components/service/ServiceCard";
@@ -58,13 +57,11 @@ export default async function ServicesPage({
 
   return (
     <>
-      <ServicesHero title="Our Services" />
+      <ServicesHero title="Our Services" showMobileFilters />
 
-      <div className="relative z-10 -mt-8 rounded-t-[32px] bg-white md:-mt-10">
-        <Breadcrumb items={[{ label: "Home", href: "/" }, { label: "Our Services" }]} />
-
+      <div className="relative z-10 bg-white pt-2 sm:-mt-8 sm:rounded-t-[32px] sm:pt-10 md:-mt-10">
         <div className="mx-auto max-w-site px-4 pb-16 md:px-8 md:pb-20 lg:px-16 lg:pb-24">
-          <div className="grid grid-cols-1 gap-8 lg:grid-cols-[280px_1fr]">
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-[280px_1fr] lg:gap-8">
             <FilterSidebar />
 
             <div>

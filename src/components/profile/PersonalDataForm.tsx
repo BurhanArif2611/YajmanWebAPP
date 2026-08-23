@@ -108,7 +108,8 @@ export function PersonalDataForm() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    updateMutation.mutate(form);
+    const { phone: _phone, ...payload } = form;
+    updateMutation.mutate(payload);
   };
 
   const submitError =
@@ -221,13 +222,23 @@ export function PersonalDataForm() {
               <Input
                 type="tel"
                 value={form.phone ?? ""}
-                onChange={handleField("phone")}
+                disabled
+                readOnly
+                containerClassName="cursor-not-allowed bg-surface-muted opacity-80"
                 leading={
                   <Image src="/icons/whatsapp.png" alt="" width={20} height={20} />
                 }
               />
             </Field>
 
+            <Field label="Calling Number" error={submitError?.fieldMessage("calling_number")}>
+              <Input
+                type="tel"
+                placeholder="Enter calling number"
+                value={form.calling_number ?? ""}
+                onChange={handleField("calling_number")}
+              />
+            </Field>
 
             <Field label="Gender">
               <Select

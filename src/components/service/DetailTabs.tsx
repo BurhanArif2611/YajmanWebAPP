@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import { Star } from "lucide-react";
 import { Button } from "@/components/ui/Button";
@@ -31,7 +31,7 @@ const KEY_FEATURES = Array.from({ length: 5 }).map(
   () => "Abhishek of the Shivling with milk, curd, ghee, honey, sugar, and holy water."
 );
 
-const TEMPLE_PARAGRAPH =
+const PROCESS_INTRO =
   "Discover the perfect escape with our carefully curated travel packages. Whether you're seeking adventure, relaxation, or cultural discovery, our tours are designed to offer unforgettable experiences. Explore breath-taking landscapes, meet friendly locals, and create lasting memories in some of the world's most stunning destinations. Every journey is crafted with comfort.";
 
 const PROCESS_STEPS = [
@@ -90,7 +90,13 @@ export function DetailTabs({
   photos,
   faqs,
 }: DetailTabsProps) {
-  const [active, setActive] = useState<Tab>(TABS[0]);
+  const hasTemple = Boolean(templeName?.trim() || templeDescription?.trim());
+  const tabs = useMemo(
+    () => (hasTemple ? [...TABS] : TABS.filter((tab) => tab !== "Temple Details")),
+    [hasTemple]
+  );
+
+  const [active, setActive] = useState<Tab>(tabs[0]);
   const features = keyFeatures?.length ? keyFeatures : KEY_FEATURES;
   const faqItems = faqs?.length ? faqs : FAQS;
   const sectionRefs = useRef<Partial<Record<Tab, HTMLDivElement | null>>>({});
@@ -113,13 +119,13 @@ export function DetailTabs({
       { rootMargin: "-120px 0px -60% 0px", threshold: 0 }
     );
 
-    TABS.forEach((tab) => {
+    tabs.forEach((tab) => {
       const el = sectionRefs.current[tab];
       if (el) observer.observe(el);
     });
 
     return () => observer.disconnect();
-  }, []);
+  }, [tabs]);
 
   const handleTabClick = (tab: Tab) => {
     setActive(tab);
@@ -133,7 +139,7 @@ export function DetailTabs({
   return (
     <section className="flex flex-col gap-14">
       <div className="sticky top-20 z-30 -mx-4 flex flex-wrap gap-8 border-b border-border bg-white px-4 md:-mx-8 md:px-8 lg:-mx-16 lg:px-16">
-        {TABS.map((tab) => (
+        {tabs.map((tab) => (
           <button
             key={tab}
             onClick={() => handleTabClick(tab)}
@@ -170,23 +176,29 @@ export function DetailTabs({
         </ul>
       </div>
 
-      <div
-        id={TAB_IDS["Temple Details"]}
-        data-tab="Temple Details"
-        ref={(el) => {
-          sectionRefs.current["Temple Details"] = el;
-        }}
-        className="scroll-mt-40"
-      >
-        <h2 className="font-sans text-2xl font-semibold text-text-primary">
-          {templeName ?? "Omkareshwar Temple"}
-        </h2>
-        <div className="mt-4 flex flex-col gap-4">
-          <p className="text-sm leading-relaxed text-text-muted">
-            {templeDescription ?? TEMPLE_PARAGRAPH}
-          </p>
+      {hasTemple && (
+        <div
+          id={TAB_IDS["Temple Details"]}
+          data-tab="Temple Details"
+          ref={(el) => {
+            sectionRefs.current["Temple Details"] = el;
+          }}
+          className="scroll-mt-40"
+        >
+          {templeName?.trim() && (
+            <h2 className="font-sans text-2xl font-semibold text-text-primary">
+              {templeName.trim()}
+            </h2>
+          )}
+          {templeDescription?.trim() && (
+            <div className={cn("flex flex-col gap-4", templeName?.trim() && "mt-4")}>
+              <p className="text-sm leading-relaxed text-text-muted">
+                {templeDescription.trim()}
+              </p>
+            </div>
+          )}
         </div>
-      </div>
+      )}
 
       <div
         id={TAB_IDS.Process}
@@ -200,7 +212,7 @@ export function DetailTabs({
           Puja Process
         </h2>
         <p className="mt-3 max-w-2xl text-sm leading-relaxed text-text-muted">
-          {TEMPLE_PARAGRAPH}
+          {PROCESS_INTRO}
         </p>
         <div className="mt-8 grid grid-cols-2 gap-8 sm:grid-cols-4">
           {PROCESS_STEPS.map((step) => (

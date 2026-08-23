@@ -6,6 +6,7 @@ import { Star } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import useEmblaCarousel from "embla-carousel-react";
 import { SectionHeader } from "@/components/ui/SectionHeader";
+import { Skeleton } from "@/components/ui/Skeleton";
 import { getTestimonials } from "@/lib/api/testimonials";
 import type { Testimonial } from "@/types/api";
 
@@ -36,7 +37,7 @@ export function TestimonialSection() {
 
   return (
     <section className="overflow-hidden bg-white">
-      <div className="mx-auto max-w-site px-4 py-16 md:px-8 md:py-20 lg:px-16 lg:py-8">
+      <div className="mx-auto max-w-site px-4 py-10 md:px-8 md:py-16 lg:px-16 lg:py-8">
         <SectionHeader
           eyebrow="Our Testimonial"
           heading="What our customers talk about us."
@@ -44,12 +45,25 @@ export function TestimonialSection() {
         />
       </div>
 
-      <div className="mt-14 flex flex-col gap-6">
-        {/* left to right */}
-        <MarqueeRow items={row1} reverse />
-        {/* right to left */}
-        <MarqueeRow items={row2} />
-      </div>
+      {testimonialsQuery.isLoading ? (
+        <div className="mt-8 flex flex-col gap-4 px-4 sm:mt-10 sm:gap-6 md:mt-14 md:px-8 lg:px-16">
+          <div className="flex gap-4 overflow-hidden sm:gap-6">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <Skeleton key={i} className="h-48 w-[280px] shrink-0 rounded-2xl sm:w-[360px]" />
+            ))}
+          </div>
+          <div className="flex gap-4 overflow-hidden sm:gap-6">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <Skeleton key={i} className="h-48 w-[280px] shrink-0 rounded-2xl sm:w-[360px]" />
+            ))}
+          </div>
+        </div>
+      ) : (
+        <div className="mt-8 flex flex-col gap-4 sm:mt-10 sm:gap-6 md:mt-14">
+          <MarqueeRow items={row1} reverse />
+          <MarqueeRow items={row2} />
+        </div>
+      )}
     </section>
   );
 }

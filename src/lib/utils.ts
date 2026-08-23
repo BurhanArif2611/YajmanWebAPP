@@ -5,6 +5,11 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+/** Last 10 digits from a phone string; safe for empty/undefined values. */
+export function digitsOnly(value: string | null | undefined) {
+  return String(value ?? "").replace(/\D/g, "").slice(-10);
+}
+
 /** Loose match so labels don't have to exactly mirror the API's name casing/spacing. */
 export function normalizeName(value: string) {
   return value.toLowerCase().replace(/[^a-z0-9]/g, "");

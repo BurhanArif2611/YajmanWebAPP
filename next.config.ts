@@ -20,6 +20,7 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "yajmanbucket.blr1.digitaloceanspaces.com",
+        pathname: "/**",
       },
     ],
   },

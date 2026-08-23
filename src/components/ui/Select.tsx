@@ -48,7 +48,7 @@ export function Select({
       >
         <span
           className={cn(
-            "text-base font-medium",
+            "min-w-0 flex-1 truncate text-base font-medium",
             selected ? "text-text-primary" : "text-text-light"
           )}
         >

@@ -6,10 +6,9 @@ import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { submitServiceInquiry } from "@/lib/api/services";
 import { ApiError } from "@/lib/apiError";
+import { digitsOnly } from "@/lib/utils";
 
-function digitsOnly(phone: string) {
-  return phone.replace(/\D/g, "").slice(-10);
-}
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export function EnquiryModal({
   serviceId,
@@ -47,13 +46,17 @@ export function EnquiryModal({
     e.preventDefault();
 
     const phoneDigits = digitsOnly(number);
-    if (!name.trim() || !/^[6-9]\d{9}$/.test(phoneDigits)) {
-      setFieldErrors({
-        ...(!name.trim() ? { name: "Name is required." } : {}),
-        ...(!/^[6-9]\d{9}$/.test(phoneDigits)
-          ? { phone: "Enter a valid 10-digit phone number." }
-          : {}),
-      });
+    const nextErrors: Record<string, string> = {};
+    if (!name.trim()) nextErrors.name = "Name is required.";
+    if (!number.trim()) nextErrors.phone = "Phone number is required.";
+    else if (!/^[6-9]\d{9}$/.test(phoneDigits)) {
+      nextErrors.phone = "Enter a valid 10-digit phone number.";
+    }
+    if (email.trim() && !EMAIL_RE.test(email.trim())) {
+      nextErrors.email = "Enter a valid email address.";
+    }
+    if (Object.keys(nextErrors).length) {
+      setFieldErrors(nextErrors);
       return;
     }
 
@@ -104,7 +107,7 @@ export function EnquiryModal({
             back to you shortly.
           </p>
         ) : (
-          <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-4">
+          <form onSubmit={handleSubmit} noValidate className="mt-6 flex flex-col gap-4">
             <div>
               <p className="mb-1 text-sm font-semibold text-text-primary">Category</p>
               <p className="rounded-xl border border-border-dark bg-surface-muted px-4 py-3 text-sm text-text-secondary">
@@ -117,7 +120,11 @@ export function EnquiryModal({
               <Input
                 placeholder="Your name"
                 value={name}
-                onChange={(e) => setName(e.target.value)}
+                onChange={(e) => {
+                  setName(e.target.value);
+                  setFieldErrors((prev) => ({ ...prev, name: "" }));
+                }}
+                error={Boolean(fieldErrors.name)}
                 containerClassName="bg-white"
               />
               {fieldErrors.name && (
@@ -130,7 +137,11 @@ export function EnquiryModal({
                 type="tel"
                 placeholder="Your number"
                 value={number}
-                onChange={(e) => setNumber(e.target.value)}
+                onChange={(e) => {
+                  setNumber(e.target.value);
+                  setFieldErrors((prev) => ({ ...prev, phone: "" }));
+                }}
+                error={Boolean(fieldErrors.phone)}
                 containerClassName="bg-white"
               />
               {fieldErrors.phone && (
@@ -143,7 +154,11 @@ export function EnquiryModal({
                 type="email"
                 placeholder="Your email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  setFieldErrors((prev) => ({ ...prev, email: "" }));
+                }}
+                error={Boolean(fieldErrors.email)}
                 containerClassName="bg-white"
               />
               {fieldErrors.email && (
@@ -154,10 +169,15 @@ export function EnquiryModal({
             <div>
               <textarea
                 value={message}
-                onChange={(e) => setMessage(e.target.value)}
+                onChange={(e) => {
+                  setMessage(e.target.value);
+                  setFieldErrors((prev) => ({ ...prev, message: "" }));
+                }}
                 placeholder={`What would you like to know about ${category}?`}
                 rows={4}
-                className="w-full resize-none rounded-xl border border-border-dark p-4 text-sm text-text-primary outline-none placeholder:text-text-light"
+                className={`w-full resize-none rounded-xl border p-4 text-sm text-text-primary outline-none placeholder:text-text-light ${
+                  fieldErrors.message ? "border-error" : "border-border-dark"
+                }`}
               />
               {fieldErrors.message && (
                 <p className="mt-1 text-xs font-medium text-error">{fieldErrors.message}</p>

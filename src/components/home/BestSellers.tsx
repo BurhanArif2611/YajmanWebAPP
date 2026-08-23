@@ -9,9 +9,7 @@ import { ServiceCard } from "@/components/service/ServiceCard";
 import { getCategories } from "@/lib/api/catalog";
 import { getServices } from "@/lib/api/services";
 import { mapServiceToCard } from "@/lib/mappers/service";
-import { cn, normalizeName } from "@/lib/utils";
-
-const TABS = ["E-puja", "Puja At Home", "Premium Puja"];
+import { cn } from "@/lib/utils";
 
 const VISIBLE = 4;
 const FETCH_LIMIT = 8;
@@ -20,19 +18,17 @@ export function BestSellers() {
   const [activeTab, setActiveTab] = useState(0);
   const [offset, setOffset] = useState(0);
 
-  // Shares the ["categories"] cache with CategorySection so this doesn't refetch.
   const categoriesQuery = useQuery({
     queryKey: ["categories"],
     queryFn: getCategories,
     staleTime: 5 * 60_000,
   });
 
-  const activeCategory = categoriesQuery.data?.find(
-    (c) => normalizeName(c.name) === normalizeName(TABS[activeTab])
-  );
+  const tabs = (categoriesQuery.data ?? []).filter((c) => c.requires_payment !== false);
+  const activeCategory = tabs[activeTab];
 
   const servicesQuery = useQuery({
-    queryKey: ["services", "bestseller", activeCategory?.id ?? TABS[activeTab]],
+    queryKey: ["services", "bestseller", activeCategory?.id],
     queryFn: () =>
       getServices({
         category: activeCategory?.id,
@@ -44,18 +40,22 @@ export function BestSellers() {
   });
 
   const pool = servicesQuery.data?.data.map(mapServiceToCard) ?? [];
+  const isLoading =
+    categoriesQuery.isLoading || (!!activeCategory && servicesQuery.isLoading);
 
   const services = pool.length
     ? Array.from(
-        { length: VISIBLE },
+        { length: Math.min(VISIBLE, pool.length) },
         (_, i) => pool[(((offset + i) % pool.length) + pool.length) % pool.length]
       )
     : [];
 
+  if (!categoriesQuery.isLoading && !tabs.length) return null;
+
   return (
     <section className="bg-white">
-      <div className="mx-auto max-w-site px-4 py-16 md:px-8 md:py-20 lg:px-16 lg:py-24">
-        <div className="flex flex-col items-center justify-between gap-6 sm:flex-row sm:items-end">
+      <div className="mx-auto max-w-site px-4 py-10 md:px-8 md:py-16 lg:px-16 lg:py-24">
+        <div className="flex flex-col items-center justify-between gap-4 sm:flex-row sm:items-end sm:gap-6">
           <SectionHeader
             eyebrow="Discover"
             heading="Best Sellers"
@@ -63,30 +63,38 @@ export function BestSellers() {
             className="items-center text-center sm:items-start sm:text-left"
           />
 
-          <div className="flex flex-wrap items-center justify-center gap-8">
-            {TABS.map((tab, i) => (
-              <button
-                key={tab}
-                onClick={() => {
-                  setActiveTab(i);
-                  setOffset(0);
-                }}
-                className={cn(
-                  "min-h-[44px] border-b-2 px-1 text-lg font-medium transition-colors",
-                  activeTab === i
-                    ? "border-brand-saffron-400 text-text-primary"
-                    : "border-transparent text-text-light hover:text-text-secondary"
-                )}
-              >
-                {tab}
-              </button>
-            ))}
-          </div>
+          {categoriesQuery.isLoading ? (
+            <div className="flex flex-wrap items-center justify-center gap-8">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <Skeleton key={i} className="h-8 w-24" />
+              ))}
+            </div>
+          ) : (
+            <div className="flex flex-wrap items-center justify-center gap-8">
+              {tabs.map((tab, i) => (
+                <button
+                  key={tab.id}
+                  onClick={() => {
+                    setActiveTab(i);
+                    setOffset(0);
+                  }}
+                  className={cn(
+                    "min-h-[44px] border-b-2 px-1 text-lg font-medium transition-colors",
+                    activeTab === i
+                      ? "border-brand-saffron-400 text-text-primary"
+                      : "border-transparent text-text-light hover:text-text-secondary"
+                  )}
+                >
+                  {tab.name}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
-        <div className="relative mt-10">
-          {categoriesQuery.isLoading || servicesQuery.isLoading ? (
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="relative mt-6 sm:mt-8 md:mt-10">
+          {isLoading ? (
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4">
               {Array.from({ length: VISIBLE }).map((_, i) => (
                 <div key={i} className="flex flex-col gap-3 rounded-xl bg-white p-3 shadow-card">
                   <Skeleton className="aspect-square w-full rounded-lg" />
@@ -99,7 +107,7 @@ export function BestSellers() {
             </div>
           ) : services.length ? (
             <>
-              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4">
                 {services.map((service, i) => (
                   <div
                     key={`${service.slug}-${offset + i}`}
@@ -111,26 +119,26 @@ export function BestSellers() {
                 ))}
               </div>
 
-              <button
-                aria-label="Previous services"
-                onClick={() => setOffset((o) => o - 1)}
-                className="absolute left-0 top-1/2 hidden h-11 w-11 -translate-x-5 -translate-y-1/2 items-center justify-center rounded-full bg-white text-text-primary shadow-card-hover lg:flex"
-              >
-                <ChevronLeft size={20} />
-              </button>
-              <button
-                aria-label="Next services"
-                onClick={() => setOffset((o) => o + 1)}
-                className="absolute right-0 top-1/2 hidden h-11 w-11 -translate-y-1/2 translate-x-5 items-center justify-center rounded-full bg-brand-saffron-400 text-white shadow-card-hover lg:flex"
-              >
-                <ChevronRight size={20} />
-              </button>
+              {pool.length > VISIBLE && (
+                <>
+                  <button
+                    aria-label="Previous services"
+                    onClick={() => setOffset((o) => o - 1)}
+                    className="absolute left-0 top-1/2 hidden h-11 w-11 -translate-x-5 -translate-y-1/2 items-center justify-center rounded-full bg-white text-text-primary shadow-card-hover lg:flex"
+                  >
+                    <ChevronLeft size={20} />
+                  </button>
+                  <button
+                    aria-label="Next services"
+                    onClick={() => setOffset((o) => o + 1)}
+                    className="absolute right-0 top-1/2 hidden h-11 w-11 -translate-y-1/2 translate-x-5 items-center justify-center rounded-full bg-brand-saffron-400 text-white shadow-card-hover lg:flex"
+                  >
+                    <ChevronRight size={20} />
+                  </button>
+                </>
+              )}
             </>
-          ) : (
-            <p className="text-center text-text-muted">
-              No bestsellers in this category yet.
-            </p>
-          )}
+          ) : null}
         </div>
       </div>
     </section>

@@ -6,7 +6,6 @@ import { useQuery } from "@tanstack/react-query";
 import { getServices } from "@/lib/api/services";
 import { mapServiceToCard } from "@/lib/mappers/service";
 import { Skeleton } from "@/components/ui/Skeleton";
-import { BLOG_PROMO_CARDS } from "@/lib/constants";
 
 const LIMIT = 4;
 
@@ -19,10 +18,12 @@ export function PujaServicesSidebar() {
 
   const services = bestsellersQuery.data?.data.map(mapServiceToCard) ?? [];
 
+  if (!bestsellersQuery.isLoading && !services.length) return null;
+
   return (
     <aside className="flex flex-col gap-6">
-      <div className="rounded-2xl bg-white p-6  border border-gray-200">
-        <h3 className="font-sans text-lg mb-2 font-semibold text-text-primary">
+      <div className="rounded-2xl border border-gray-200 bg-white p-6">
+        <h3 className="mb-2 font-sans text-lg font-semibold text-text-primary">
           Puja Services
         </h3>
 
@@ -31,14 +32,14 @@ export function PujaServicesSidebar() {
             {Array.from({ length: LIMIT }).map((_, i) => (
               <li key={i} className="flex gap-3">
                 <Skeleton className="h-20 w-20 shrink-0 rounded-md" />
-                <div className="flex-1 flex flex-col gap-2">
+                <div className="flex flex-1 flex-col gap-2">
                   <Skeleton className="h-4 w-full" />
                   <Skeleton className="h-4 w-1/2" />
                 </div>
               </li>
             ))}
           </ul>
-        ) : services.length ? (
+        ) : (
           <ul className="mt-4 flex flex-col gap-6">
             {services.map((service) => (
               <li key={service.slug} className="flex gap-3">
@@ -52,7 +53,7 @@ export function PujaServicesSidebar() {
                   />
                 </div>
                 <div className="flex-1">
-                  <p className="text-sm font-semibold leading-snug text-text-primary line-clamp-1">
+                  <p className="line-clamp-1 text-sm font-semibold leading-snug text-text-primary">
                     {service.title}
                   </p>
                   <div className="mt-1 flex items-baseline gap-2">
@@ -76,26 +77,8 @@ export function PujaServicesSidebar() {
               </li>
             ))}
           </ul>
-        ) : (
-          <p className="mt-4 text-sm text-text-muted">No bestsellers right now.</p>
         )}
       </div>
-
-      {BLOG_PROMO_CARDS.map((card, i) => (
-        <div key={i} className="relative h-80 w-full overflow-hidden rounded-2xl">
-          <Image
-            src={card.image}
-            alt={card.title}
-            fill
-            sizes="320px"
-            className="object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
-          <p className="absolute bottom-4 left-4 right-4 font-sans text-base font-semibold text-white">
-            {card.title}
-          </p>
-        </div>
-      ))}
     </aside>
   );
 }

@@ -8,6 +8,8 @@ import { resolveImageUrl } from "@/lib/mappers/service";
 import type { AayojanEvent } from "@/types/api";
 
 export function EventServicesSection({ events }: { events: AayojanEvent[] }) {
+  if (!events.length) return null;
+
   return (
     <section className="bg-[url(/images/ayongan/service-bg.png)] bg-cover bg-center bg-no-repeat">
       <div className="mx-auto max-w-site px-4 py-16 md:px-8 md:py-20 lg:px-16 lg:py-24">
@@ -17,9 +19,8 @@ export function EventServicesSection({ events }: { events: AayojanEvent[] }) {
           subtitle="We are hosting the 2026 World Marketing Summit this year, same like last year. It is the assembly of all the large"
         />
 
-        {events.length ? (
-          <div className="mt-12 flex flex-col gap-6">
-            {events.map((event) => (
+        <div className="mt-12 flex flex-col gap-6">
+          {events.map((event) => (
               <div
                 key={event.id}
                 className="flex flex-col gap-6 rounded-2xl bg-white p-6 shadow-card md:p-8 lg:flex-row lg:items-center"
@@ -69,13 +70,8 @@ export function EventServicesSection({ events }: { events: AayojanEvent[] }) {
                   </div>
                 </div>
               </div>
-            ))}
-          </div>
-        ) : (
-          <p className="mt-12 text-center text-text-muted">
-            No upcoming events right now — check back soon.
-          </p>
-        )}
+          ))}
+        </div>
       </div>
     </section>
   );

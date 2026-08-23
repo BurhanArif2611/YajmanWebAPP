@@ -35,23 +35,28 @@ function SortBarInner({
   };
 
   return (
-    <div className="flex items-center justify-between gap-4">
-      <p className="text-sm text-text-muted">
+    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+      <p className="shrink-0 text-sm text-text-muted">
         Showing <span className="font-medium text-text-primary">{resultCount}</span>
         {typeof total === "number" && total !== resultCount && (
-          <> of <span className="font-medium text-text-primary">{total}</span></>
+          <>
+            {" "}
+            of <span className="font-medium text-text-primary">{total}</span>
+          </>
         )}{" "}
         results
       </p>
-      <div className="flex items-center gap-2 text-sm text-text-secondary">
-        <ArrowUpDown size={16} />
-        Sort by
-        <Select
-          value={currentSort}
-          onChange={handleSortChange}
-          options={SORT_OPTIONS}
-          containerClassName="min-h-[44px] w-44"
-        />
+      <div className="flex min-w-0 w-full items-center gap-2 text-sm text-text-secondary sm:w-auto">
+        <ArrowUpDown size={16} className="shrink-0" />
+        <span className="shrink-0 whitespace-nowrap">Sort by</span>
+        <div className="min-w-0 flex-1 sm:w-48 sm:flex-none">
+          <Select
+            value={currentSort}
+            onChange={handleSortChange}
+            options={SORT_OPTIONS}
+            containerClassName="min-h-[44px] w-full px-3 text-sm"
+          />
+        </div>
       </div>
     </div>
   );
@@ -61,11 +66,15 @@ export function SortBar(props: { resultCount: number; total?: number }) {
   return (
     <Suspense
       fallback={
-        <div className="flex items-center justify-between gap-4">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-sm text-text-muted">
-            Showing <span className="font-medium text-text-primary">{props.resultCount}</span>
+            Showing{" "}
+            <span className="font-medium text-text-primary">{props.resultCount}</span>
             {typeof props.total === "number" && props.total !== props.resultCount && (
-              <> of <span className="font-medium text-text-primary">{props.total}</span></>
+              <>
+                {" "}
+                of <span className="font-medium text-text-primary">{props.total}</span>
+              </>
             )}{" "}
             results
           </p>

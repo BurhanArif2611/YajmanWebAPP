@@ -30,7 +30,6 @@ function ServiceCardSkeleton() {
 export function PremiumPujaCarousel() {
   const [offset, setOffset] = useState(0);
 
-  // Shares the ["categories"] cache with CategorySection/BestSellers so this doesn't refetch.
   const categoriesQuery = useQuery({
     queryKey: ["categories"],
     queryFn: getCategories,
@@ -49,14 +48,17 @@ export function PremiumPujaCarousel() {
   });
 
   const pool = servicesQuery.data?.data.map(mapServiceToCard) ?? [];
-  const isLoading = categoriesQuery.isLoading || servicesQuery.isLoading;
+  const isLoading =
+    categoriesQuery.isLoading || (!!category && servicesQuery.isLoading);
 
   const services = pool.length
     ? Array.from(
-        { length: VISIBLE },
+        { length: Math.min(VISIBLE, pool.length) },
         (_, i) => pool[(((offset + i) % pool.length) + pool.length) % pool.length]
       )
     : [];
+
+  if (!isLoading && !services.length) return null;
 
   return (
     <section className="mx-auto max-w-site px-4 py-16 md:px-8 md:py-20 lg:px-16 lg:py-24">
@@ -84,7 +86,7 @@ export function PremiumPujaCarousel() {
               <ServiceCardSkeleton key={i} />
             ))}
           </div>
-        ) : services.length ? (
+        ) : (
           <>
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
               {services.map((service, i) => (
@@ -94,23 +96,25 @@ export function PremiumPujaCarousel() {
               ))}
             </div>
 
-            <button
-              aria-label="Previous"
-              onClick={() => setOffset((o) => o - 1)}
-              className="absolute left-0 top-1/2 hidden h-11 w-11 -translate-x-5 -translate-y-1/2 items-center justify-center rounded-full bg-white text-text-primary shadow-card-hover lg:flex"
-            >
-              <ChevronLeft size={20} />
-            </button>
-            <button
-              aria-label="Next"
-              onClick={() => setOffset((o) => o + 1)}
-              className="absolute right-0 top-1/2 hidden h-11 w-11 -translate-y-1/2 translate-x-5 items-center justify-center rounded-full bg-brand-saffron-400 text-white shadow-card-hover lg:flex"
-            >
-              <ChevronRight size={20} />
-            </button>
+            {pool.length > VISIBLE && (
+              <>
+                <button
+                  aria-label="Previous"
+                  onClick={() => setOffset((o) => o - 1)}
+                  className="absolute left-0 top-1/2 hidden h-11 w-11 -translate-x-5 -translate-y-1/2 items-center justify-center rounded-full bg-white text-text-primary shadow-card-hover lg:flex"
+                >
+                  <ChevronLeft size={20} />
+                </button>
+                <button
+                  aria-label="Next"
+                  onClick={() => setOffset((o) => o + 1)}
+                  className="absolute right-0 top-1/2 hidden h-11 w-11 -translate-y-1/2 translate-x-5 items-center justify-center rounded-full bg-brand-saffron-400 text-white shadow-card-hover lg:flex"
+                >
+                  <ChevronRight size={20} />
+                </button>
+              </>
+            )}
           </>
-        ) : (
-          <p className="text-center text-text-muted">No premium puja services right now.</p>
         )}
       </div>
     </section>

@@ -1,12 +1,12 @@
 import { Mail, MapPin, Phone } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 import { FOOTER_LINKS } from "@/lib/constants";
 import {
   FacebookIcon,
   InstagramIcon,
   YoutubeIcon,
 } from "@/components/ui/SocialIcons";
-import { TopoDoodle } from "@/components/ui/TopoDoodle";
-import Image from "next/image";
 
 export function Footer() {
   return (
@@ -18,7 +18,14 @@ export function Footer() {
       <div className="relative mx-auto max-w-site px-4 pb-16 pt-14 md:px-8 lg:px-16">
         <div className="grid grid-cols-2 gap-10 sm:grid-cols-3 lg:grid-cols-5">
           <div className="col-span-2 flex flex-col gap-4 sm:col-span-3 lg:col-span-1">
-            <Image src="/images/logo/logo-white.svg" alt="logo" width={100} height={100} className="" />
+            <Link href="/" aria-label="Yajman home" className="inline-block w-fit">
+              <Image
+                src="/images/logo/logo-white.svg"
+                alt="Yajman"
+                width={100}
+                height={100}
+              />
+            </Link>
             <p className="text-sm text-white/70">
               This service has taken my business to a whole new level. The
               design and functionality and user friendly.
@@ -40,25 +47,27 @@ export function Footer() {
           <FooterColumn heading="Quick Links" links={FOOTER_LINKS.quickLinks} />
           <FooterColumn heading="Terms" links={FOOTER_LINKS.terms} />
 
-          <div className="flex flex-col gap-4">
-            <h3 className="font-sans text-base font-semibold">Contact</h3>
+          <div className="col-span-2 flex min-w-0 flex-col gap-4 sm:col-span-1">
+            <h3 className="font-sans text-base font-semibold text-white">Contact</h3>
             <a
               href="tel:+918109181057"
-              className="flex items-center gap-2 text-sm text-white/70 hover:text-white"
+              className="flex min-w-0 items-center gap-2 text-sm text-white/70 hover:text-white"
             >
               <Phone size={16} className="shrink-0 text-brand-saffron-400" />
-              +918109181057
+              <span className="break-all">+918109181057</span>
             </a>
             <a
               href="mailto:contact@yajmanapp.in"
-              className="flex items-center gap-2 text-sm text-white/70 hover:text-white"
+              className="flex min-w-0 items-start gap-2 text-sm text-white/70 hover:text-white"
             >
-              <Mail size={16} className="shrink-0 text-brand-saffron-400" />
-              contact@yajmanapp.in
+              <Mail size={16} className="mt-0.5 shrink-0 text-brand-saffron-400" />
+              <span className="break-all">contact@yajmanapp.in</span>
             </a>
-            <div className="flex items-start gap-2 text-sm text-white/70">
+            <div className="flex min-w-0 items-start gap-2 text-sm text-white/70">
               <MapPin size={16} className="mt-0.5 shrink-0 text-brand-saffron-400" />
-              <span>212 Satguru Parinay, AB Road, Vijay Nagar, Indore 452010</span>
+              <span className="break-words">
+                212 सतगुरु परिणय, एबी रोड, विजय नगर, इंदौर 452010
+              </span>
             </div>
           </div>
         </div>

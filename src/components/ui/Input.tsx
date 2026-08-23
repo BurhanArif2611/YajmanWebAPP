@@ -9,6 +9,7 @@ type InputProps = {
   leading?: ReactNode;
   trailing?: ReactNode;
   containerClassName?: string;
+  error?: boolean;
 } & InputHTMLAttributes<HTMLInputElement>;
 
 const variantClasses: Record<Variant, string> = {
@@ -17,7 +18,7 @@ const variantClasses: Record<Variant, string> = {
 };
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
-  { variant = "default", leading, trailing, containerClassName, className, ...rest },
+  { variant = "default", leading, trailing, containerClassName, className, error, ...rest },
   ref
 ) {
   return (
@@ -25,6 +26,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
       className={cn(
         "flex min-h-[56px] items-center gap-3 px-4 transition-colors focus-within:border-brand-saffron-400",
         variantClasses[variant],
+        error && "border-error focus-within:border-error",
         containerClassName
       )}
     >

@@ -11,9 +11,11 @@ const FALLBACK_BG = "/images/ayongan/image-4.png";
 const SLIDE_INTERVAL = 6000;
 
 export function AayojanHero({ banners = [] }: { banners?: AayojanBanner[] }) {
-  const slides = banners.length
-    ? [...banners].sort((a, b) => a.display_order - b.display_order).map((b) => b.image_url)
-    : [FALLBACK_BG];
+  const apiSlides = [...banners]
+    .sort((a, b) => a.display_order - b.display_order)
+    .map((b) => b.image_url)
+    .filter(Boolean);
+  const slides = apiSlides.length ? apiSlides : [FALLBACK_BG];
 
   const [active, setActive] = useState(0);
 
@@ -27,7 +29,7 @@ export function AayojanHero({ banners = [] }: { banners?: AayojanBanner[] }) {
   }, [slides.length]);
 
   return (
-    <section className="relative flex min-h-[560px] items-center overflow-hidden md:min-h-[640px]">
+    <section className="relative flex min-h-[560px] items-center overflow-hidden bg-surface-peach md:min-h-[640px]">
       {slides.map((src, i) => (
         <Image
           key={src + i}
@@ -41,7 +43,7 @@ export function AayojanHero({ banners = [] }: { banners?: AayojanBanner[] }) {
           }`}
         />
       ))}
-      <div className="absolute inset-0 bg-black/65" />
+      <div className="absolute inset-0 bg-black/50" />
 
       <div className="relative mx-auto flex w-full max-w-site flex-col items-center gap-6 px-4 py-20 text-center md:px-8 lg:px-16">
         <h1 className="max-w-3xl font-sans text-4xl font-bold leading-tight text-white md:text-5xl lg:text-7xl">
@@ -52,15 +54,9 @@ export function AayojanHero({ banners = [] }: { banners?: AayojanBanner[] }) {
           and manage devotional events with authenticity, devotion, and
           perfection.
         </p>
-
-        <div className="flex flex-wrap items-center justify-center gap-4">
-          <ButtonLink
-            href="/contact"
-            size="lg"
-            className="gap-2 rounded-full uppercase tracking-wide"
-          >
-            Plan Your Event
-            <ArrowUpRight size={18} />
+        <div className="flex flex-wrap items-center gap-4">
+          <ButtonLink href="#contact" size="lg" className="rounded-full">
+            Plan Your Event <ArrowUpRight size={18} />
           </ButtonLink>
           <ButtonLink
             href="/contact"
@@ -72,7 +68,6 @@ export function AayojanHero({ banners = [] }: { banners?: AayojanBanner[] }) {
             <ArrowUpRight size={18} />
           </ButtonLink>
         </div>
-
       </div>
     </section>
   );

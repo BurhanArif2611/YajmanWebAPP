@@ -9,13 +9,11 @@ import { DateField } from "@/components/ui/DateField";
 import { Button } from "@/components/ui/Button";
 import { submitAayojanContact } from "@/lib/api/aayojan";
 import { ApiError } from "@/lib/apiError";
+import { digitsOnly } from "@/lib/utils";
 import type { AayojanEvent } from "@/types/api";
 
 const SUCCESS_TIMEOUT = 5000;
-
-function digitsOnly(phone: string) {
-  return phone.replace(/\D/g, "").slice(-10);
-}
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export function ContactFormSection({ events }: { events: AayojanEvent[] }) {
   const eventOptions = events.map((event) => ({ value: event.title, label: event.title }));
@@ -45,13 +43,17 @@ export function ContactFormSection({ events }: { events: AayojanEvent[] }) {
     e.preventDefault();
 
     const phoneDigits = digitsOnly(phone);
-    if (!name.trim() || !/^[6-9]\d{9}$/.test(phoneDigits)) {
-      setFieldErrors({
-        ...(!name.trim() ? { name: "Name is required." } : {}),
-        ...(!/^[6-9]\d{9}$/.test(phoneDigits)
-          ? { phone: "Enter a valid 10-digit phone number." }
-          : {}),
-      });
+    const nextErrors: Record<string, string> = {};
+    if (!name.trim()) nextErrors.name = "Name is required.";
+    if (!phone.trim()) nextErrors.phone = "Phone number is required.";
+    else if (!/^[6-9]\d{9}$/.test(phoneDigits)) {
+      nextErrors.phone = "Enter a valid 10-digit phone number.";
+    }
+    if (email.trim() && !EMAIL_RE.test(email.trim())) {
+      nextErrors.email = "Enter a valid email address.";
+    }
+    if (Object.keys(nextErrors).length) {
+      setFieldErrors(nextErrors);
       return;
     }
 
@@ -113,13 +115,17 @@ export function ContactFormSection({ events }: { events: AayojanEvent[] }) {
             </p>
           )}
 
-          <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-4">
+          <form onSubmit={handleSubmit} noValidate className="mt-8 flex flex-col gap-4">
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <Field label="Name" error={fieldErrors.name}>
                 <Input
                   placeholder="Enter name"
                   value={name}
-                  onChange={(e) => setName(e.target.value)}
+                  onChange={(e) => {
+                    setName(e.target.value);
+                    setFieldErrors((prev) => ({ ...prev, name: "" }));
+                  }}
+                  error={Boolean(fieldErrors.name)}
                   containerClassName="bg-white"
                 />
               </Field>
@@ -128,7 +134,11 @@ export function ContactFormSection({ events }: { events: AayojanEvent[] }) {
                   type="tel"
                   placeholder="Enter number"
                   value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
+                  onChange={(e) => {
+                    setPhone(e.target.value);
+                    setFieldErrors((prev) => ({ ...prev, phone: "" }));
+                  }}
+                  error={Boolean(fieldErrors.phone)}
                   containerClassName="bg-white"
                 />
               </Field>
@@ -140,7 +150,11 @@ export function ContactFormSection({ events }: { events: AayojanEvent[] }) {
                   type="email"
                   placeholder="Enter email"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    setFieldErrors((prev) => ({ ...prev, email: "" }));
+                  }}
+                  error={Boolean(fieldErrors.email)}
                   containerClassName="bg-white"
                 />
               </Field>
@@ -159,7 +173,11 @@ export function ContactFormSection({ events }: { events: AayojanEvent[] }) {
                 <Input
                   placeholder="Enter city"
                   value={city}
-                  onChange={(e) => setCity(e.target.value)}
+                  onChange={(e) => {
+                    setCity(e.target.value);
+                    setFieldErrors((prev) => ({ ...prev, city: "" }));
+                  }}
+                  error={Boolean(fieldErrors.city)}
                   containerClassName="bg-white"
                 />
               </Field>
@@ -169,7 +187,11 @@ export function ContactFormSection({ events }: { events: AayojanEvent[] }) {
                   min={1}
                   placeholder="Enter number of people"
                   value={numberOfPeople}
-                  onChange={(e) => setNumberOfPeople(e.target.value)}
+                  onChange={(e) => {
+                    setNumberOfPeople(e.target.value);
+                    setFieldErrors((prev) => ({ ...prev, number_of_people: "" }));
+                  }}
+                  error={Boolean(fieldErrors.number_of_people)}
                   containerClassName="bg-white"
                 />
               </Field>

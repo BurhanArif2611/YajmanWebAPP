@@ -9,12 +9,9 @@ import { useAuth } from "@/hooks/useAuth";
 import { sendOtp, verifyOtp } from "@/lib/api/auth";
 import { setSession } from "@/lib/auth";
 import { ApiError } from "@/lib/apiError";
+import { digitsOnly } from "@/lib/utils";
 
 const RESEND_COOLDOWN = 30;
-
-function digitsOnly(phone: string) {
-  return phone.replace(/\D/g, "").slice(-10);
-}
 
 export function ContactDetailsSection({
   name,
@@ -53,6 +50,10 @@ export function ContactDetailsSection({
 
   const handleSendOtp = async () => {
     const phoneDigits = digitsOnly(phone);
+    if (!phone.trim()) {
+      setError("Enter your phone number.");
+      return;
+    }
     if (phoneDigits.length !== 10) {
       setError("Enter a valid 10-digit phone number.");
       return;
@@ -130,9 +131,13 @@ export function ContactDetailsSection({
         key={isLoggedIn ? "locked" : "editable"}
         type="tel"
         value={displayPhone}
-        onChange={(e) => setPhone(e.target.value)}
+        onChange={(e) => {
+          setPhone(e.target.value);
+          setError(null);
+        }}
         readOnly={isLoggedIn || otpSent}
         placeholder="+91 00000 00000"
+        error={Boolean(error) && !otpSent}
         containerClassName="bg-white"
         leading={
           <Image src="/icons/whatsapp.png" alt="WhatsApp" width={22} height={22} />
@@ -141,6 +146,7 @@ export function ContactDetailsSection({
           !isLoggedIn &&
           !otpSent && (
             <button
+              type="button"
               onClick={handleSendOtp}
               disabled={sending}
               className="whitespace-nowrap text-sm font-semibold text-brand-saffron-400 disabled:text-text-light"
@@ -151,7 +157,7 @@ export function ContactDetailsSection({
         }
       />
 
-      {error && <p className="text-sm font-medium text-error">{error}</p>}
+      {error ? <p className="text-sm font-medium text-error">{error}</p> : null}
 
       {!isLoggedIn && otpSent && (
         <div className="flex flex-col gap-3">

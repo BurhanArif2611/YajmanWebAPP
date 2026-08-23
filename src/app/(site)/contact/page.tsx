@@ -24,7 +24,7 @@ const CONTACT_INFO = [
   {
     icon: MapPin,
     label: "Visit us",
-    value: "212 Satguru Parinay, AB Road, Vijay Nagar, Indore 452010",
+    value: "212 सतगुरु परिणय, एबी रोड, विजय नगर, इंदौर 452010",
     href: undefined,
   },
 ];
@@ -32,9 +32,9 @@ const CONTACT_INFO = [
 export default function ContactPage() {
   return (
     <>
-      <Breadcrumb items={[{ label: "Home", href: "/" }, { label: "Contact" }]} />
+      {/* <Breadcrumb items={[{ label: "Home", href: "/" }, { label: "Contact" }]} /> */}
 
-      <div className="mx-auto max-w-site px-4 pb-16 md:px-8 md:pb-20 lg:px-16 lg:pb-24">
+      <div className="mx-auto max-w-site pt-8 px-4 pb-16 md:px-8 md:pb-20 lg:px-16 lg:pb-24">
         <div className="text-center">
           <span className="font-decorative text-2xl text-brand-saffron-400 md:text-3xl">
             Contact us

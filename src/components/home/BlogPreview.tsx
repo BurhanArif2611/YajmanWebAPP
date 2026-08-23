@@ -39,8 +39,8 @@ export function BlogPreview() {
   const highlight = highlights[active];
 
   return (
-    <section className="mx-auto max-w-site px-4 py-16 md:px-8 md:py-20 lg:px-16 lg:py-24">
-      <div className="relative overflow-hidden rounded-[32px] bg-surface-muted p-6 md:p-10 lg:p-14">
+    <section className="mx-auto max-w-site px-4 py-10 md:px-8 md:py-16 lg:px-16 lg:py-24">
+      <div className="relative overflow-hidden rounded-[24px] bg-surface-muted p-5 sm:rounded-[32px] md:p-10 lg:p-14">
         <Image src="/images/decor/side-deco.png" alt="decoration" width={300} height={300} className="absolute top-0 left-0 z-0 bg-no-repeat bg-left-top bg-contain bg-[length:300px_auto] opacity-10" />
         <SectionHeader
           eyebrow="Recent News & Blogs"
@@ -48,13 +48,13 @@ export function BlogPreview() {
         />
 
         {blogsQuery.isLoading ? (
-          <div className="relative mt-12 grid grid-cols-1 gap-6 lg:grid-cols-[0.85fr_1fr_0.85fr]">
-            <Skeleton className="h-[420px] w-full rounded-2xl" />
-            <Skeleton className="h-[420px] w-full rounded-2xl" />
-            <Skeleton className="h-[420px] w-full rounded-2xl" />
+          <div className="relative mt-8 grid grid-cols-1 gap-5 md:mt-12 md:gap-6 lg:grid-cols-[0.85fr_1fr_0.85fr]">
+            <Skeleton className="h-[320px] w-full rounded-2xl md:h-[420px]" />
+            <Skeleton className="h-[320px] w-full rounded-2xl md:h-[420px]" />
+            <Skeleton className="h-[320px] w-full rounded-2xl md:h-[420px]" />
           </div>
         ) : (
-          <div className="relative mt-12 grid grid-cols-1 gap-6 lg:grid-cols-[0.85fr_1fr_0.85fr]">
+          <div className="relative mt-8 grid grid-cols-1 gap-5 md:mt-12 md:gap-6 lg:grid-cols-[0.85fr_1fr_0.85fr]">
             {/* Mini carousel card — cycles the newest posts */}
             {highlight && (
               <div className="flex flex-col gap-5 rounded-2xl bg-[#1f1f1f] p-6 text-white">

@@ -5,12 +5,10 @@ import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { submitContact } from "@/lib/api/contact";
 import { ApiError } from "@/lib/apiError";
+import { digitsOnly } from "@/lib/utils";
 
 const SUCCESS_TIMEOUT = 5000;
-
-function digitsOnly(phone: string) {
-  return phone.replace(/\D/g, "").slice(-10);
-}
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function Field({
   label,
@@ -53,13 +51,17 @@ export function ContactForm() {
     e.preventDefault();
 
     const phoneDigits = digitsOnly(phone);
-    if (!name.trim() || !/^[6-9]\d{9}$/.test(phoneDigits)) {
-      setFieldErrors({
-        ...(!name.trim() ? { name: "Name is required." } : {}),
-        ...(!/^[6-9]\d{9}$/.test(phoneDigits)
-          ? { phone: "Enter a valid 10-digit phone number." }
-          : {}),
-      });
+    const nextErrors: Record<string, string> = {};
+    if (!name.trim()) nextErrors.name = "Name is required.";
+    if (!phone.trim()) nextErrors.phone = "Phone number is required.";
+    else if (!/^[6-9]\d{9}$/.test(phoneDigits)) {
+      nextErrors.phone = "Enter a valid 10-digit phone number.";
+    }
+    if (email.trim() && !EMAIL_RE.test(email.trim())) {
+      nextErrors.email = "Enter a valid email address.";
+    }
+    if (Object.keys(nextErrors).length) {
+      setFieldErrors(nextErrors);
       return;
     }
 
@@ -93,6 +95,7 @@ export function ContactForm() {
   return (
     <form
       onSubmit={handleSubmit}
+      noValidate
       className="flex flex-col gap-5 rounded-2xl bg-surface-peach p-6 md:p-10"
     >
       {successMessage && (
@@ -106,7 +109,11 @@ export function ContactForm() {
           <Input
             placeholder="Enter your name"
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={(e) => {
+              setName(e.target.value);
+              setFieldErrors((prev) => ({ ...prev, name: "" }));
+            }}
+            error={Boolean(fieldErrors.name)}
             containerClassName="bg-white"
           />
         </Field>
@@ -115,7 +122,11 @@ export function ContactForm() {
             type="email"
             placeholder="Enter your email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              setFieldErrors((prev) => ({ ...prev, email: "" }));
+            }}
+            error={Boolean(fieldErrors.email)}
             containerClassName="bg-white"
           />
         </Field>
@@ -127,7 +138,11 @@ export function ContactForm() {
             type="tel"
             placeholder="Enter your phone number"
             value={phone}
-            onChange={(e) => setPhone(e.target.value)}
+            onChange={(e) => {
+              setPhone(e.target.value);
+              setFieldErrors((prev) => ({ ...prev, phone: "" }));
+            }}
+            error={Boolean(fieldErrors.phone)}
             containerClassName="bg-white"
           />
         </Field>
@@ -135,7 +150,11 @@ export function ContactForm() {
           <Input
             placeholder="Enter your city"
             value={city}
-            onChange={(e) => setCity(e.target.value)}
+            onChange={(e) => {
+              setCity(e.target.value);
+              setFieldErrors((prev) => ({ ...prev, city: "" }));
+            }}
+            error={Boolean(fieldErrors.city)}
             containerClassName="bg-white"
           />
         </Field>
@@ -146,8 +165,13 @@ export function ContactForm() {
           rows={5}
           placeholder="Tell us more about your requirement..."
           value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          className="w-full resize-none rounded-xl border border-border-dark bg-white p-4 text-base font-medium text-text-primary outline-none placeholder:text-text-light"
+          onChange={(e) => {
+            setMessage(e.target.value);
+            setFieldErrors((prev) => ({ ...prev, message: "" }));
+          }}
+          className={`w-full resize-none rounded-xl border bg-white p-4 text-base font-medium text-text-primary outline-none placeholder:text-text-light ${
+            fieldErrors.message ? "border-error" : "border-border-dark"
+          }`}
         />
       </Field>
 

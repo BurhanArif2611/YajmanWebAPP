@@ -10,6 +10,7 @@ import {
   YoutubeIcon,
 } from "@/components/ui/SocialIcons";
 import Image from "next/image";
+import Link from "next/link";
 import { Input } from "@/components/ui/Input";
 import { ButtonLink } from "@/components/ui/Button";
 import { useAuth } from "@/hooks/useAuth";
@@ -41,7 +42,9 @@ export function MobileDrawer({
       />
       <div className="relative flex h-full w-80 max-w-[85vw] flex-col gap-6 overflow-y-auto bg-white p-6 shadow-modal animate-drawer-open">
         <div className="flex items-center justify-between">
-          <Image src="/images/logo/logo.svg" alt="logo" width={200} height={200} />
+          <Link href="/" aria-label="Yajman home" onClick={onClose} className="shrink-0">
+            <Image src="/images/logo/logo.svg" alt="Yajman" width={200} height={200} />
+          </Link>
           <button
             onClick={onClose}
             aria-label="Close menu"

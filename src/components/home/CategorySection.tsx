@@ -18,18 +18,13 @@ export function CategorySection() {
     staleTime: 5 * 60_000,
   });
 
-  // Fall back to the local pixel-matched set while loading or if the API
-  // is empty/unavailable, so this section never renders broken or blank.
-  const categories = categoriesQuery.data?.length
-    ? categoriesQuery.data.map((c) => ({
-      id: c.id,
-      slug: c.slug,
-      name: c.name,
-      image: c.image_url || "",
-      // Payment-free categories (e.g. Astrology) live under Articles, not Services.
-      href: c.requires_payment === false ? "/articles" : `/services?category=${c.id}`,
-    }))
-    : [];
+  const categories = (categoriesQuery.data ?? []).map((c) => ({
+    id: c.id,
+    slug: c.slug,
+    name: c.name,
+    image: c.image_url || "",
+    href: c.requires_payment === false ? "/articles" : `/services?category=${c.id}`,
+  }));
 
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: true,
@@ -57,8 +52,10 @@ export function CategorySection() {
     };
   }, [emblaApi]);
 
+  if (!categoriesQuery.isLoading && !categories.length) return null;
+
   return (
-    <section className="relative mx-auto max-w-site px-4 pb-16 pt-28 md:px-8 md:pt-32 lg:px-16 lg:py-36 lg:pb-0">
+    <section className="relative mx-auto max-w-site px-4 pb-10 pt-24 sm:pt-28 md:px-8 md:pb-14 md:pt-32 lg:px-16 lg:pb-0 lg:py-36">
       <SectionHeader
         eyebrow="Sacred Services"
         heading="Explore by Category"
@@ -66,7 +63,7 @@ export function CategorySection() {
       />
 
       {categoriesQuery.isLoading ? (
-        <div className="mt-14 grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-5">
+        <div className="mt-8 grid grid-cols-2 gap-4 sm:mt-10 sm:grid-cols-3 sm:gap-5 md:mt-14 lg:grid-cols-5">
           {Array.from({ length: 5 }).map((_, i) => (
             <div key={i} className="flex flex-col items-center gap-4">
               <Skeleton className="aspect-square w-full rounded-xl" />
@@ -75,85 +72,87 @@ export function CategorySection() {
           ))}
         </div>
       ) : (
-      <>
-      <div className="relative mt-14">
-        <button
-          aria-label="Previous categories"
-          onClick={() => emblaApi?.scrollPrev()}
-          className="absolute left-0 top-[40%] z-10 hidden h-11 w-11 -translate-x-5 items-center justify-center rounded-full bg-white text-text-primary shadow-card-hover transition-transform duration-200 hover:scale-105 lg:flex"
-        >
-          <ArrowLeft size={18} />
-        </button>
+        <>
+          <div className="relative mt-8 sm:mt-10 md:mt-14">
+            <button
+              aria-label="Previous categories"
+              onClick={() => emblaApi?.scrollPrev()}
+              className="absolute left-0 top-[40%] z-10 hidden h-11 w-11 -translate-x-5 items-center justify-center rounded-full bg-white text-text-primary shadow-card-hover transition-transform duration-200 hover:scale-105 lg:flex"
+            >
+              <ArrowLeft size={18} />
+            </button>
 
-        <div ref={emblaRef} className="overflow-hidden">
-          <div className="-ml-5 flex">
-            {[...categories].map((category, i) => (
-              <div
-                key={`${category.slug}-${i}`}
-                className="flex-[0_0_45%] pl-5 sm:flex-[0_0_31%] lg:flex-[0_0_19%]"
-              >
-                <motion.div
-                  initial={{ opacity: 0, y: 16 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.4, delay: i * 0.08, ease: "easeOut" }}
-                >
-                  <Link
-                    href={category.href}
-                    className="group flex flex-col items-center gap-4"
+            <div ref={emblaRef} className="overflow-hidden">
+              <div className="-ml-5 flex">
+                {categories.map((category, i) => (
+                  <div
+                    key={`${category.slug}-${i}`}
+                    className="flex-[0_0_45%] pl-5 sm:flex-[0_0_31%] lg:flex-[0_0_19%]"
                   >
                     <motion.div
-                      whileHover={{ scale: 1.05 }}
-                      transition={{ duration: 0.3, ease: "easeOut" }}
-                      className="relative aspect-square w-full overflow-hidden rounded-xl bg-surface-peach"
+                      initial={{ opacity: 0, y: 16 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.4, delay: i * 0.08, ease: "easeOut" }}
                     >
-                      <Image
-                        src={category.image}
-                        alt={category.name}
-                        fill
-                        sizes="(max-width: 768px) 45vw, 20vw"
-                        className="object-cover"
-                      />
+                      <Link
+                        href={category.href}
+                        className="group flex flex-col items-center gap-4"
+                      >
+                        <motion.div
+                          whileHover={{ scale: 1.05 }}
+                          transition={{ duration: 0.3, ease: "easeOut" }}
+                          className="relative aspect-square w-full overflow-hidden rounded-xl bg-surface-peach"
+                        >
+                          {category.image ? (
+                            <Image
+                              src={category.image}
+                              alt={category.name}
+                              fill
+                              sizes="(max-width: 768px) 45vw, 20vw"
+                              className="object-cover"
+                            />
+                          ) : null}
+                        </motion.div>
+                        <span className="font-sans text-lg font-semibold text-text-primary transition-colors group-hover:text-brand-saffron-400">
+                          {category.name}
+                        </span>
+                      </Link>
                     </motion.div>
-                    <span className="font-sans text-lg font-semibold text-text-primary transition-colors group-hover:text-brand-saffron-400">
-                      {category.name}
-                    </span>
-                  </Link>
-                </motion.div>
+                  </div>
+                ))}
               </div>
+            </div>
+
+            <button
+              aria-label="Next categories"
+              onClick={() => emblaApi?.scrollNext()}
+              className="absolute right-0 top-[40%] z-10 hidden h-11 w-11 translate-x-5 items-center justify-center rounded-full bg-brand-saffron-400 text-white shadow-card-hover transition-transform duration-200 hover:scale-105 lg:flex"
+            >
+              <ArrowRight size={18} />
+            </button>
+          </div>
+
+          <div className="mt-8 flex items-center justify-center gap-2">
+            {scrollSnaps.map((_, i) => (
+              <button
+                key={i}
+                aria-label={`Go to slide ${i + 1}`}
+                onClick={() => emblaApi?.scrollTo(i)}
+                className="relative flex h-2.5 w-6 items-center justify-center"
+              >
+                <span className="h-2.5 w-2.5 rounded-full border border-border-dark" />
+                {i === selectedIndex && (
+                  <motion.span
+                    layoutId="category-dot"
+                    className="absolute inset-0 rounded-full bg-brand-saffron-400"
+                    transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                  />
+                )}
+              </button>
             ))}
           </div>
-        </div>
-
-        <button
-          aria-label="Next categories"
-          onClick={() => emblaApi?.scrollNext()}
-          className="absolute right-0 top-[40%] z-10 hidden h-11 w-11 translate-x-5 items-center justify-center rounded-full bg-brand-saffron-400 text-white shadow-card-hover transition-transform duration-200 hover:scale-105 lg:flex"
-        >
-          <ArrowRight size={18} />
-        </button>
-      </div>
-
-      <div className="mt-8 flex items-center justify-center gap-2">
-        {scrollSnaps.map((_, i) => (
-          <button
-            key={i}
-            aria-label={`Go to slide ${i + 1}`}
-            onClick={() => emblaApi?.scrollTo(i)}
-            className="relative flex h-2.5 w-6 items-center justify-center"
-          >
-            <span className="h-2.5 w-2.5 rounded-full border border-border-dark" />
-            {i === selectedIndex && (
-              <motion.span
-                layoutId="category-dot"
-                className="absolute inset-0 rounded-full bg-brand-saffron-400"
-                transition={{ type: "spring", stiffness: 400, damping: 30 }}
-              />
-            )}
-          </button>
-        ))}
-      </div>
-      </>
+        </>
       )}
     </section>
   );
