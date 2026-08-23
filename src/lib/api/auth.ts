@@ -8,15 +8,21 @@ export function sendOtp(phone: string, countryCode = "+91") {
   });
 }
 
+//this function is only for verifyOTP
 export function verifyOtp(
   phone: string,
   otp: string,
   countryCode = "+91",
-  deviceSource: "web" | "android" | "ios" = "web"
+  deviceSource: "web" | "android" | "ios" = "web",
 ) {
   return apiFetch<VerifyOtpResponse>("/auth/verify-otp", {
     method: "POST",
-    body: { phone, otp, country_code: countryCode, device_source: deviceSource },
+    body: {
+      phone,
+      otp,
+      country_code: countryCode,
+      device_source: deviceSource,
+    },
   });
 }
 
