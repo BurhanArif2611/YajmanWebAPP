@@ -1,4 +1,4 @@
-import Image from "next/image";
+import Image from "@/components/ui/AppImage";
 
 const AVATARS = [
   "/images/testimonials/avatar-1.png",

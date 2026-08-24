@@ -1,15 +1,8 @@
 import type { MockService } from "@/lib/constants";
 import type { Service, ServiceDetail } from "@/types/api";
+import { resolveImageUrl } from "@/lib/image";
 
-const FALLBACK_IMAGE = "/images/services/service-shivling.png";
-
-/** Backend seed/placeholder data sometimes has junk (e.g. "ads") instead of a real URL. */
-export function resolveImageUrl(url: string | null | undefined): string {
-  if (url && (url.startsWith("/") || url.startsWith("http://") || url.startsWith("https://"))) {
-    return url;
-  }
-  return FALLBACK_IMAGE;
-}
+export { resolveImageUrl };
 
 /**
  * Maps the real API's Service shape onto the MockService shape that

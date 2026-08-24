@@ -1,4 +1,4 @@
-import Image from "next/image";
+import Image from "@/components/ui/AppImage";
 import { MapPin, PiggyBank, ThumbsUp } from "lucide-react";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { TopoDoodle } from "@/components/ui/TopoDoodle";

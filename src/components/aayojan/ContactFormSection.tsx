@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
+import Image from "@/components/ui/AppImage";
 import { format } from "date-fns";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";

@@ -1,5 +1,5 @@
 import { Mail, MapPin, Phone } from "lucide-react";
-import Image from "next/image";
+import Image from "@/components/ui/AppImage";
 import Link from "next/link";
 import { FOOTER_LINKS } from "@/lib/constants";
 import {
