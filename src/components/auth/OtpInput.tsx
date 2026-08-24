@@ -71,7 +71,7 @@ export function OtpInput({
   };
 
   return (
-    <div className="flex gap-3">
+    <div className="flex w-full max-w-md gap-1.5 sm:gap-3">
       {values.map((value, i) => (
         <input
           key={i}
@@ -87,7 +87,7 @@ export function OtpInput({
           onKeyDown={(e) => handleKeyDown(i, e)}
           onPaste={handlePaste}
           className={cn(
-            "h-14 w-12 rounded-lg border text-center text-lg font-semibold text-text-primary outline-none focus:border-brand-saffron-400 disabled:opacity-50",
+            "h-12 min-w-0 flex-1 rounded-lg border text-center text-base font-semibold text-text-primary outline-none focus:border-brand-saffron-400 disabled:opacity-50 sm:h-14 sm:max-w-12 sm:text-lg",
             error ? "border-error" : "border-border-dark"
           )}
         />

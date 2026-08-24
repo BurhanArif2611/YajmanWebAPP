@@ -7,7 +7,7 @@ import type { MockService } from "@/lib/constants";
 export function ArticleServiceCard({ service }: { service: MockService }) {
   return (
     <div className="flex flex-col overflow-hidden rounded-xl bg-white shadow-card">
-      <div className="relative h-64 w-full overflow-hidden">
+      <div className="relative h-48 w-full overflow-hidden sm:h-64">
         <Image
           src={service.image}
           alt={service.title}

@@ -30,6 +30,5 @@ export default async function BookingDetailPage({
       </div>
     );
   }
-  console.log('booking', booking)
   return <BookingDetailView booking={booking} />;
 }

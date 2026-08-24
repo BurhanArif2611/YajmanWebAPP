@@ -18,7 +18,7 @@ export function FaqAccordion({ items }: { items: { question: string; answer: str
           >
             <button
               onClick={() => setOpenIndex(isOpen ? null : i)}
-              className="flex min-h-[44px] w-full items-center justify-between gap-4 px-5 py-4 text-left text-base font-medium text-text-primary"
+              className="flex min-h-[44px] w-full items-center justify-between gap-4 px-4 py-4 text-left text-sm font-medium text-text-primary sm:px-5 sm:text-base"
             >
               {item.question}
               <ChevronDown

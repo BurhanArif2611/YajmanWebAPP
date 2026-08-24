@@ -64,13 +64,13 @@ export function BestSellers() {
           />
 
           {categoriesQuery.isLoading ? (
-            <div className="flex flex-wrap items-center justify-center gap-8">
+            <div className="flex gap-4 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:flex-wrap sm:items-center sm:justify-center sm:gap-6 sm:overflow-visible">
               {Array.from({ length: 3 }).map((_, i) => (
-                <Skeleton key={i} className="h-8 w-24" />
+                <Skeleton key={i} className="h-8 w-24 shrink-0" />
               ))}
             </div>
           ) : (
-            <div className="flex flex-wrap items-center justify-center gap-8">
+            <div className="flex gap-4 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:flex-wrap sm:items-center sm:justify-center sm:gap-6 sm:overflow-visible">
               {tabs.map((tab, i) => (
                 <button
                   key={tab.id}
@@ -79,7 +79,7 @@ export function BestSellers() {
                     setOffset(0);
                   }}
                   className={cn(
-                    "min-h-[44px] border-b-2 px-1 text-lg font-medium transition-colors",
+                    "min-h-[44px] shrink-0 border-b-2 px-1 text-sm font-medium whitespace-nowrap transition-colors sm:text-base lg:text-lg",
                     activeTab === i
                       ? "border-brand-saffron-400 text-text-primary"
                       : "border-transparent text-text-light hover:text-text-secondary"

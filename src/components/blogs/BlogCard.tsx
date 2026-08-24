@@ -13,7 +13,7 @@ export function BlogCard({ post }: { post: Blog }) {
       href={`/blogs/${post.slug}`}
       className="group flex flex-col gap-5 border-b border-border pb-8 last:border-b-0 sm:flex-row"
     >
-      <div className="relative h-72 w-full shrink-0 overflow-hidden rounded-2xl sm:h-56 sm:w-64">
+      <div className="relative h-48 w-full shrink-0 overflow-hidden rounded-2xl sm:h-56 sm:w-64">
         <Image
           src={resolveImageUrl(post.feature_image_url)}
           alt={post.title}
@@ -23,12 +23,12 @@ export function BlogCard({ post }: { post: Blog }) {
         />
       </div>
 
-      <div className="flex flex-1 flex-col gap-2">
-        <div className="flex items-start justify-between gap-3">
-          <h3 className="font-sans text-xl font-bold text-text-primary">
+      <div className="flex min-w-0 flex-1 flex-col gap-2">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between sm:gap-3">
+          <h3 className="min-w-0 font-sans text-lg font-bold text-text-primary line-clamp-2 sm:text-xl">
             {post.title}
           </h3>
-          <span className="flex shrink-0 items-center gap-1.5 rounded-full bg-surface-muted px-3 py-1 text-xs font-semibold text-text-primary">
+          <span className="flex w-fit shrink-0 items-center gap-1.5 rounded-full bg-surface-muted px-3 py-1 text-xs font-semibold text-text-primary">
             <Calendar size={12} className="text-brand-saffron-400" />
             {format(parseISO(dateSource), "d MMM yyyy")}
           </span>

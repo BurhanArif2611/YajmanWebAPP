@@ -1,7 +1,8 @@
 import { notFound } from "next/navigation";
-import { Share2, Star } from "lucide-react";
+import { Star } from "lucide-react";
 import { Breadcrumb } from "@/components/layout/Breadcrumb";
 import { Badge } from "@/components/ui/Badge";
+import { ShareButton } from "@/components/ui/ShareButton";
 import { ArticleDetailHero } from "@/components/articles/ArticleDetailHero";
 import { ArticleEnquireButton } from "@/components/articles/ArticleEnquireButton";
 import { RelatedServices } from "@/components/articles/RelatedServices";
@@ -80,10 +81,11 @@ export default async function ArticleDetailPage({ params }: { params: Params }) 
               </span>
               ( {String(service.total_reviews).padStart(2, "0")} Reviews )
             </span>
-            <button className="flex items-center gap-2 text-sm font-medium text-text-secondary hover:text-brand-saffron-400">
-              <Share2 size={16} />
-              Share
-            </button>
+            <ShareButton
+              title={service.title}
+              text={service.short_description || service.title}
+              url={`/articles/${service.slug}`}
+            />
           </div>
         </div>
 

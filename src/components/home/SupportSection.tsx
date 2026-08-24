@@ -35,7 +35,7 @@ export function SupportSection() {
               <p className="text-sm text-text-muted">Email us:</p>
               <a
                 href="mailto:contact@yajmanapp.in"
-                className="font-sans text-xl font-semibold text-text-primary hover:text-brand-saffron-400"
+                className="break-all font-sans text-base font-semibold text-text-primary hover:text-brand-saffron-400 sm:text-xl"
               >
                 contact@yajmanapp.in
               </a>

@@ -22,7 +22,7 @@ export default async function CheckoutPage({
 
   return (
     <div className="mx-auto max-w-site px-4 py-10 md:px-8 lg:px-16 lg:py-8">
-      <h1 className="font-sans text-4xl font-bold text-text-primary">
+      <h1 className="font-sans text-2xl font-bold text-text-primary sm:text-3xl md:text-4xl">
         Checkout
       </h1>
 

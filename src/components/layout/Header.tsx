@@ -85,7 +85,13 @@ export function Header() {
       <div className="border-b border-border">
         <div className="mx-auto flex h-20 max-w-site items-center justify-between gap-6 px-4 md:px-8 lg:px-16">
           <Link href="/" aria-label="Yajman home" className="shrink-0">
-            <Image src="/images/logo/logo.svg" alt="Yajman" width={200} height={200} />
+            <Image
+              src="/images/logo/logo.svg"
+              alt="Yajman"
+              width={200}
+              height={200}
+              className="h-10 w-auto sm:h-12"
+            />
           </Link>
 
           <Suspense fallback={<NavLinksFallback />}>

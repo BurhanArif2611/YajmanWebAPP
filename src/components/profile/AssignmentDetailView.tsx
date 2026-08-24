@@ -143,12 +143,12 @@ export function AssignmentDetailView({ assignment }: { assignment: PanditAssignm
 
 function Row({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
   return (
-    <div className="flex items-start justify-between gap-4 border-b border-border pb-3 last:border-b-0">
-      <span className="flex items-center gap-1.5 text-text-muted">
+    <div className="flex flex-col gap-1 border-b border-border pb-3 last:border-b-0 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
+      <span className="flex shrink-0 items-center gap-1.5 text-text-muted">
         {icon}
         {label}
       </span>
-      <span className="text-right font-medium text-text-primary">{value}</span>
+      <span className="min-w-0 break-words font-medium text-text-primary sm:text-right">{value}</span>
     </div>
   );
 }

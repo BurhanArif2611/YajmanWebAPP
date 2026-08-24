@@ -54,8 +54,8 @@ export default async function BookingsPage({
   }
 
   return (
-    <div className="rounded-2xl bg-surface-peach p-6 md:p-10">
-      <h1 className="font-sans text-2xl font-bold text-text-primary md:text-3xl">
+    <div className="rounded-2xl bg-surface-peach p-4 sm:p-6 md:p-10">
+      <h1 className="font-sans text-xl font-bold text-text-primary sm:text-2xl md:text-3xl">
         {copy.heading}
       </h1>
       <p className="mt-1 text-sm text-text-muted">{copy.subtitle}</p>

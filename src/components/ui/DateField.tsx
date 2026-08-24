@@ -57,7 +57,7 @@ export function DateField({
       </button>
 
       {open && (
-        <div className="absolute left-0 top-[calc(100%+8px)] z-50 rounded-2xl border border-border bg-white p-3 shadow-modal">
+        <div className="absolute left-0 top-[calc(100%+8px)] z-50 max-w-[calc(100vw-2rem)] overflow-x-auto rounded-2xl border border-border bg-white p-2 shadow-modal sm:p-3">
           <DayPicker
             mode="single"
             selected={selected}

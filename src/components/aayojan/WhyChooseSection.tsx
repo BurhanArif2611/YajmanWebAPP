@@ -23,12 +23,12 @@ export function WhyChooseSection() {
           />
         </div>
 
-        <div className="flex flex-col justify-center gap-8 bg-brand-navy p-8 md:p-12 md:py-24">
+        <div className="flex flex-col justify-center gap-6 bg-brand-navy p-5 sm:gap-8 sm:p-8 md:p-12 md:py-24">
           <div>
             <span className="font-decorative text-lg text-brand-saffron-400 md:text-3xl">
               Why Choose Yajman
             </span>
-            <h2 className="mt-2 font-sans text-3xl font-semibold text-white md:text-5xl">
+            <h2 className="mt-2 font-sans text-2xl font-semibold text-white sm:text-3xl md:text-5xl">
               Why Families Choose Yajman for Devotional Events
             </h2>
           </div>

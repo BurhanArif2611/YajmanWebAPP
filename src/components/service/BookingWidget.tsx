@@ -51,17 +51,17 @@ export function BookingWidget({
   };
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="rounded-2xl bg-white p-6 shadow-card">
-        <h2 className="font-sans text-2xl font-semibold text-text-primary">
+    <div className="flex flex-col gap-5 sm:gap-6">
+      <div className="rounded-2xl bg-white p-4 shadow-card sm:p-6">
+        <h2 className="font-sans text-xl font-semibold text-text-primary sm:text-2xl">
           About this Puja
         </h2>
         <p className="mt-3 text-sm leading-relaxed text-text-muted">
           {about ?? DEFAULT_ABOUT}
         </p>
 
-        <div className="mt-5 flex items-baseline gap-2">
-          <span className="text-2xl font-semibold text-text-primary">
+        <div className="mt-5 flex flex-wrap items-baseline gap-2">
+          <span className="text-xl font-semibold text-text-primary sm:text-2xl">
             ₹{service.price}
           </span>
           <span className="text-sm text-text-light line-through">
@@ -99,7 +99,7 @@ export function BookingWidget({
         <span className="h-px flex-1 bg-border" />
       </div>
 
-      <div className="flex flex-col items-center gap-2 rounded-2xl bg-surface-peach p-6 text-center">
+      <div className="flex flex-col items-center gap-2 rounded-2xl bg-surface-peach p-4 text-center sm:p-6">
         <div className="relative h-12 w-12 overflow-hidden rounded-full bg-white shadow-card">
           <Image
             src="/images/logo/logo.svg"
@@ -116,8 +116,8 @@ export function BookingWidget({
           Need help? Talk to an expert.
         </p>
         <a
-          href="https://wa.me/910255456235"
-          className="flex items-center gap-2 font-sans text-xl font-semibold text-text-primary"
+          href="https://wa.me/918109181057"
+          className="flex flex-wrap items-center justify-center gap-2 font-sans text-lg font-semibold text-text-primary sm:text-xl"
         >
           <Image
             src="/images/misc/whatsapp-icon.png"
@@ -125,7 +125,7 @@ export function BookingWidget({
             width={20}
             height={20}
           />
-          + 0255 456 235
+          +91 81091 81057
         </a>
       </div>
     </div>

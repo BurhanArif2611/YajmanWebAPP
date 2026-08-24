@@ -52,11 +52,11 @@ export function PujaServicesSidebar() {
                     className="object-cover"
                   />
                 </div>
-                <div className="flex-1">
-                  <p className="line-clamp-1 text-sm font-semibold leading-snug text-text-primary">
+                <div className="min-w-0 flex-1">
+                  <p className="line-clamp-2 text-sm font-semibold leading-snug text-text-primary">
                     {service.title}
                   </p>
-                  <div className="mt-1 flex items-baseline gap-2">
+                  <div className="mt-1 flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
                     <span className="text-sm font-semibold text-text-primary">
                       ₹{service.price}
                     </span>

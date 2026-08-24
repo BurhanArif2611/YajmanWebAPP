@@ -14,7 +14,7 @@ export default function ArticlesPage() {
     <>
       <ServicesHero title="Articles" />
 
-      <div className="relative z-10 -mt-8 rounded-t-[32px] bg-white pt-10 md:-mt-10">
+      <div className="relative z-10 bg-white pt-2 sm:-mt-8 sm:rounded-t-[32px] sm:pt-10 md:-mt-10">
         <div className="mx-auto max-w-site px-4 pb-16 md:px-8 md:pb-20 lg:px-16 lg:pb-24">
           <CategoryServicesSection />
         </div>

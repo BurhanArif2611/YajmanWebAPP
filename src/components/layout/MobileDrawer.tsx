@@ -1,7 +1,8 @@
 "use client";
 
 import { X, Search } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useNavLinks } from "@/hooks/useNavLinks";
 import {
   FacebookIcon,
@@ -22,8 +23,10 @@ export function MobileDrawer({
   open: boolean;
   onClose: () => void;
 }) {
+  const router = useRouter();
   const { isLoggedIn, logout } = useAuth();
   const navLinks = useNavLinks();
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
@@ -32,7 +35,21 @@ export function MobileDrawer({
     };
   }, [open]);
 
+  useEffect(() => {
+    if (!open) setSearch("");
+  }, [open]);
+
   if (!open) return null;
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    const query = search.trim();
+    const href = query
+      ? `/services?search=${encodeURIComponent(query)}`
+      : "/services";
+    onClose();
+    router.push(href);
+  };
 
   return (
     <div className="fixed inset-0 z-50 lg:hidden">
@@ -43,7 +60,13 @@ export function MobileDrawer({
       <div className="relative flex h-full w-80 max-w-[85vw] flex-col gap-6 overflow-y-auto bg-white p-6 shadow-modal animate-drawer-open">
         <div className="flex items-center justify-between">
           <Link href="/" aria-label="Yajman home" onClick={onClose} className="shrink-0">
-            <Image src="/images/logo/logo.svg" alt="Yajman" width={200} height={200} />
+            <Image
+              src="/images/logo/logo.svg"
+              alt="Yajman"
+              width={200}
+              height={200}
+              className="h-10 w-auto"
+            />
           </Link>
           <button
             onClick={onClose}
@@ -54,13 +77,26 @@ export function MobileDrawer({
           </button>
         </div>
 
-        <Input
-          variant="pill"
-          type="text"
-          placeholder="Search for Puja, Festival..."
-          containerClassName="min-h-[44px] py-1"
-          trailing={<Search size={18} className="text-text-muted" />}
-        />
+        <form onSubmit={handleSearch}>
+          <Input
+            variant="pill"
+            type="search"
+            enterKeyHint="search"
+            placeholder="Search for Puja, Festival..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            containerClassName="min-h-[44px] py-1"
+            trailing={
+              <button
+                type="submit"
+                aria-label="Search services"
+                className="flex items-center justify-center text-text-muted hover:text-brand-saffron-400"
+              >
+                <Search size={18} />
+              </button>
+            }
+          />
+        </form>
 
         <nav className="flex flex-col gap-1">
           {navLinks.map((link) => (

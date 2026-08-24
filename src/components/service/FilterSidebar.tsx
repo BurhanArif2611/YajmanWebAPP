@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
-import { SlidersHorizontal, X, RotateCcw } from "lucide-react";
+import { SlidersHorizontal, X, RotateCcw, ArrowUpRight, ArrowRight } from "lucide-react";
 import { getCategories, getTypes } from "@/lib/api/catalog";
 import { getBlogs } from "@/lib/api/blogs";
 import { resolveImageUrl } from "@/lib/mappers/service";
@@ -317,9 +317,9 @@ function FilterSidebarInner() {
                         </p>
                         <Link
                           href={`/blogs/${post.slug}`}
-                          className="text-xs font-semibold text-brand-saffron-400"
+                          className="text-xs flex items-center gap-1 font-semibold text-brand-saffron-400"
                         >
-                          Read More →
+                          Read More <ArrowRight size={18} className="ml-2" />
                         </Link>
                       </div>
                     </li>

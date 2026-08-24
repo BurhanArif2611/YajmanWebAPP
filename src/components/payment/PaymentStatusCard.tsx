@@ -78,7 +78,7 @@ export function PaymentStatusCard({
     <div className="mx-auto flex min-h-[70vh] max-w-site items-center justify-center px-4 py-16">
       <div
         className={cn(
-          "w-full max-w-[560px] rounded-2xl p-8 text-center  md:p-12",
+          "w-full max-w-[560px] rounded-2xl p-5 text-center sm:p-8 md:p-12",
           config.bg
         )}
       >
@@ -88,7 +88,7 @@ export function PaymentStatusCard({
           </span>
         </div>
 
-        <h1 className="mt-6 font-sans text-3xl font-semibold text-text-primary">
+        <h1 className="mt-6 font-sans text-2xl font-semibold text-text-primary sm:text-3xl">
           {config.title}
         </h1>
         <p className="mt-2 text-sm text-text-muted">{config.subtitle}</p>
@@ -158,9 +158,9 @@ export function PaymentStatusCard({
 
 function Row({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex items-center justify-between">
-      <span className="text-text-muted">{label}</span>
-      <span className="font-medium text-text-primary">{value}</span>
+    <div className="flex items-start justify-between gap-3">
+      <span className="shrink-0 text-text-muted">{label}</span>
+      <span className="min-w-0 break-all text-right font-medium text-text-primary">{value}</span>
     </div>
   );
 }

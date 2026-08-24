@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { ClipboardList, MapPin } from "lucide-react";
+import { ArrowUpRight, ClipboardList, MapPin } from "lucide-react";
 import { ButtonLink } from "@/components/ui/Button";
 
 export function AboutSection() {
@@ -83,7 +83,7 @@ export function AboutSection() {
           </div>
 
           <ButtonLink href="/contact" size="lg" className="self-start rounded-full">
-            Contact Us →
+            Contact Us <ArrowUpRight size={18} className="ml-2" />
           </ButtonLink>
         </div>
       </div>

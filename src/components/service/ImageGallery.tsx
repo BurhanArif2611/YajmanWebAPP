@@ -18,14 +18,16 @@ export function ImageGallery({
   const [active, setActive] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
 
+  if (!images.length) return null;
+
   const goPrev = () =>
     setActive((i) => (i - 1 + images.length) % images.length);
   const goNext = () => setActive((i) => (i + 1) % images.length);
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-3 sm:gap-4">
       <div
-        className="group relative aspect-[16/10] w-full cursor-pointer overflow-hidden rounded-2xl"
+        className="group relative aspect-[4/3] w-full cursor-pointer overflow-hidden rounded-xl sm:aspect-[16/10] sm:rounded-2xl"
         onClick={() => setLightboxOpen(true)}
       >
         <Image
@@ -37,34 +39,38 @@ export function ImageGallery({
           priority
         />
 
-        <button
-          aria-label="Previous image"
-          onClick={(e) => {
-            e.stopPropagation();
-            goPrev();
-          }}
-          className="absolute left-4 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-text-primary shadow-card-hover transition-colors hover:bg-white"
-        >
-          <ChevronLeft size={20} />
-        </button>
-        <button
-          aria-label="Next image"
-          onClick={(e) => {
-            e.stopPropagation();
-            goNext();
-          }}
-          className="absolute right-4 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-text-primary shadow-card-hover transition-colors hover:bg-white"
-        >
-          <ChevronRight size={20} />
-        </button>
+        {images.length > 1 && (
+          <>
+            <button
+              aria-label="Previous image"
+              onClick={(e) => {
+                e.stopPropagation();
+                goPrev();
+              }}
+              className="absolute left-2 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-text-primary shadow-card-hover transition-colors hover:bg-white sm:left-4 sm:h-11 sm:w-11"
+            >
+              <ChevronLeft size={20} />
+            </button>
+            <button
+              aria-label="Next image"
+              onClick={(e) => {
+                e.stopPropagation();
+                goNext();
+              }}
+              className="absolute right-2 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-text-primary shadow-card-hover transition-colors hover:bg-white sm:right-4 sm:h-11 sm:w-11"
+            >
+              <ChevronRight size={20} />
+            </button>
+          </>
+        )}
       </div>
 
-      <div className="flex items-center gap-4">
+      <div className="-mx-1 flex items-center gap-2 overflow-x-auto px-1 pb-1 sm:gap-4 sm:overflow-visible sm:pb-0">
         {images.slice(0, VISIBLE_THUMBS).map((src, i) => (
           <button
             key={src + i}
             onClick={() => setActive(i)}
-            className={`relative h-20 w-28 shrink-0 overflow-hidden rounded-xl ring-2 transition-colors ${
+            className={`relative h-14 w-20 shrink-0 overflow-hidden rounded-lg ring-2 transition-colors sm:h-20 sm:w-28 sm:rounded-xl ${
               active === i ? "ring-brand-saffron-400" : "ring-transparent"
             }`}
           >
@@ -79,7 +85,7 @@ export function ImageGallery({
         ))}
         <button
           onClick={() => setLightboxOpen(true)}
-          className="text-sm font-semibold text-brand-saffron-400 hover:text-brand-saffron-500"
+          className="shrink-0 text-sm font-semibold whitespace-nowrap text-brand-saffron-400 hover:text-brand-saffron-500"
         >
           View All
         </button>

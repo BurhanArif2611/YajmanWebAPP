@@ -122,10 +122,10 @@ export function PersonalDataForm() {
   }
 
   return (
-    <div className="flex flex-col gap-6 rounded-2xl bg-surface-peach p-6 md:p-10">
-      <div className="flex items-center justify-between gap-4 border-b border-border-dark/30 pb-6">
-        <div className="flex items-center gap-4">
-          <div className="relative h-16 w-16 overflow-hidden rounded-full bg-surface-muted">
+    <div className="flex flex-col gap-6 rounded-2xl bg-surface-peach p-4 sm:p-6 md:p-10">
+      <div className="flex flex-col gap-4 border-b border-border-dark/30 pb-6 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex min-w-0 items-center gap-3 sm:gap-4">
+          <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-full bg-surface-muted sm:h-16 sm:w-16">
             <Image
               src={avatarSrc}
               alt={profileQuery.data?.name ?? "Profile photo"}
@@ -134,17 +134,17 @@ export function PersonalDataForm() {
               className="object-cover"
             />
           </div>
-          <div>
-            <h1 className="font-sans text-2xl font-bold text-text-primary">
+          <div className="min-w-0">
+            <h1 className="font-sans text-xl font-bold text-text-primary sm:text-2xl">
               My Profile
             </h1>
-            <p className="text-sm text-text-muted">
+            <p className="truncate text-sm text-text-muted">
               {profileQuery.data?.phone ?? "Manage your account details."}
             </p>
           </div>
         </div>
 
-        <div className="flex flex-col items-end gap-1">
+        <div className="flex flex-col items-start gap-1 sm:items-end">
           <button
             type="button"
             onClick={() => fileInputRef.current?.click()}

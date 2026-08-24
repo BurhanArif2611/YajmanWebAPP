@@ -41,7 +41,7 @@ function DesktopSearch({ pathname }: { pathname: string }) {
         e.preventDefault();
         applySearch(search);
       }}
-      className="absolute bottom-5 left-1/2 z-20 flex w-full max-w-2xl -translate-x-1/2 gap-2 rounded-full border border-border-dark bg-white p-2 shadow-card-hover"
+      className="absolute bottom-5 left-1/2 z-20 flex w-[calc(100%-2rem)] max-w-2xl -translate-x-1/2 gap-2 rounded-full border border-border-dark bg-white p-2 shadow-card-hover"
     >
       <Input
         variant="pill"
@@ -49,10 +49,10 @@ function DesktopSearch({ pathname }: { pathname: string }) {
         placeholder="Search for Puja, Festival & Rituals..."
         value={search}
         onChange={(e) => setSearch(e.target.value)}
-        containerClassName="min-h-[44px] flex-1 bg-transparent"
+        containerClassName="min-h-[44px] min-w-0 flex-1 bg-transparent"
         leading={<Search size={20} />}
       />
-      <Button type="submit" size="md" className="rounded-full px-8">
+      <Button type="submit" size="md" className="shrink-0 rounded-full px-4 sm:px-8">
         Search
       </Button>
     </form>

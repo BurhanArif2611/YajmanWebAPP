@@ -154,16 +154,16 @@ export function NotificationsView() {
                 <span className="absolute right-0 top-0 h-2.5 w-2.5 rounded-full bg-brand-magenta ring-2 ring-white" />
               )}
             </button>
-            <div className="flex-1">
+            <div className="min-w-0 flex-1">
               <div className="flex items-start justify-between gap-3">
-                <p className="font-sans text-base font-semibold text-text-primary">
+                <p className="min-w-0 font-sans text-base font-semibold break-words text-text-primary">
                   {notification.title}
                 </p>
                 <span className="shrink-0 text-xs text-text-light">
                   {formatRelativeTime(notification.created_at)}
                 </span>
               </div>
-              <p className="mt-1 text-sm text-text-muted">{notification.message}</p>
+              <p className="mt-1 break-words text-sm text-text-muted">{notification.message}</p>
             </div>
             <button
               onClick={() => deleteMutation.mutate(notification.id)}

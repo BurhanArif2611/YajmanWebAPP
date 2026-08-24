@@ -32,9 +32,9 @@ export function ServiceCard({ service }: { service: MockService }) {
         <h3 className="font-sans text-lg font-semibold leading-snug text-text-primary line-clamp-2">
           {service.title}
         </h3>
-        <p className="flex items-center gap-1.5 text-sm text-text-muted">
-          <MapPin size={14} className="text-brand-saffron-400" />
-          {service.location}
+        <p className="flex min-w-0 items-start gap-1.5 text-sm text-text-muted">
+          <MapPin size={14} className="mt-0.5 shrink-0 text-brand-saffron-400" />
+          <span className="truncate">{service.location}</span>
         </p>
 
         <div className="border-t border-border" />

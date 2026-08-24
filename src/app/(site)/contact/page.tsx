@@ -58,7 +58,7 @@ export default function ContactPage() {
                   </span>
                   <div>
                     <p className="text-sm text-text-muted">{label}</p>
-                    <p className="font-sans text-base font-semibold text-text-primary">
+                    <p className="break-words font-sans text-base font-semibold text-text-primary">
                       {value}
                     </p>
                   </div>

@@ -91,7 +91,7 @@ export function ContactFormSection({ events }: { events: AayojanEvent[] }) {
   return (
     <section className="mx-auto max-w-site px-4 py-16 md:px-8 md:py-20 lg:px-16 lg:py-8 lg:pt-0">
       <div className="mx-auto grid grid-cols-1 gap-0 lg:grid-cols-2 lg:items-center max-w-6xl">
-        <div className="relative h-72 w-full rounded-l-2xl md:h-[670px]">
+        <div className="relative h-56 w-full overflow-hidden rounded-t-2xl sm:h-72 md:h-[420px] lg:h-[670px] lg:rounded-l-2xl lg:rounded-tr-none">
           <Image
             src="/images/ayongan/image-3.png"
             alt="Kalash yatra procession"
@@ -101,11 +101,11 @@ export function ContactFormSection({ events }: { events: AayojanEvent[] }) {
           />
         </div>
 
-        <div className="rounded-r-2xl bg-surface-peach p-6 md:p-10 md:py-24">
+        <div className="rounded-b-2xl bg-surface-peach p-5 sm:p-6 md:p-10 md:py-16 lg:rounded-r-2xl lg:rounded-bl-none lg:py-24">
           <span className="font-decorative text-2xl text-brand-saffron-400">
             Contact us
           </span>
-          <h2 className="mt-2 font-sans text-3xl font-semibold text-text-primary md:text-4xl">
+          <h2 className="mt-2 font-sans text-2xl font-semibold text-text-primary sm:text-3xl md:text-4xl">
             Get In Touch With Us !
           </h2>
 

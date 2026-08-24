@@ -41,32 +41,32 @@ export function EventServicesSection({ events }: { events: AayojanEvent[] }) {
                   )}
                 </div>
 
-                <div className="flex flex-1 flex-col gap-3">
-                  <h3 className="font-sans text-2xl font-bold text-text-primary">
+                <div className="flex min-w-0 flex-1 flex-col gap-3">
+                  <h3 className="font-sans text-xl font-bold break-words text-text-primary sm:text-2xl">
                     {event.title}
                   </h3>
                   <p className="text-sm leading-relaxed text-text-muted">
                     {event.short_description || event.description}
                   </p>
                   {(event.location || event.city) && (
-                    <p className="flex items-center gap-1.5 text-sm text-text-muted">
-                      <MapPin size={14} className="text-brand-saffron-400" />
-                      <span className="font-semibold text-text-primary">Location:</span>{" "}
-                      {[event.location, event.city].filter(Boolean).join(", ")}
+                    <p className="flex min-w-0 items-start gap-1.5 text-sm text-text-muted">
+                      <MapPin size={14} className="mt-0.5 shrink-0 text-brand-saffron-400" />
+                      <span className="break-words">
+                        <span className="font-semibold text-text-primary">Location:</span>{" "}
+                        {[event.location, event.city].filter(Boolean).join(", ")}
+                      </span>
                     </p>
                   )}
-                  <div className="flex items-start justify-between gap-2 mt-2">
+                  <div className="mt-2 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-2">
                     <ButtonLink
                       href="/contact"
                       size="sm"
-                      className="mt-2 w-fit gap-2 rounded-full  tracking-wide"
+                      className="w-fit gap-2 rounded-full tracking-wide"
                     >
                       Contact Us
                       <ArrowUpRight size={16} />
                     </ButtonLink>
-                    <div className="lg:self-center">
-                      <AvatarCluster count="10+" label={`${event.total_reviews} Reviews`} />
-                    </div>
+                    <AvatarCluster count="10+" label={`${event.total_reviews} Reviews`} />
                   </div>
                 </div>
               </div>

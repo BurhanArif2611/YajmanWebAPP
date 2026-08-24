@@ -33,8 +33,8 @@ export function BlogSidebar({ services }: { services: BlogSidebarItem[] }) {
                   className="object-cover"
                 />
               </div>
-              <div>
-                <p className="mb-2 text-sm font-semibold leading-snug text-text-primary">
+              <div className="min-w-0 flex-1">
+                <p className="mb-2 text-sm font-semibold leading-snug text-text-primary line-clamp-2">
                   {item.title}
                 </p>
                 <Link

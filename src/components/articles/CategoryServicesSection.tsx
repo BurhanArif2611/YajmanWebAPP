@@ -73,13 +73,13 @@ function CategoryServicesSectionInner() {
           ))}
         </div>
       ) : freeCategories.length ? (
-        <div className="flex flex-wrap items-center justify-center gap-8 border-b border-border pb-4">
+        <div className="flex gap-4 overflow-x-auto border-b border-border pb-4 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:flex-wrap sm:items-center sm:justify-center sm:gap-6 sm:overflow-visible">
           {freeCategories.map((cat) => (
             <button
               key={cat.id}
               onClick={() => selectTab(cat.id)}
               className={cn(
-                "min-h-[44px] border-b-2 px-1 text-lg font-medium transition-colors",
+                "min-h-[44px] shrink-0 border-b-2 px-1 text-sm font-medium whitespace-nowrap transition-colors sm:text-base lg:text-lg",
                 activeCategoryId === cat.id
                   ? "border-brand-saffron-400 text-text-primary"
                   : "border-transparent text-text-light hover:text-text-secondary"

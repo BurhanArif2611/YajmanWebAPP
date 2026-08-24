@@ -29,9 +29,9 @@ function BlogCategoryTabsInner() {
 
   if (categoriesQuery.isLoading) {
     return (
-      <div className="flex flex-wrap items-center justify-center gap-8 border-b border-border pb-4">
+      <div className="flex gap-4 overflow-x-auto border-b border-border pb-4 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:flex-wrap sm:items-center sm:justify-center sm:gap-6 sm:overflow-visible">
         {Array.from({ length: 4 }).map((_, i) => (
-          <Skeleton key={i} className="h-6 w-24" />
+          <Skeleton key={i} className="h-6 w-24 shrink-0" />
         ))}
       </div>
     );
@@ -40,11 +40,11 @@ function BlogCategoryTabsInner() {
   const categories = categoriesQuery.data ?? [];
 
   return (
-    <div className="flex flex-wrap items-center justify-center gap-8 border-b border-border pb-4">
+    <div className="flex gap-4 overflow-x-auto border-b border-border pb-4 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:flex-wrap sm:items-center sm:justify-center sm:gap-6 sm:overflow-visible">
       <button
         onClick={() => selectCategory(null)}
         className={cn(
-          "min-h-[44px] border-b-2 px-1 text-md font-medium transition-colors",
+          "min-h-[44px] shrink-0 border-b-2 px-1 text-sm font-medium whitespace-nowrap transition-colors sm:text-md",
           !activeCategory
             ? "border-brand-saffron-400 text-text-primary"
             : "border-transparent text-text-light hover:text-text-secondary"
@@ -57,7 +57,7 @@ function BlogCategoryTabsInner() {
           key={cat.id}
           onClick={() => selectCategory(cat.id)}
           className={cn(
-            "min-h-[44px] border-b-2 px-1 text-md font-medium transition-colors",
+            "min-h-[44px] shrink-0 border-b-2 px-1 text-sm font-medium whitespace-nowrap transition-colors sm:text-md",
             activeCategory === cat.id
               ? "border-brand-saffron-400 text-text-primary"
               : "border-transparent text-text-light hover:text-text-secondary"
@@ -74,9 +74,9 @@ export function BlogCategoryTabs() {
   return (
     <Suspense
       fallback={
-        <div className="flex flex-wrap items-center justify-center gap-8 border-b border-border pb-4">
+        <div className="flex gap-4 overflow-x-auto border-b border-border pb-4 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:flex-wrap sm:items-center sm:justify-center sm:gap-6 sm:overflow-visible">
           {Array.from({ length: 4 }).map((_, i) => (
-            <Skeleton key={i} className="h-6 w-24" />
+            <Skeleton key={i} className="h-6 w-24 shrink-0" />
           ))}
         </div>
       }

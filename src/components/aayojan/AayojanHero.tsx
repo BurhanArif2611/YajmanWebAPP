@@ -29,7 +29,7 @@ export function AayojanHero({ banners = [] }: { banners?: AayojanBanner[] }) {
   }, [slides.length]);
 
   return (
-    <section className="relative flex min-h-[560px] items-center overflow-hidden bg-surface-peach md:min-h-[640px]">
+    <section className="relative flex min-h-[420px] items-center overflow-hidden bg-surface-peach sm:min-h-[520px] md:min-h-[640px]">
       {slides.map((src, i) => (
         <Image
           key={src + i}
@@ -45,24 +45,24 @@ export function AayojanHero({ banners = [] }: { banners?: AayojanBanner[] }) {
       ))}
       <div className="absolute inset-0 bg-black/50" />
 
-      <div className="relative mx-auto flex w-full max-w-site flex-col items-center gap-6 px-4 py-20 text-center md:px-8 lg:px-16">
-        <h1 className="max-w-3xl font-sans text-4xl font-bold leading-tight text-white md:text-5xl lg:text-7xl">
+      <div className="relative mx-auto flex w-full max-w-site flex-col items-center gap-5 px-4 py-14 text-center sm:gap-6 sm:py-20 md:px-8 lg:px-16">
+        <h1 className="max-w-3xl font-sans text-3xl font-bold leading-tight text-white sm:text-4xl md:text-5xl lg:text-7xl">
           Celebrate Every Sacred Occasion with Yajman
         </h1>
-        <p className="max-w-2xl text-base text-white/85 md:text-lg">
+        <p className="max-w-2xl text-sm text-white/85 sm:text-base md:text-lg">
           From intimate Bhajan Sandhya to grand spiritual gatherings, we plan
           and manage devotional events with authenticity, devotion, and
           perfection.
         </p>
-        <div className="flex flex-wrap items-center gap-4">
-          <ButtonLink href="#contact" size="lg" className="rounded-full">
+        <div className="flex flex-col items-center justify-center gap-3 sm:flex-row sm:flex-wrap sm:gap-4">
+          <ButtonLink href="#contact" size="lg" className="w-full rounded-full sm:w-auto">
             Plan Your Event <ArrowUpRight size={18} />
           </ButtonLink>
           <ButtonLink
             href="/contact"
             variant="outline"
             size="lg"
-            className="gap-2 rounded-full border-white uppercase tracking-wide text-white hover:bg-white/10"
+            className="w-full gap-2 rounded-full border-white uppercase tracking-wide text-white hover:bg-white/10 sm:w-auto"
           >
             Talk To Our Expert
             <ArrowUpRight size={18} />

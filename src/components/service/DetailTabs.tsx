@@ -137,22 +137,24 @@ export function DetailTabs({
   };
 
   return (
-    <section className="flex flex-col gap-14">
-      <div className="sticky top-20 z-30 -mx-4 flex flex-wrap gap-8 border-b border-border bg-white px-4 md:-mx-8 md:px-8 lg:-mx-16 lg:px-16">
-        {tabs.map((tab) => (
-          <button
-            key={tab}
-            onClick={() => handleTabClick(tab)}
-            className={cn(
-              "min-h-[44px] border-b-2 pb-3 text-lg font-medium transition-colors",
-              active === tab
-                ? "border-brand-saffron-400 text-text-primary"
-                : "border-transparent text-text-light hover:text-text-secondary"
-            )}
-          >
-            {tab}
-          </button>
-        ))}
+    <section className="flex flex-col gap-8 sm:gap-10 lg:gap-14">
+      <div className="sticky top-16 z-30 -mx-4 border-b border-border bg-white sm:top-[7.3rem] md:-mx-8 lg:-mx-16">
+        <div className="flex gap-5 overflow-x-auto px-4 sm:gap-8 md:px-8 lg:px-16 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          {tabs.map((tab) => (
+            <button
+              key={tab}
+              onClick={() => handleTabClick(tab)}
+              className={cn(
+                "min-h-[44px] shrink-0 border-b-2 pb-3 text-sm font-medium whitespace-nowrap transition-colors sm:text-base lg:text-base",
+                active === tab
+                  ? "border-brand-saffron-400 text-text-primary"
+                  : "border-transparent text-text-light hover:text-text-secondary"
+              )}
+            >
+              {tab}
+            </button>
+          ))}
+        </div>
       </div>
 
       <div
@@ -161,16 +163,16 @@ export function DetailTabs({
         ref={(el) => {
           sectionRefs.current["Key Features"] = el;
         }}
-        className="scroll-mt-40"
+        className="scroll-mt-36 sm:scroll-mt-40"
       >
-        <h2 className="font-sans text-2xl font-semibold text-text-primary">
+        <h2 className="font-sans text-xl font-semibold text-text-primary sm:text-2xl">
           Key Features of the Ritual
         </h2>
         <ul className="mt-4 flex flex-col gap-2">
           {features.map((feature, i) => (
             <li key={i} className="flex gap-2 text-sm text-text-muted">
-              <span className="text-brand-saffron-400">•</span>
-              {feature}
+              <span className="shrink-0 text-brand-saffron-400">•</span>
+              <span className="break-words">{feature}</span>
             </li>
           ))}
         </ul>
@@ -183,10 +185,10 @@ export function DetailTabs({
           ref={(el) => {
             sectionRefs.current["Temple Details"] = el;
           }}
-          className="scroll-mt-40"
+          className="scroll-mt-36 sm:scroll-mt-40"
         >
           {templeName?.trim() && (
-            <h2 className="font-sans text-2xl font-semibold text-text-primary">
+            <h2 className="font-sans text-xl font-semibold break-words text-text-primary sm:text-2xl">
               {templeName.trim()}
             </h2>
           )}
@@ -206,18 +208,18 @@ export function DetailTabs({
         ref={(el) => {
           sectionRefs.current["Process"] = el;
         }}
-        className="scroll-mt-40"
+        className="scroll-mt-36 sm:scroll-mt-40"
       >
-        <h2 className="font-sans text-2xl font-semibold text-text-primary">
+        <h2 className="font-sans text-xl font-semibold text-text-primary sm:text-2xl">
           Puja Process
         </h2>
         <p className="mt-3 max-w-2xl text-sm leading-relaxed text-text-muted">
           {PROCESS_INTRO}
         </p>
-        <div className="mt-8 grid grid-cols-2 gap-8 sm:grid-cols-4">
+        <div className="mt-6 grid grid-cols-1 gap-6 sm:mt-8 sm:grid-cols-2 sm:gap-8 md:grid-cols-4">
           {PROCESS_STEPS.map((step) => (
-            <div key={step.number} className="flex flex-col gap-3">
-              <span className="flex h-12 w-12 items-center justify-center rounded-full bg-surface-peach font-sans text-xl font-semibold text-brand-saffron-400">
+            <div key={step.number} className="flex flex-col gap-2 sm:gap-3">
+              <span className="flex h-10 w-10 items-center justify-center rounded-full bg-surface-peach font-sans text-lg font-semibold text-brand-saffron-400 sm:h-12 sm:w-12 sm:text-xl">
                 {step.number}
               </span>
               <h3 className="font-sans text-base font-semibold text-text-primary">
@@ -235,12 +237,12 @@ export function DetailTabs({
         ref={(el) => {
           sectionRefs.current["Photos"] = el;
         }}
-        className="scroll-mt-40"
+        className="scroll-mt-36 sm:scroll-mt-40"
       >
-        <h2 className="font-sans text-2xl font-semibold text-text-primary">
+        <h2 className="font-sans text-xl font-semibold text-text-primary sm:text-2xl">
           Pooja Photos
         </h2>
-        <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+        <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-5">
           {photos.map((src, i) => (
             <div key={i} className="relative aspect-square overflow-hidden rounded-xl">
               <Image
@@ -261,16 +263,16 @@ export function DetailTabs({
         ref={(el) => {
           sectionRefs.current["Reviews"] = el;
         }}
-        className="scroll-mt-40"
+        className="scroll-mt-36 sm:scroll-mt-40"
       >
-        <h2 className="font-sans text-2xl font-semibold text-text-primary">
+        <h2 className="font-sans text-xl font-semibold text-text-primary sm:text-2xl">
           Reviews &amp; Ratings
         </h2>
         <div className="mt-4 grid grid-cols-1 gap-6 md:grid-cols-2">
           {REVIEWS.map((review, i) => (
             <div key={i} className="flex flex-col gap-2">
               <div className="flex items-center gap-3">
-                <div className="relative h-10 w-10 overflow-hidden rounded-full">
+                <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-full">
                   <Image
                     src={review.avatar}
                     alt={review.name}
@@ -279,7 +281,7 @@ export function DetailTabs({
                     className="object-cover"
                   />
                 </div>
-                <div>
+                <div className="min-w-0">
                   <p className="font-sans text-sm font-semibold text-text-primary">
                     {review.name}
                   </p>
@@ -294,7 +296,7 @@ export function DetailTabs({
             </div>
           ))}
         </div>
-        <Button variant="primary" className="mt-6 rounded-full">
+        <Button variant="primary" className="mt-6 w-full rounded-full sm:w-auto">
           Show all reviews
         </Button>
       </div>
@@ -305,9 +307,9 @@ export function DetailTabs({
         ref={(el) => {
           sectionRefs.current["FAQ's"] = el;
         }}
-        className="scroll-mt-40"
+        className="scroll-mt-36 sm:scroll-mt-40"
       >
-        <h2 className="font-sans text-2xl font-semibold text-text-primary">
+        <h2 className="font-sans text-xl font-semibold text-text-primary sm:text-2xl">
           Frequently Asked Questions
         </h2>
         <div className="mt-4">

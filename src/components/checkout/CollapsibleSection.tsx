@@ -19,21 +19,23 @@ export function CollapsibleSection({
     <div className="rounded-lg bg-surface-warm border border-gray-200">
       <button
         onClick={() => setOpen((v) => !v)}
-        className="flex min-h-[44px] w-full items-center justify-between px-6 py-5 text-left"
+        className="flex min-h-[44px] w-full items-center justify-between gap-3 px-4 py-4 text-left sm:px-6 sm:py-5"
       >
-        <span className="font-sans text-lg font-semibold text-text-primary">
+        <span className="min-w-0 pr-2 font-sans text-base font-semibold text-text-primary sm:text-lg">
           {title}
         </span>
         <ChevronDown
           size={18}
           className={cn(
-            "text-text-primary transition-transform duration-200",
+            "shrink-0 text-text-primary transition-transform duration-200",
             open && "rotate-180"
           )}
         />
       </button>
       {open && <div className="border-b border-gray-200"></div>}
-      {open && <div className="flex flex-col gap-5 px-6 pt-6 pb-6">{children}</div>}
+      {open && (
+        <div className="flex flex-col gap-5 px-4 py-5 sm:px-6 sm:pb-6 sm:pt-6">{children}</div>
+      )}
     </div>
   );
 }

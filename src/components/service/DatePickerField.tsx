@@ -58,13 +58,15 @@ export function DatePickerField({
       <div className="flex items-center gap-2">
         <button
           onClick={() => setOpen((v) => !v)}
-          className="flex min-h-[56px] flex-1 items-center justify-between rounded-xl border border-border-dark px-4 text-sm font-medium text-text-primary"
+          className="flex min-h-[48px] min-w-0 flex-1 items-center justify-between gap-2 rounded-xl border border-border-dark px-3 text-sm font-medium text-text-primary sm:min-h-[56px] sm:px-4"
         >
-          <span className="flex items-center gap-2">
-            <CalendarIcon size={18} className="text-brand-saffron-400" />
-            {selected ? format(selected, "EEEE. MMM d, yyyy") : "Select a date"}
+          <span className="flex min-w-0 items-center gap-2">
+            <CalendarIcon size={18} className="shrink-0 text-brand-saffron-400" />
+            <span className="truncate">
+              {selected ? format(selected, "EEE, MMM d, yyyy") : "Select a date"}
+            </span>
           </span>
-          <ChevronDown size={16} className="text-text-muted" />
+          <ChevronDown size={16} className="shrink-0 text-text-muted" />
         </button>
 
         <button
@@ -78,13 +80,13 @@ export function DatePickerField({
       </div>
 
       {infoOpen && (
-        <div className="absolute right-0 top-[calc(100%+8px)] z-20 w-72 rounded-xl border border-border bg-white p-4 text-sm text-text-muted shadow-modal">
+        <div className="absolute right-0 top-[calc(100%+8px)] z-20 w-[min(18rem,calc(100vw-2rem))] rounded-xl border border-border bg-white p-4 text-sm text-text-muted shadow-modal">
           {infoMessage}
         </div>
       )}
 
       {open && (
-        <div className="absolute left-0 top-[calc(100%+8px)] z-20 rounded-2xl border border-border bg-white p-3 shadow-modal">
+        <div className="absolute left-0 top-[calc(100%+8px)] z-20 max-w-[calc(100vw-2rem)] overflow-x-auto rounded-2xl border border-border bg-white p-2 shadow-modal sm:p-3">
           <DayPicker
             mode="single"
             selected={selected}

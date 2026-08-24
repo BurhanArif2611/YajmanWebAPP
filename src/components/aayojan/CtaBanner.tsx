@@ -4,7 +4,7 @@ import { ButtonLink } from "@/components/ui/Button";
 
 export function CtaBanner() {
   return (
-    <section className="relative flex min-h-[400px] items-center overflow-hidden md:min-h-[480px]">
+    <section className="relative flex min-h-[280px] items-center overflow-hidden sm:min-h-[360px] md:min-h-[480px]">
       <Image
         src="/images/ayongan/image-1.png"
         alt="Bhajan Sandhya devotional gathering"
@@ -14,8 +14,8 @@ export function CtaBanner() {
       />
       <div className="absolute inset-0 bg-black/55" />
 
-      <div className="relative mx-auto flex w-full max-w-7xl flex-col gap-5 px-4 py-16 md:px-8 lg:px-16">
-        <h2 className="max-w-xl font-sans text-4xl font-bold leading-tight text-white md:text-7xl">
+      <div className="relative mx-auto flex w-full max-w-7xl flex-col gap-4 px-4 py-12 sm:gap-5 sm:py-16 md:px-8 lg:px-16">
+        <h2 className="max-w-xl font-sans text-3xl font-bold leading-tight text-white sm:text-4xl md:text-7xl">
           Planning a
           <br />
           Devotional Event?

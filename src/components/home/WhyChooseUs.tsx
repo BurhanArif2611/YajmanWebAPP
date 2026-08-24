@@ -45,7 +45,7 @@ export function WhyChooseUs() {
         <div className="relative mt-10 grid grid-cols-1 gap-6 lg:grid-cols-[1fr_1fr_1.15fr]">
           <div className="flex flex-col  bg-brand-saffron-400  rounded-lg">
             <div className="p-4">
-              <p className="font-sans text-5xl font-extrabold text-white">10K+</p>
+              <p className="font-sans text-4xl font-extrabold text-white sm:text-5xl">10K+</p>
               <p className="mt-1 font-sans text-lg font-semibold text-white">
                 Puja&apos;s Completed Worldwide
               </p>
@@ -63,7 +63,7 @@ export function WhyChooseUs() {
 
           <div className="flex flex-col overflow-hidden rounded-xl bg-brand-navy">
             <div className="p-5">
-              <p className="font-sans text-5xl font-extrabold text-white">250+</p>
+              <p className="font-sans text-4xl font-extrabold text-white sm:text-5xl">250+</p>
               <p className="mt-1 font-sans text-lg font-semibold text-white">
                 Connected Pandits
               </p>
