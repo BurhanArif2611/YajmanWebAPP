@@ -8,7 +8,7 @@ export function sendOtp(phone: string, countryCode = "+91") {
   });
 }
 
-//this function is only for verifyOTP
+//this function is only for verifyOTP for web
 export function verifyOtp(
   phone: string,
   otp: string,
