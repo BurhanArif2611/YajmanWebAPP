@@ -1,10 +1,18 @@
 import Image from "@/components/ui/AppImage";
 import Link from "next/link";
-import { ArrowRight, MapPin } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
+import { ServiceLocationLine } from "@/components/service/ServiceLocationLine";
+import { hasDiscount } from "@/lib/utils";
 import type { MockService } from "@/lib/constants";
 
 export function ServiceCard({ service }: { service: MockService }) {
+  const showDiscount = hasDiscount(
+    service.price,
+    service.originalPrice,
+    service.discountPercent
+  );
+
   return (
     <div className="group flex flex-col overflow-hidden rounded-xl bg-white shadow-card transition-shadow duration-300 hover:shadow-card-hover">
       <div className="relative aspect-square w-full overflow-hidden">
@@ -32,10 +40,11 @@ export function ServiceCard({ service }: { service: MockService }) {
         <h3 className="font-sans text-lg font-semibold leading-snug text-text-primary line-clamp-2">
           {service.title}
         </h3>
-        <p className="flex min-w-0 items-start gap-1.5 text-sm text-text-muted">
-          <MapPin size={14} className="mt-0.5 shrink-0 text-brand-saffron-400" />
-          <span className="truncate">{service.location}</span>
-        </p>
+        <ServiceLocationLine
+          address={service.location}
+          categoryLabel={service.categoryLabel}
+          truncate
+        />
 
         <div className="border-t border-border" />
 
@@ -43,12 +52,18 @@ export function ServiceCard({ service }: { service: MockService }) {
           <span className="text-lg font-semibold text-text-primary">
             ₹{service.price}
           </span>
-          <span className="text-xs text-text-light line-through">
-            ₹{service.originalPrice}
-          </span>
-          <span className="text-xs font-medium text-success">
-            -{service.discountPercent}%
-          </span>
+          {showDiscount && (
+            <>
+              <span className="text-xs text-text-light line-through">
+                ₹{service.originalPrice}
+              </span>
+              {service.discountPercent > 0 && (
+                <span className="text-xs font-medium text-success">
+                  -{service.discountPercent}%
+                </span>
+              )}
+            </>
+          )}
         </div>
 
         <Link

@@ -13,12 +13,14 @@ export function Select({
   options,
   placeholder = "Select",
   containerClassName,
+  error,
 }: {
   value: string;
   onChange: (value: string) => void;
   options: SelectOption[];
   placeholder?: string;
   containerClassName?: string;
+  error?: boolean;
 }) {
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -42,7 +44,8 @@ export function Select({
         onClick={() => setOpen((v) => !v)}
         className={cn(
           "flex min-h-[56px] w-full items-center justify-between gap-3 rounded-md border border-border-dark bg-white px-4 text-left transition-colors",
-          open && "border-brand-saffron-400",
+          open && !error && "border-brand-saffron-400",
+          error && "border-error",
           containerClassName
         )}
       >

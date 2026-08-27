@@ -198,7 +198,11 @@ export function ContactFormSection({ events }: { events: AayojanEvent[] }) {
             </div>
 
             <Field label="Preferred Date" error={fieldErrors.preferred_date}>
-              <DateField selected={preferredDate} onSelect={setPreferredDate} />
+              <DateField
+                selected={preferredDate}
+                onSelect={setPreferredDate}
+                minDate={new Date()}
+              />
             </Field>
 
             {error && <p className="text-sm font-medium text-error">{error}</p>}

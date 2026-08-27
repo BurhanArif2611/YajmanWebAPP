@@ -1,13 +1,16 @@
 import { notFound } from "next/navigation";
-import { MapPin, Star } from "lucide-react";
+import { Star } from "lucide-react";
 import { Breadcrumb } from "@/components/layout/Breadcrumb";
 import { ImageGallery } from "@/components/service/ImageGallery";
 import { BookingWidget } from "@/components/service/BookingWidget";
 import { DetailTabs } from "@/components/service/DetailTabs";
+import { ServiceDetailContent } from "@/components/service/ServiceDetailContent";
+import { ServiceLocationLine } from "@/components/service/ServiceLocationLine";
 import { StickyBookBar } from "@/components/service/StickyBookBar";
 import { Badge } from "@/components/ui/Badge";
 import { ShareButton } from "@/components/ui/ShareButton";
-import { getServiceBySlug } from "@/lib/api/services";
+import { getServiceBySlug, getServiceReviews } from "@/lib/api/services";
+import { isBookingUnavailable } from "@/lib/bookingDates";
 import { mapServiceToCard } from "@/lib/mappers/service";
 
 type Params = Promise<{ category: string; slug: string }>;
@@ -44,6 +47,18 @@ export default async function ServiceDetailPage({
 
   const service = mapServiceToCard(detail);
   const temple = detail.temples?.[0];
+  const bookingAbout = detail.short_description?.trim() || detail.about_puja?.trim() || null;
+  const bookingAvailability = {
+    minAdvanceDays: detail.advance_booking_days ?? 0,
+    availabilityStart: detail.availability_start_date,
+    availabilityEnd: detail.availability_end_date,
+    availableDates: detail.available_dates,
+  };
+  const bookingUnavailable = isBookingUnavailable(bookingAvailability);
+  const reviews =
+    detail.reviews?.length
+      ? detail.reviews
+      : await getServiceReviews(detail.id).catch(() => []);
 
   return (
     <>
@@ -73,10 +88,11 @@ export default async function ServiceDetailPage({
 
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex min-w-0 flex-wrap items-center gap-x-4 gap-y-2 text-sm text-text-muted">
-              <span className="flex min-w-0 items-start gap-1.5">
-                <MapPin size={16} className="mt-0.5 shrink-0 text-brand-saffron-400" />
-                <span className="break-words">{service.location}</span>
-              </span>
+              <ServiceLocationLine
+                address={service.location}
+                categoryLabel={service.categoryLabel}
+                iconSize={16}
+              />
               <span className="flex items-center gap-1.5">
                 <span className="flex gap-0.5 text-brand-gold-400">
                   {Array.from({ length: 5 }).map((_, i) => (
@@ -105,21 +121,19 @@ export default async function ServiceDetailPage({
           <div className="flex flex-col gap-5 sm:gap-8">
             <ImageGallery images={service.gallery} alt={service.title} />
 
-            {(detail.description || detail.short_description) && (
-              <p className="text-sm leading-relaxed text-text-muted">
-                {detail.description || detail.short_description}
-              </p>
-            )}
+            <ServiceDetailContent
+              shortDescription={detail.short_description}
+              aboutPuja={detail.about_puja}
+              description={detail.description}
+              customContent={detail.custom_content}
+            />
           </div>
 
           <div id="booking-widget" className="scroll-mt-24">
             <BookingWidget
               service={service}
-              about={detail.about_puja || detail.short_description}
-              minAdvanceDays={detail.advance_booking_days ?? 0}
-              availabilityStart={detail.availability_start_date}
-              availabilityEnd={detail.availability_end_date}
-              availableDates={detail.available_dates}
+              about={bookingAbout}
+              bookingAvailability={bookingAvailability}
             />
           </div>
         </div>
@@ -130,6 +144,7 @@ export default async function ServiceDetailPage({
             templeName={temple?.name}
             photos={service.gallery}
             faqs={detail.faqs?.length ? detail.faqs : undefined}
+            reviews={reviews}
           />
         </div>
       </div>
@@ -138,6 +153,7 @@ export default async function ServiceDetailPage({
         price={service.price}
         originalPrice={service.originalPrice}
         discountPercent={service.discountPercent}
+        bookingUnavailable={bookingUnavailable}
       />
     </>
   );

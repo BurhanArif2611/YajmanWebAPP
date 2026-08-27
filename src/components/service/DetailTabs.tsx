@@ -3,9 +3,10 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "@/components/ui/AppImage";
 import { Star } from "lucide-react";
-import { Button } from "@/components/ui/Button";
 import { FaqAccordion } from "@/components/service/FaqAccordion";
-import { cn } from "@/lib/utils";
+import { cn, formatRelativeTime } from "@/lib/utils";
+import { resolveImageUrl } from "@/lib/mappers/service";
+import type { ServiceReview } from "@/types/api";
 
 const TABS = [
   "Key Features",
@@ -27,53 +28,32 @@ const TAB_IDS: Record<Tab, string> = {
   "FAQ's": "faqs",
 };
 
-const KEY_FEATURES = Array.from({ length: 5 }).map(
-  () => "Abhishek of the Shivling with milk, curd, ghee, honey, sugar, and holy water."
-);
-
 const PROCESS_INTRO =
-  "Discover the perfect escape with our carefully curated travel packages. Whether you're seeking adventure, relaxation, or cultural discovery, our tours are designed to offer unforgettable experiences. Explore breath-taking landscapes, meet friendly locals, and create lasting memories in some of the world's most stunning destinations. Every journey is crafted with comfort.";
+  "From booking to video delivery, every step is handled with care so your puja is performed correctly and you stay updated throughout.";
 
 const PROCESS_STEPS = [
   {
     number: "1",
     title: "Choose Puja",
-    description: "Enter your Name and Gotra for the Sankalp.",
+    description: "Select the ritual that matches your occasion and preferred date.",
   },
   {
     number: "2",
     title: "Provide Sankalp details",
-    description: "Enter your Name and Gotra for the Sankalp.",
+    description: "Enter your name and gotra for the Sankalp performed by the pandit.",
   },
   {
     number: "3",
     title: "Puja Day Updates",
     description:
-      "Our experienced pandits perform the sacred puja. You will receive real-time updates of the puja on your registered WhatsApp number.",
+      "Our experienced pandits perform the sacred puja. You receive real-time updates on your registered WhatsApp number.",
   },
   {
     number: "4",
     title: "Puja Video",
-    description: "Get the puja video within 3-4 days on WhatsApp.",
+    description: "Get the puja video within 3–4 days on WhatsApp.",
   },
 ];
-
-const REVIEWS = [
-  { name: "Eleanor Fanta", date: "06 March, 2025", avatar: "/images/testimonials/avatar-1.png" },
-  { name: "Duc Trung", date: "06 March, 2025", avatar: "/images/testimonials/avatar-2.png" },
-  { name: "Mohaymina", date: "06 March, 2025", avatar: "/images/testimonials/avatar-3.png" },
-  { name: "Mauro", date: "06 March, 2025", avatar: "/images/testimonials/avatar-1.png" },
-].map((r) => ({
-  ...r,
-  score: "9.5 Super",
-  text: "Our trip with Crown Tours was absolutely amazing! Every detail, from flights to hotels and local activities, was perfectly planned guides were knowledgeable and friendly, making our journey smooth and unforgettable.",
-}));
-
-const FAQS = Array.from({ length: 4 }).map(() => ({
-  question: "I don't know my Gotra, what should I do?",
-  answer:
-    "If you don't know your Gotra, our Pandit ji can help identify a common Gotra during the puja, or you may check with family elders beforehand.",
-}));
 
 export type DetailTabsProps = {
   keyFeatures?: string[];
@@ -81,6 +61,7 @@ export type DetailTabsProps = {
   templeDescription?: string | null;
   photos: string[];
   faqs?: { question: string; answer: string }[];
+  reviews?: ServiceReview[];
 };
 
 export function DetailTabs({
@@ -89,18 +70,34 @@ export function DetailTabs({
   templeDescription,
   photos,
   faqs,
+  reviews,
 }: DetailTabsProps) {
   const hasTemple = Boolean(templeName?.trim() || templeDescription?.trim());
-  const tabs = useMemo(
-    () => (hasTemple ? [...TABS] : TABS.filter((tab) => tab !== "Temple Details")),
-    [hasTemple]
-  );
+  const features = keyFeatures?.filter((f) => f.trim()) ?? [];
+  const faqItems = faqs?.filter((f) => f.question?.trim()) ?? [];
+  const reviewItems = reviews ?? [];
+  const hasPhotos = photos.length > 0;
 
-  const [active, setActive] = useState<Tab>(tabs[0]);
-  const features = keyFeatures?.length ? keyFeatures : KEY_FEATURES;
-  const faqItems = faqs?.length ? faqs : FAQS;
+  const tabs = useMemo(() => {
+    return TABS.filter((tab) => {
+      if (tab === "Temple Details") return hasTemple;
+      if (tab === "Key Features") return features.length > 0;
+      if (tab === "Photos") return hasPhotos;
+      if (tab === "Reviews") return reviewItems.length > 0;
+      if (tab === "FAQ's") return faqItems.length > 0;
+      return true; // Process always shown
+    });
+  }, [hasTemple, features.length, hasPhotos, reviewItems.length, faqItems.length]);
+
+  const [active, setActive] = useState<Tab>(tabs[0] ?? "Process");
   const sectionRefs = useRef<Partial<Record<Tab, HTMLDivElement | null>>>({});
   const isClickScrolling = useRef(false);
+
+  useEffect(() => {
+    if (tabs.length && !tabs.includes(active)) {
+      setActive(tabs[0]);
+    }
+  }, [tabs, active]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -136,6 +133,8 @@ export function DetailTabs({
     }, 700);
   };
 
+  if (!tabs.length) return null;
+
   return (
     <section className="flex flex-col gap-8 sm:gap-10 lg:gap-14">
       <div className="sticky top-16 z-30 -mx-4 border-b border-border bg-white sm:top-[7.3rem] md:-mx-8 lg:-mx-16">
@@ -157,26 +156,28 @@ export function DetailTabs({
         </div>
       </div>
 
-      <div
-        id={TAB_IDS["Key Features"]}
-        data-tab="Key Features"
-        ref={(el) => {
-          sectionRefs.current["Key Features"] = el;
-        }}
-        className="scroll-mt-36 sm:scroll-mt-40"
-      >
-        <h2 className="font-sans text-xl font-semibold text-text-primary sm:text-2xl">
-          Key Features of the Ritual
-        </h2>
-        <ul className="mt-4 flex flex-col gap-2">
-          {features.map((feature, i) => (
-            <li key={i} className="flex gap-2 text-sm text-text-muted">
-              <span className="shrink-0 text-brand-saffron-400">•</span>
-              <span className="break-words">{feature}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
+      {features.length > 0 && (
+        <div
+          id={TAB_IDS["Key Features"]}
+          data-tab="Key Features"
+          ref={(el) => {
+            sectionRefs.current["Key Features"] = el;
+          }}
+          className="scroll-mt-36 sm:scroll-mt-40"
+        >
+          <h2 className="font-sans text-xl font-semibold text-text-primary sm:text-2xl">
+            Key Features of the Ritual
+          </h2>
+          <ul className="mt-4 flex flex-col gap-2">
+            {features.map((feature, i) => (
+              <li key={i} className="flex gap-2 text-sm text-text-muted">
+                <span className="shrink-0 text-brand-saffron-400">•</span>
+                <span className="break-words">{feature}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       {hasTemple && (
         <div
@@ -231,91 +232,105 @@ export function DetailTabs({
         </div>
       </div>
 
-      <div
-        id={TAB_IDS.Photos}
-        data-tab="Photos"
-        ref={(el) => {
-          sectionRefs.current["Photos"] = el;
-        }}
-        className="scroll-mt-36 sm:scroll-mt-40"
-      >
-        <h2 className="font-sans text-xl font-semibold text-text-primary sm:text-2xl">
-          Pooja Photos
-        </h2>
-        <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-5">
-          {photos.map((src, i) => (
-            <div key={i} className="relative aspect-square overflow-hidden rounded-xl">
-              <Image
-                src={src}
-                alt={`Pooja photo ${i + 1}`}
-                fill
-                sizes="(max-width: 768px) 50vw, 20vw"
-                className="object-cover"
-              />
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div
-        id={TAB_IDS.Reviews}
-        data-tab="Reviews"
-        ref={(el) => {
-          sectionRefs.current["Reviews"] = el;
-        }}
-        className="scroll-mt-36 sm:scroll-mt-40"
-      >
-        <h2 className="font-sans text-xl font-semibold text-text-primary sm:text-2xl">
-          Reviews &amp; Ratings
-        </h2>
-        <div className="mt-4 grid grid-cols-1 gap-6 md:grid-cols-2">
-          {REVIEWS.map((review, i) => (
-            <div key={i} className="flex flex-col gap-2">
-              <div className="flex items-center gap-3">
-                <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-full">
-                  <Image
-                    src={review.avatar}
-                    alt={review.name}
-                    fill
-                    sizes="40px"
-                    className="object-cover"
-                  />
-                </div>
-                <div className="min-w-0">
-                  <p className="font-sans text-sm font-semibold text-text-primary">
-                    {review.name}
-                  </p>
-                  <p className="text-xs text-text-muted">{review.date}</p>
-                </div>
+      {hasPhotos && (
+        <div
+          id={TAB_IDS.Photos}
+          data-tab="Photos"
+          ref={(el) => {
+            sectionRefs.current["Photos"] = el;
+          }}
+          className="scroll-mt-36 sm:scroll-mt-40"
+        >
+          <h2 className="font-sans text-xl font-semibold text-text-primary sm:text-2xl">
+            Pooja Photos
+          </h2>
+          <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-5">
+            {photos.map((src, i) => (
+              <div key={i} className="relative aspect-square overflow-hidden rounded-xl">
+                <Image
+                  src={src}
+                  alt={`Pooja photo ${i + 1}`}
+                  fill
+                  sizes="(max-width: 768px) 50vw, 20vw"
+                  className="object-cover"
+                />
               </div>
-              <p className="flex items-center gap-1 text-sm font-semibold text-brand-saffron-400">
-                <Star size={14} fill="currentColor" strokeWidth={0} />
-                {review.score}
-              </p>
-              <p className="text-sm text-text-muted">{review.text}</p>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-        <Button variant="primary" className="mt-6 w-full rounded-full sm:w-auto">
-          Show all reviews
-        </Button>
-      </div>
+      )}
 
-      <div
-        id={TAB_IDS["FAQ's"]}
-        data-tab="FAQ's"
-        ref={(el) => {
-          sectionRefs.current["FAQ's"] = el;
-        }}
-        className="scroll-mt-36 sm:scroll-mt-40"
-      >
-        <h2 className="font-sans text-xl font-semibold text-text-primary sm:text-2xl">
-          Frequently Asked Questions
-        </h2>
-        <div className="mt-4">
-          <FaqAccordion items={faqItems} />
+      {reviewItems.length > 0 && (
+        <div
+          id={TAB_IDS.Reviews}
+          data-tab="Reviews"
+          ref={(el) => {
+            sectionRefs.current["Reviews"] = el;
+          }}
+          className="scroll-mt-36 sm:scroll-mt-40"
+        >
+          <h2 className="font-sans text-xl font-semibold text-text-primary sm:text-2xl">
+            Reviews &amp; Ratings
+          </h2>
+          <div className="mt-4 grid grid-cols-1 gap-6 md:grid-cols-2">
+            {reviewItems.map((review) => (
+              <div key={review.id} className="flex flex-col gap-2">
+                <div className="flex items-center gap-3">
+                  <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-full bg-surface-muted">
+                    {review.avatar_url ? (
+                      <Image
+                        src={resolveImageUrl(review.avatar_url)}
+                        alt={review.customer_name || "Reviewer"}
+                        fill
+                        sizes="40px"
+                        className="object-cover"
+                      />
+                    ) : null}
+                  </div>
+                  <div className="min-w-0">
+                    <p className="font-sans text-sm font-semibold text-text-primary">
+                      {review.customer_name || "Yajman customer"}
+                    </p>
+                    <p className="text-xs text-text-muted">
+                      {formatRelativeTime(review.created_at)}
+                    </p>
+                  </div>
+                </div>
+                <p className="flex items-center gap-1 text-sm font-semibold text-brand-saffron-400">
+                  <Star size={14} fill="currentColor" strokeWidth={0} />
+                  {review.rating.toFixed(1)}
+                </p>
+                {review.title && (
+                  <p className="font-sans text-sm font-semibold text-text-primary">
+                    {review.title}
+                  </p>
+                )}
+                {review.comment && (
+                  <p className="text-sm text-text-muted">{review.comment}</p>
+                )}
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
+
+      {faqItems.length > 0 && (
+        <div
+          id={TAB_IDS["FAQ's"]}
+          data-tab="FAQ's"
+          ref={(el) => {
+            sectionRefs.current["FAQ's"] = el;
+          }}
+          className="scroll-mt-36 sm:scroll-mt-40"
+        >
+          <h2 className="font-sans text-xl font-semibold text-text-primary sm:text-2xl">
+            Frequently Asked Questions
+          </h2>
+          <div className="mt-4">
+            <FaqAccordion items={faqItems} />
+          </div>
+        </div>
+      )}
     </section>
   );
 }

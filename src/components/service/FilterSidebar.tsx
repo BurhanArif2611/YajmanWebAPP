@@ -5,15 +5,19 @@ import Image from "@/components/ui/AppImage";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
-import { SlidersHorizontal, X, RotateCcw, ArrowUpRight, ArrowRight } from "lucide-react";
+import { SlidersHorizontal, X, RotateCcw, ArrowRight } from "lucide-react";
 import { getCategories, getTypes } from "@/lib/api/catalog";
+import { getPriceRange } from "@/lib/api/services";
 import { getBlogs } from "@/lib/api/blogs";
 import { resolveImageUrl } from "@/lib/mappers/service";
 import { Checkbox } from "@/components/ui/Checkbox";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { OPEN_SERVICE_FILTERS_EVENT } from "@/lib/serviceFilters";
+import { formatPrice } from "@/lib/utils";
 
 const TOP_RATED_LIMIT = 4;
+const FALLBACK_MAX_PRICE = 50_000;
+const FALLBACK_MIN_PRICE = 98;
 
 function FilterBlock({
   title,
@@ -42,7 +46,27 @@ function FilterSidebarInner() {
   const currentCategory = searchParams.get("category");
   const currentTypes = (searchParams.get("type") ?? "").split(",").filter(Boolean);
   const maxPriceParam = searchParams.get("max_price");
-  const [price, setPrice] = useState(maxPriceParam ? Number(maxPriceParam) : 2000);
+  const [price, setPrice] = useState(
+    maxPriceParam ? Number(maxPriceParam) : FALLBACK_MAX_PRICE
+  );
+
+  const priceRangeQuery = useQuery({
+    queryKey: ["catalog", "price-range"],
+    queryFn: getPriceRange,
+    staleTime: 10 * 60_000,
+  });
+  const priceMin = priceRangeQuery.data?.min ?? FALLBACK_MIN_PRICE;
+  const priceMax = priceRangeQuery.data?.max ?? FALLBACK_MAX_PRICE;
+
+  useEffect(() => {
+    if (maxPriceParam) {
+      setPrice(Number(maxPriceParam));
+      return;
+    }
+    if (priceRangeQuery.data) {
+      setPrice(priceRangeQuery.data.max);
+    }
+  }, [maxPriceParam, priceRangeQuery.data]);
 
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? "hidden" : "";
@@ -82,7 +106,7 @@ function FilterSidebarInner() {
     params.delete("type");
     params.delete("max_price");
     params.delete("page");
-    setPrice(2000);
+    setPrice(priceMax);
     router.push(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
@@ -116,19 +140,25 @@ function FilterSidebarInner() {
   const filterBlocks = (
     <>
       <FilterBlock title="Filter by Price">
-        <input
-          type="range"
-          min={98}
-          max={2000}
-          value={price}
-          onChange={(e) => setPrice(Number(e.target.value))}
-          onMouseUp={() => setParam("max_price", String(price))}
-          onTouchEnd={() => setParam("max_price", String(price))}
-          className="w-full accent-brand-saffron-400"
-        />
-        <p className="mt-2 text-sm text-text-secondary">
-          Price: ₹98 - ₹{price}
-        </p>
+        {priceRangeQuery.isLoading ? (
+          <Skeleton className="h-10 w-full" />
+        ) : (
+          <>
+            <input
+              type="range"
+              min={priceMin}
+              max={priceMax}
+              value={Math.min(Math.max(price, priceMin), priceMax)}
+              onChange={(e) => setPrice(Number(e.target.value))}
+              onMouseUp={() => setParam("max_price", String(price))}
+              onTouchEnd={() => setParam("max_price", String(price))}
+              className="w-full accent-brand-saffron-400"
+            />
+            <p className="mt-2 text-sm text-text-secondary">
+              Price: {formatPrice(priceMin)} - {formatPrice(price)}
+            </p>
+          </>
+        )}
       </FilterBlock>
 
       <FilterBlock title="Category">

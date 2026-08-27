@@ -29,7 +29,13 @@ export default async function CheckoutPage({
       {detail ? (
         <CheckoutFlow
           service={mapServiceToCard(detail)}
-          date={date}
+          initialDate={date}
+          bookingAvailability={{
+            minAdvanceDays: detail.advance_booking_days ?? 0,
+            availabilityStart: detail.availability_start_date,
+            availabilityEnd: detail.availability_end_date,
+            availableDates: detail.available_dates,
+          }}
           addons={detail.is_addon_available ? detail.addons : []}
           requiresPandit={detail.requires_pandit}
         />

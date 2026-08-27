@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { parseISO } from "date-fns";
 import { CollapsibleSection } from "@/components/checkout/CollapsibleSection";
 import { ContactDetailsSection } from "@/components/checkout/ContactDetailsSection";
 import { MembersSection } from "@/components/checkout/MembersSection";
@@ -8,16 +9,25 @@ import { GotraSection } from "@/components/checkout/GotraSection";
 import { AddressSection } from "@/components/checkout/AddressSection";
 import { OrderSummary } from "@/components/checkout/OrderSummary";
 import type { MockService } from "@/lib/constants";
+import { getBookingDateConstraints, isBookingUnavailable, type BookingAvailability } from "@/lib/bookingDates";
 import type { ServiceAddon } from "@/types/api";
+
+function parseInitialDate(value?: string) {
+  if (!value) return undefined;
+  const parsed = parseISO(value);
+  return Number.isNaN(parsed.getTime()) ? undefined : parsed;
+}
 
 export function CheckoutFlow({
   service,
-  date,
+  initialDate,
+  bookingAvailability,
   addons,
   requiresPandit,
 }: {
   service: MockService;
-  date?: string;
+  initialDate?: string;
+  bookingAvailability: BookingAvailability;
   addons: ServiceAddon[];
   requiresPandit: boolean;
 }) {
@@ -31,6 +41,18 @@ export function CheckoutFlow({
   const [address, setAddress] = useState("");
   const [city, setCity] = useState("");
   const [pincode, setPincode] = useState("");
+  const [bookingDate, setBookingDate] = useState<Date | undefined>(() =>
+    parseInitialDate(initialDate)
+  );
+
+  const dateConstraints = useMemo(
+    () => getBookingDateConstraints(bookingAvailability),
+    [bookingAvailability]
+  );
+  const bookingUnavailable = useMemo(
+    () => isBookingUnavailable(bookingAvailability),
+    [bookingAvailability]
+  );
 
   return (
     <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-[1.6fr_1fr] lg:items-start">
@@ -77,7 +99,10 @@ export function CheckoutFlow({
 
       <OrderSummary
         service={service}
-        date={date}
+        bookingDate={bookingDate}
+        onBookingDateChange={setBookingDate}
+        dateConstraints={dateConstraints}
+        bookingUnavailable={bookingUnavailable}
         addons={addons}
         requiresPandit={requiresPandit}
         bookingInfo={{

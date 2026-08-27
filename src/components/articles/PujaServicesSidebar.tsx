@@ -6,6 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getServices } from "@/lib/api/services";
 import { mapServiceToCard } from "@/lib/mappers/service";
 import { Skeleton } from "@/components/ui/Skeleton";
+import { hasDiscount } from "@/lib/utils";
 
 const LIMIT = 4;
 
@@ -41,7 +42,13 @@ export function PujaServicesSidebar() {
           </ul>
         ) : (
           <ul className="mt-4 flex flex-col gap-6">
-            {services.map((service) => (
+            {services.map((service) => {
+              const showDiscount = hasDiscount(
+                service.price,
+                service.originalPrice,
+                service.discountPercent
+              );
+              return (
               <li key={service.slug} className="flex gap-3">
                 <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-md">
                   <Image
@@ -60,12 +67,18 @@ export function PujaServicesSidebar() {
                     <span className="text-sm font-semibold text-text-primary">
                       ₹{service.price}
                     </span>
-                    <span className="text-xs text-text-light line-through">
-                      ₹{service.originalPrice}
-                    </span>
-                    <span className="text-xs font-medium text-success">
-                      -{service.discountPercent}%
-                    </span>
+                    {showDiscount && (
+                      <>
+                        <span className="text-xs text-text-light line-through">
+                          ₹{service.originalPrice}
+                        </span>
+                        {service.discountPercent > 0 && (
+                          <span className="text-xs font-medium text-success">
+                            -{service.discountPercent}%
+                          </span>
+                        )}
+                      </>
+                    )}
                   </div>
                   <Link
                     href={`/services/${service.category}/${service.slug}`}
@@ -75,7 +88,8 @@ export function PujaServicesSidebar() {
                   </Link>
                 </div>
               </li>
-            ))}
+              );
+            })}
           </ul>
         )}
       </div>

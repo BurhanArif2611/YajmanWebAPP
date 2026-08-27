@@ -3,18 +3,21 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "@/components/ui/AppImage";
 import { useRouter } from "next/navigation";
-import { Calendar, ChevronRight, MapPin, Ticket, X } from "lucide-react";
+import { ChevronRight, CalendarX2, Ticket, X } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
+import { format } from "date-fns";
 import { Button } from "@/components/ui/Button";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { Select } from "@/components/ui/Select";
 import { CouponSuccessModal } from "@/components/checkout/CouponSuccessModal";
+import { DatePickerField } from "@/components/service/DatePickerField";
+import { ServiceLocationLine } from "@/components/service/ServiceLocationLine";
 import { getCoupons, validateCoupon } from "@/lib/api/coupons";
 import { createOrder, verifyPayment } from "@/lib/api/checkout";
 import { loadRazorpayScript } from "@/lib/razorpay";
 import { useAuth } from "@/hooks/useAuth";
 import { ApiError } from "@/lib/apiError";
-import { formatDate } from "@/lib/utils";
+import { BOOKING_UNAVAILABLE_MESSAGE } from "@/lib/bookingDates";
 import { resolveImageUrl } from "@/lib/mappers/service";
 import type { MockService } from "@/lib/constants";
 import type { Coupon, ServiceAddon } from "@/types/api";
@@ -57,13 +60,23 @@ type AppliedCoupon = {
 
 export function OrderSummary({
   service,
-  date,
+  bookingDate,
+  onBookingDateChange,
+  dateConstraints,
+  bookingUnavailable = false,
   addons,
   bookingInfo,
   requiresPandit,
 }: {
   service: MockService;
-  date?: string;
+  bookingDate?: Date;
+  onBookingDateChange: (date: Date) => void;
+  dateConstraints: {
+    minDate: Date;
+    maxDate?: Date;
+    fixedDates?: Date[];
+  };
+  bookingUnavailable?: boolean;
   addons: ServiceAddon[];
   bookingInfo: BookingInfo;
   requiresPandit: boolean;
@@ -77,6 +90,7 @@ export function OrderSummary({
   const [couponError, setCouponError] = useState<string | null>(null);
   const [validating, setValidating] = useState(false);
   const [bookingTime, setBookingTime] = useState("");
+  const [dateError, setDateError] = useState(false);
   const [selectedAddonIds, setSelectedAddonIds] = useState<string[]>([]);
   const [paying, setPaying] = useState(false);
   const [payError, setPayError] = useState<string | null>(null);
@@ -148,9 +162,11 @@ export function OrderSummary({
   };
 
   const handlePay = async () => {
+    if (bookingUnavailable) return;
     if (!isLoggedIn || !phone) return;
-    if (!date) {
-      setPayError("Select a date on the service page first.");
+    if (!bookingDate) {
+      setDateError(true);
+      setPayError("Select a puja date.");
       return;
     }
     if (!bookingTime) {
@@ -184,7 +200,7 @@ export function OrderSummary({
       const phoneDigits = digitsOnly(phone);
       const result = await createOrder({
         service_id: service.id,
-        booking_date: date,
+        booking_date: format(bookingDate, "yyyy-MM-dd"),
         booking_time: bookingTime,
         customer_name: bookingInfo.name.trim(),
         customer_phone: phoneDigits,
@@ -280,32 +296,56 @@ export function OrderSummary({
                 ₹{service.price}
               </span>
             </div>
-            <p className="flex min-w-0 items-start gap-1.5 text-sm text-text-muted">
-              <MapPin size={14} className="mt-0.5 shrink-0 text-brand-saffron-400" />
-              <span className="break-words">{service.location}</span>
-            </p>
-            {date && (
-              <p className="flex items-center gap-1.5 text-sm text-text-muted">
-                <Calendar size={14} className="text-brand-saffron-400" />
-                {formatDate(date)}
-              </p>
-            )}
+            <ServiceLocationLine
+              address={service.location}
+              categoryLabel={service.categoryLabel}
+            />
           </div>
         </div>
 
-        <div className="mt-5">
-          <p className="mb-2 text-sm font-semibold text-text-primary">
-            Puja Time
-          </p>
-          <Select
-            value={bookingTime}
-            onChange={setBookingTime}
-            options={TIME_SLOTS}
-            placeholder="Select a time"
-          />
-        </div>
+        {bookingUnavailable ? (
+          <div
+            role="alert"
+            className="mt-5 flex items-start gap-3 rounded-xl border border-error/20 bg-error/5 px-4 py-3"
+          >
+            <CalendarX2 size={20} className="mt-0.5 shrink-0 text-error" />
+            <p className="text-sm font-medium leading-relaxed text-error">
+              {BOOKING_UNAVAILABLE_MESSAGE}
+            </p>
+          </div>
+        ) : (
+          <>
+            <div className="mt-5">
+              <p className="mb-2 text-sm font-semibold text-text-primary">Puja Date</p>
+              <DatePickerField
+                selected={bookingDate}
+                onSelect={(d) => {
+                  onBookingDateChange(d);
+                  setDateError(false);
+                  setPayError(null);
+                }}
+                minDate={dateConstraints.minDate}
+                maxDate={dateConstraints.maxDate}
+                availableDates={dateConstraints.fixedDates}
+              />
+              {dateError && (
+                <p className="mt-2 text-sm font-medium text-error">Please select a puja date.</p>
+              )}
+            </div>
 
-        {addons.length > 0 && (
+            <div className="mt-5">
+              <p className="mb-2 text-sm font-semibold text-text-primary">Puja Time</p>
+              <Select
+                value={bookingTime}
+                onChange={setBookingTime}
+                options={TIME_SLOTS}
+                placeholder="Select a time"
+              />
+            </div>
+          </>
+        )}
+
+        {!bookingUnavailable && addons.length > 0 && (
           <div className="mt-5">
             <p className="mb-2 text-sm font-semibold text-text-primary">
               Add-ons
@@ -458,12 +498,21 @@ export function OrderSummary({
       <Button
         size="lg"
         className="w-full justify-center rounded-full disabled:cursor-not-allowed disabled:opacity-50"
-        disabled={!isLoggedIn || paying}
+        disabled={!isLoggedIn || paying || bookingUnavailable}
         onClick={handlePay}
       >
-        {paying ? "Processing..." : `Pay ₹${total.toFixed(2)}`}
+        {bookingUnavailable
+          ? "Booking unavailable"
+          : paying
+            ? "Processing..."
+            : `Pay ₹${total.toFixed(2)}`}
       </Button>
-      {!isLoggedIn && (
+      {bookingUnavailable && (
+        <p className="text-center text-sm text-text-muted">
+          This puja is no longer accepting bookings.
+        </p>
+      )}
+      {!isLoggedIn && !bookingUnavailable && (
         <p className="text-center text-sm text-text-muted">
           Verify your WhatsApp number in Contact Details to continue.
         </p>

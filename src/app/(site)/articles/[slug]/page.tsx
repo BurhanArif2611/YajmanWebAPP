@@ -6,6 +6,7 @@ import { ShareButton } from "@/components/ui/ShareButton";
 import { ArticleDetailHero } from "@/components/articles/ArticleDetailHero";
 import { ArticleEnquireButton } from "@/components/articles/ArticleEnquireButton";
 import { RelatedServices } from "@/components/articles/RelatedServices";
+import { ServiceDetailContent } from "@/components/service/ServiceDetailContent";
 import { getServiceBySlug } from "@/lib/api/services";
 import { resolveImageUrl } from "@/lib/mappers/service";
 
@@ -38,8 +39,6 @@ export default async function ArticleDetailPage({ params }: { params: Params }) 
   if (!service) {
     notFound();
   }
-
-  const primaryText = service.short_description || service.description || service.about_puja;
 
   const images = service.images?.length
     ? service.images
@@ -93,19 +92,14 @@ export default async function ArticleDetailPage({ params }: { params: Params }) 
           <ArticleDetailHero images={images} alt={service.title} />
         </div>
 
-        {primaryText && (
-          <p className="mt-6 text-base leading-relaxed text-text-muted">{primaryText}</p>
-        )}
-
-        {service.description && service.description !== primaryText && (
-          <p className="mt-4 text-base leading-relaxed text-text-muted">{service.description}</p>
-        )}
-
-        {service.about_puja &&
-          service.about_puja !== primaryText &&
-          service.about_puja !== service.description && (
-            <p className="mt-4 text-base leading-relaxed text-text-muted">{service.about_puja}</p>
-          )}
+        <div className="mt-6">
+          <ServiceDetailContent
+            shortDescription={service.short_description}
+            aboutPuja={service.about_puja}
+            description={service.description}
+            customContent={service.custom_content}
+          />
+        </div>
 
         {Boolean(service.key_features?.length) && (
           <ul className="mt-6 flex flex-col gap-2">

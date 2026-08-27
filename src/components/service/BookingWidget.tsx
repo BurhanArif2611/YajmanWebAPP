@@ -2,47 +2,44 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { format } from "date-fns";
+import { CalendarX2 } from "lucide-react";
 import Image from "@/components/ui/AppImage";
-import { addDays, format, isAfter, parseISO } from "date-fns";
 import { Button } from "@/components/ui/Button";
 import { DatePickerField } from "@/components/service/DatePickerField";
+import {
+  BOOKING_UNAVAILABLE_MESSAGE,
+  getBookingDateConstraints,
+  isBookingUnavailable,
+  type BookingAvailability,
+} from "@/lib/bookingDates";
+import { hasDiscount } from "@/lib/utils";
 import type { MockService } from "@/lib/constants";
-
-const DEFAULT_ABOUT =
-  "Discover the perfect escape with our carefully curated travel packages. Whether you're seeking adventure, relaxation, or cultural discovery, our tours are designed to offer unforgettable experiences. Explore breath-taking landscapes, meet friendly locals, and create lasting memories in some of the world's most stunning destinations.";
 
 export function BookingWidget({
   service,
   about,
-  minAdvanceDays = 0,
-  availabilityStart,
-  availabilityEnd,
-  availableDates,
+  bookingAvailability,
 }: {
   service: MockService;
   about?: string | null;
-  minAdvanceDays?: number;
-  /** Earliest date this puja can be scheduled for, e.g. availability_start_date. */
-  availabilityStart?: string | null;
-  /** Latest date this puja can be scheduled for, e.g. availability_end_date. */
-  availabilityEnd?: string | null;
-  /** If set, only these exact dates are bookable (fixed-schedule pujas). */
-  availableDates?: string[];
+  bookingAvailability: BookingAvailability;
 }) {
   const router = useRouter();
   const [date, setDate] = useState<Date | undefined>();
   const [dateError, setDateError] = useState(false);
 
-  const earliestBookable = addDays(new Date(), minAdvanceDays);
-  const availabilityStartDate = availabilityStart ? parseISO(availabilityStart) : undefined;
-  const minDate =
-    availabilityStartDate && isAfter(availabilityStartDate, earliestBookable)
-      ? availabilityStartDate
-      : earliestBookable;
-  const maxDate = availabilityEnd ? parseISO(availabilityEnd) : undefined;
-  const fixedDates = availableDates?.length ? availableDates.map((d) => parseISO(d)) : undefined;
+  const bookingUnavailable = isBookingUnavailable(bookingAvailability);
+  const { minDate, maxDate, fixedDates } = getBookingDateConstraints(bookingAvailability);
+  const showDiscount = hasDiscount(
+    service.price,
+    service.originalPrice,
+    service.discountPercent
+  );
+  const aboutText = about?.trim() || "";
 
   const handleBookNow = () => {
+    if (bookingUnavailable) return;
     if (!date) {
       setDateError(true);
       return;
@@ -56,41 +53,67 @@ export function BookingWidget({
         <h2 className="font-sans text-xl font-semibold text-text-primary sm:text-2xl">
           About this Puja
         </h2>
-        <p className="mt-3 text-sm leading-relaxed text-text-muted">
-          {about ?? DEFAULT_ABOUT}
-        </p>
+        {aboutText ? (
+          <p className="mt-3 text-sm leading-relaxed whitespace-pre-line text-text-muted">
+            {aboutText}
+          </p>
+        ) : null}
 
         <div className="mt-5 flex flex-wrap items-baseline gap-2">
           <span className="text-xl font-semibold text-text-primary sm:text-2xl">
             ₹{service.price}
           </span>
-          <span className="text-sm text-text-light line-through">
-            ₹{service.originalPrice}
-          </span>
-          <span className="text-sm font-medium text-success">
-            -{service.discountPercent}%
-          </span>
-        </div>
-
-        <div className="mt-4">
-          <DatePickerField
-            selected={date}
-            onSelect={(d) => {
-              setDate(d);
-              setDateError(false);
-            }}
-            minDate={minDate}
-            maxDate={maxDate}
-            availableDates={fixedDates}
-          />
-          {dateError && (
-            <p className="mt-2 text-sm font-medium text-error">Please select a date first.</p>
+          {showDiscount && (
+            <>
+              <span className="text-sm text-text-light line-through">
+                ₹{service.originalPrice}
+              </span>
+              {service.discountPercent > 0 && (
+                <span className="text-sm font-medium text-success">
+                  -{service.discountPercent}%
+                </span>
+              )}
+            </>
           )}
         </div>
 
-        <Button size="lg" className="mt-4 w-full justify-center rounded-full" onClick={handleBookNow}>
-          Select Date &amp; Book Now
-        </Button>
+        {bookingUnavailable ? (
+          <div
+            role="status"
+            className="mt-4 flex items-start gap-3 rounded-xl border border-error/20 bg-error/5 px-4 py-3"
+          >
+            <CalendarX2 size={20} className="mt-0.5 shrink-0 text-error" />
+            <p className="text-sm font-medium leading-relaxed text-error">
+              {BOOKING_UNAVAILABLE_MESSAGE}
+            </p>
+          </div>
+        ) : (
+          <>
+            <div className="mt-4">
+              <DatePickerField
+                selected={date}
+                onSelect={(d) => {
+                  setDate(d);
+                  setDateError(false);
+                }}
+                minDate={minDate}
+                maxDate={maxDate}
+                availableDates={fixedDates}
+              />
+              {dateError && (
+                <p className="mt-2 text-sm font-medium text-error">Please select a date first.</p>
+              )}
+            </div>
+
+            <Button
+              size="lg"
+              className="mt-4 w-full justify-center rounded-full"
+              onClick={handleBookNow}
+            >
+              Select Date &amp; Book Now
+            </Button>
+          </>
+        )}
       </div>
 
       <div className="flex items-center gap-4 text-sm font-medium text-text-light">
@@ -109,18 +132,14 @@ export function BookingWidget({
             className="object-contain p-1.5"
           />
         </div>
-        <p className="font-sans text-lg font-semibold text-text-primary">
-          Yajman Support
-        </p>
-        <p className="text-sm text-text-muted">
-          Need help? Talk to an expert.
-        </p>
+        <p className="font-sans text-lg font-semibold text-text-primary">Yajman Support</p>
+        <p className="text-sm text-text-muted">Need help? Talk to an expert.</p>
         <a
           href="https://wa.me/918109181057"
           className="flex flex-wrap items-center justify-center gap-2 font-sans text-lg font-semibold text-text-primary sm:text-xl"
         >
           <Image
-            src="/images/misc/whatsapp-icon.png"
+            src="/images/share/whatsapp.svg"
             alt="WhatsApp"
             width={20}
             height={20}

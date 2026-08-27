@@ -4,6 +4,13 @@ import { resolveImageUrl } from "@/lib/image";
 
 export { resolveImageUrl };
 
+function formatServiceAddress(service: Service) {
+  return [service.address, service.city]
+    .map((part) => part?.trim())
+    .filter(Boolean)
+    .join(", ");
+}
+
 /**
  * Maps the real API's Service shape onto the MockService shape that
  * ServiceCard / BookingWidget / etc. were originally built against, so
@@ -19,7 +26,7 @@ export function mapServiceToCard(service: Service): MockService {
     category: service.category_slug,
     categoryLabel: service.category_name,
     title: service.title,
-    location: service.pincode ? `Pincode ${service.pincode}` : service.category_name,
+    location: formatServiceAddress(service),
     shortDescription: service.short_description ?? undefined,
     image,
     gallery: detail.images?.length
@@ -29,7 +36,7 @@ export function mapServiceToCard(service: Service): MockService {
           .map((img) => resolveImageUrl(img.url))
       : [image],
     price: Number(service.price),
-    originalPrice: Number(service.original_price),
+    originalPrice: Number(service.original_price) || 0,
     discountPercent: Number(service.discount_percent) || 0,
     featured: service.is_featured,
     tags: detail.tags?.length ? detail.tags.map((t) => t.name) : [],

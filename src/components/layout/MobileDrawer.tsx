@@ -14,6 +14,7 @@ import Image from "@/components/ui/AppImage";
 import Link from "next/link";
 import { Input } from "@/components/ui/Input";
 import { ButtonLink } from "@/components/ui/Button";
+import { LogoutConfirmModal } from "@/components/auth/LogoutConfirmModal";
 import { useAuth } from "@/hooks/useAuth";
 
 export function MobileDrawer({
@@ -27,6 +28,7 @@ export function MobileDrawer({
   const { isLoggedIn, logout } = useAuth();
   const navLinks = useNavLinks();
   const [search, setSearch] = useState("");
+  const [logoutOpen, setLogoutOpen] = useState(false);
 
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
@@ -123,10 +125,7 @@ export function MobileDrawer({
                 My Profile
               </ButtonLink>
               <button
-                onClick={() => {
-                  logout();
-                  onClose();
-                }}
+                onClick={() => setLogoutOpen(true)}
                 className="min-h-[44px] rounded-full border border-border-dark text-sm font-medium text-error"
               >
                 Log out
@@ -145,6 +144,17 @@ export function MobileDrawer({
           </div>
         </div>
       </div>
+
+      {logoutOpen && (
+        <LogoutConfirmModal
+          onClose={() => setLogoutOpen(false)}
+          onConfirm={() => {
+            logout();
+            setLogoutOpen(false);
+            onClose();
+          }}
+        />
+      )}
     </div>
   );
 }

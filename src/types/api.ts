@@ -185,6 +185,9 @@ export type Service = {
   short_description?: string | null;
   about_puja?: string | null;
   description?: string | null;
+  custom_content?: string | null;
+  address?: string | null;
+  city?: string | null;
   pincode?: string | null;
   latitude?: number | null;
   longitude?: number | null;
@@ -262,6 +265,16 @@ export type ServiceFaq = {
   id: string;
   question: string;
   answer: string;
+};
+
+export type ServiceReview = {
+  id: string;
+  rating: number;
+  title?: string | null;
+  comment?: string | null;
+  customer_name?: string | null;
+  avatar_url?: string | null;
+  created_at: string;
 };
 
 export type ServiceAddon = {
@@ -529,6 +542,8 @@ export type ServiceDetail = Service & {
   packages: ServicePackage[];
   faqs: ServiceFaq[];
   addons: ServiceAddon[];
+  /** Present when API nests reviews on detail; otherwise fetched separately. */
+  reviews?: ServiceReview[];
 };
 
 // ─── Aayojan ─────────────────────────────────────────────────────

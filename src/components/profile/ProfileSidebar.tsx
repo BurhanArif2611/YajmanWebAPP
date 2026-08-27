@@ -14,6 +14,7 @@ import {
   Ticket,
   User,
 } from "lucide-react";
+import { LogoutConfirmModal } from "@/components/auth/LogoutConfirmModal";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
 import { useUnreadCount } from "@/hooks/useUnreadCount";
@@ -115,10 +116,10 @@ function DesktopBookingSubnav() {
   );
 }
 
-function ProfileMobileNav() {
+function ProfileMobileNav({ onLogoutClick }: { onLogoutClick: () => void }) {
   const router = useRouter();
   const pathname = usePathname();
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const { data: unread } = useUnreadCount();
   const navItems = useNavItems();
   const activeKey = useActiveNavKey();
@@ -158,10 +159,7 @@ function ProfileMobileNav() {
         </div>
         <button
           type="button"
-          onClick={() => {
-            logout();
-            router.push("/");
-          }}
+          onClick={onLogoutClick}
           aria-label="Log out"
           className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-error hover:bg-error/10"
         >
@@ -249,10 +247,9 @@ function ProfileMobileNav() {
   );
 }
 
-function ProfileDesktopSidebar() {
-  const router = useRouter();
+function ProfileDesktopSidebar({ onLogoutClick }: { onLogoutClick: () => void }) {
   const pathname = usePathname();
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const { data: unread } = useUnreadCount();
   const activeKey = useActiveNavKey();
   const isBookings = pathname.startsWith("/profile/bookings");
@@ -371,10 +368,7 @@ function ProfileDesktopSidebar() {
       <div className="border-t border-border pt-6">
         <button
           type="button"
-          onClick={() => {
-            logout();
-            router.push("/");
-          }}
+          onClick={onLogoutClick}
           className="flex min-h-[44px] items-center gap-3 text-base font-medium text-error hover:text-error/80"
         >
           <LogOut size={18} />
@@ -386,10 +380,26 @@ function ProfileDesktopSidebar() {
 }
 
 export function ProfileSidebar() {
+  const router = useRouter();
+  const { logout } = useAuth();
+  const [logoutOpen, setLogoutOpen] = useState(false);
+
+  const handleLogoutConfirm = () => {
+    logout();
+    setLogoutOpen(false);
+    router.push("/");
+  };
+
   return (
     <div className="min-w-0 w-full">
-      <ProfileMobileNav />
-      <ProfileDesktopSidebar />
+      <ProfileMobileNav onLogoutClick={() => setLogoutOpen(true)} />
+      <ProfileDesktopSidebar onLogoutClick={() => setLogoutOpen(true)} />
+      {logoutOpen && (
+        <LogoutConfirmModal
+          onClose={() => setLogoutOpen(false)}
+          onConfirm={handleLogoutConfirm}
+        />
+      )}
     </div>
   );
 }

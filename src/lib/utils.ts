@@ -19,6 +19,17 @@ export function formatPrice(value: number) {
   return `₹${value.toLocaleString("en-IN")}`;
 }
 
+/** True when MRP is above selling price or an explicit discount % is set. */
+export function hasDiscount(
+  price: number,
+  originalPrice?: number | null,
+  discountPercent?: number | null
+) {
+  const original = Number(originalPrice ?? 0);
+  const percent = Number(discountPercent ?? 0);
+  return (original > price && original > 0) || percent > 0;
+}
+
 export function formatDate(date: string | Date) {
   return new Date(date).toLocaleDateString("en-IN", {
     weekday: "long",
