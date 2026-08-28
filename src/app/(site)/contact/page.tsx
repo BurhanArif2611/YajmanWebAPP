@@ -1,6 +1,7 @@
 import { Mail, MapPin, Phone } from "lucide-react";
 import { Breadcrumb } from "@/components/layout/Breadcrumb";
 import { ContactForm } from "@/components/contact/ContactForm";
+import { COMPANY_ADDRESS } from "@/lib/constants";
 
 export const metadata = {
   title: "Contact Us | Yajman",
@@ -24,7 +25,7 @@ const CONTACT_INFO = [
   {
     icon: MapPin,
     label: "Visit us",
-    value: "212 सतगुरु परिणय, एबी रोड, विजय नगर, इंदौर 452010",
+    value: COMPANY_ADDRESS,
     href: undefined,
   },
 ];

@@ -3,7 +3,7 @@ import Image from "next/image";
 import { format, parseISO } from "date-fns";
 import { Breadcrumb } from "@/components/layout/Breadcrumb";
 import { BlogDetailHero } from "@/components/blogs/BlogDetailHero";
-import { BlogSidebar } from "@/components/blogs/BlogSidebar";
+import { BlogsPlacementSidebar } from "@/components/blogs/BlogsPlacementSidebar";
 import { RelatedArticles } from "@/components/blogs/RelatedArticles";
 import { ShareButton } from "@/components/ui/ShareButton";
 import { getBlogBySlug } from "@/lib/api/blogs";
@@ -42,14 +42,6 @@ export default async function BlogDetailPage({ params }: { params: Params }) {
   const images = post.images.length
     ? post.images.map((img) => resolveImageUrl(img.url))
     : [resolveImageUrl(post.feature_image_url)];
-
-  const sidebarServices = post.sidebar_services.map((s) => ({
-    id: s.id,
-    title: s.title,
-    slug: s.slug,
-    image: resolveImageUrl(s.feature_image_url),
-    price: Number(s.price),
-  }));
 
   const publishedDate = post.published_at ?? post.created_at;
 
@@ -107,7 +99,7 @@ export default async function BlogDetailPage({ params }: { params: Params }) {
             </div>
           </div>
 
-          <BlogSidebar services={sidebarServices} />
+          <BlogsPlacementSidebar />
         </div>
       </div>
 

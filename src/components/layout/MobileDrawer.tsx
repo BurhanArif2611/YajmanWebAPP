@@ -4,12 +4,7 @@ import { X, Search } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useNavLinks } from "@/hooks/useNavLinks";
-import {
-  FacebookIcon,
-  InstagramIcon,
-  TwitterIcon,
-  YoutubeIcon,
-} from "@/components/ui/SocialIcons";
+import { SocialLinks } from "@/components/layout/SocialLinks";
 import Image from "@/components/ui/AppImage";
 import Link from "next/link";
 import { Input } from "@/components/ui/Input";
@@ -136,12 +131,7 @@ export function MobileDrawer({
               Login / Register
             </ButtonLink>
           )}
-          <div className="flex items-center justify-center gap-4 text-text-muted">
-            <FacebookIcon size={18} />
-            <TwitterIcon size={18} />
-            <YoutubeIcon size={18} />
-            <InstagramIcon size={18} />
-          </div>
+          <SocialLinks className="justify-center" iconClassName="text-text-muted" />
         </div>
       </div>
 

@@ -10,16 +10,22 @@ export type BlogSidebarItem = {
   price: number;
   /** Category slug — only known when the item came from a full Service; omit to link generically. */
   category?: string;
+  ctaText?: string;
 };
 
-export function BlogSidebar({ services }: { services: BlogSidebarItem[] }) {
+type BlogSidebarProps = {
+  services: BlogSidebarItem[];
+  heading?: string;
+};
+
+export function BlogSidebar({ services, heading = "Other Top Rated Services" }: BlogSidebarProps) {
   if (!services.length) return null;
 
   return (
     <aside className="flex flex-col gap-6">
       <div className="rounded-2xl bg-white p-6 shadow-card">
         <h3 className="mb-3 font-sans text-lg font-semibold text-text-primary">
-          Other Top Rated Services
+          {heading}
         </h3>
         <ul className="mt-4 flex flex-col gap-8">
           {services.map((item) => (
@@ -41,7 +47,7 @@ export function BlogSidebar({ services }: { services: BlogSidebarItem[] }) {
                   href={item.category ? `/services/${item.category}/${item.slug}` : "/services"}
                   className="flex items-center gap-1 text-xs font-semibold text-brand-saffron-400"
                 >
-                  Read More
+                  {item.ctaText ?? "Read More"}
                   <ArrowRight size={12} />
                 </Link>
               </div>

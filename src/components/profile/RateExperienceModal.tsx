@@ -8,9 +8,13 @@ import { submitReview } from "@/lib/api/bookings";
 import { resolveImageUrl } from "@/lib/mappers/service";
 import { ApiError } from "@/lib/apiError";
 import { cn } from "@/lib/utils";
+import {
+  IMAGE_UPLOAD_ACCEPT,
+  MAX_REVIEW_PHOTOS,
+  REVIEW_PHOTOS_UPLOAD_HINT,
+  validateImageUpload,
+} from "@/lib/imageUpload";
 import type { BookingDetail } from "@/types/api";
-
-const MAX_PHOTOS = 5;
 
 export function RateExperienceModal({
   booking,
@@ -25,6 +29,7 @@ export function RateExperienceModal({
   const [title, setTitle] = useState("");
   const [comment, setComment] = useState("");
   const [photos, setPhotos] = useState<File[]>([]);
+  const [photoError, setPhotoError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -43,7 +48,20 @@ export function RateExperienceModal({
 
   const handleFiles = (files: FileList | null) => {
     if (!files) return;
-    setPhotos((current) => [...current, ...Array.from(files)].slice(0, MAX_PHOTOS));
+    setPhotoError(null);
+
+    const next: File[] = [...photos];
+    for (const file of Array.from(files)) {
+      if (next.length >= MAX_REVIEW_PHOTOS) break;
+      try {
+        validateImageUpload(file);
+        next.push(file);
+      } catch (err) {
+        setPhotoError(err instanceof Error ? err.message : "Couldn't add this photo.");
+        break;
+      }
+    }
+    setPhotos(next.slice(0, MAX_REVIEW_PHOTOS));
   };
 
   const handleSubmit = async () => {
@@ -129,19 +147,21 @@ export function RateExperienceModal({
         <input
           ref={fileInputRef}
           type="file"
-          accept="image/*"
+          accept={IMAGE_UPLOAD_ACCEPT}
           multiple
           hidden
           onChange={(e) => handleFiles(e.target.files)}
         />
         <button
           onClick={() => fileInputRef.current?.click()}
-          disabled={photos.length >= MAX_PHOTOS}
+          disabled={photos.length >= MAX_REVIEW_PHOTOS}
           className="mt-4 flex min-h-[44px] w-full items-center justify-center gap-2 rounded-full border border-brand-saffron-400 text-sm font-semibold text-brand-saffron-400 disabled:opacity-50"
         >
           <Camera size={18} />
-          Add Photos ({photos.length}/{MAX_PHOTOS})
+          Add Photos ({photos.length}/{MAX_REVIEW_PHOTOS})
         </button>
+        <p className="mt-2 text-center text-xs text-text-muted">{REVIEW_PHOTOS_UPLOAD_HINT}</p>
+        {photoError && <p className="mt-2 text-center text-xs font-medium text-error">{photoError}</p>}
 
         {photos.length > 0 && (
           <div className="mt-4 flex flex-wrap gap-3">

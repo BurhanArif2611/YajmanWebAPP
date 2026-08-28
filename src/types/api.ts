@@ -267,6 +267,22 @@ export type ServiceFaq = {
   answer: string;
 };
 
+export type PujaProcessStep = {
+  id: string;
+  title: string;
+  description?: string | null;
+  display_order: number;
+};
+
+export type PujaProcess = {
+  id: string;
+  name: string;
+  slug: string;
+  description?: string | null;
+  display_order: number;
+  steps: PujaProcessStep[];
+};
+
 export type ServiceReview = {
   id: string;
   rating: number;
@@ -488,7 +504,7 @@ export type PanditAssignmentDetail = PanditAssignment & {
 export type CreateOrderPayload = {
   service_id: string;
   booking_date: string;
-  booking_time: string;
+  booking_time?: string;
   customer_name: string;
   customer_phone: string;
   customer_whatsapp?: string;
@@ -535,6 +551,9 @@ export type VerifyPaymentPayload = {
 export type ServiceDetail = Service & {
   requires_pandit: boolean;
   requires_payment: boolean;
+  requires_booking_time?: boolean;
+  puja_process_id?: string | null;
+  puja_process?: PujaProcess | null;
   images: ServiceImage[];
   types: ServiceType[];
   tags: ServiceTag[];
@@ -754,6 +773,36 @@ export type BlogDetail = Blog & {
   images: BlogImage[];
   related_blogs: RelatedBlog[];
   sidebar_services: BlogSidebarService[];
+};
+
+// ─── Service placements ─────────────────────────────────────────
+
+export type ServicePlacementPage = "home" | "blogs" | "articles" | "aayojan";
+export type ServicePlacementSection = "sidebar" | "inline_ad" | "recommended" | "related";
+
+export type ServicePlacementService = {
+  id: string;
+  title: string;
+  slug: string;
+  /** Decimal fields — pg returns these as strings. Number() before math/display. */
+  price: number | string;
+  original_price?: number | string | null;
+  feature_image_url?: string | null;
+  short_description?: string | null;
+  rating_avg?: number | string;
+  category_slug: string;
+};
+
+export type ServicePlacement = {
+  id: string;
+  page: ServicePlacementPage;
+  section: ServicePlacementSection;
+  display_order: number;
+  label?: string | null;
+  cta_text?: string | null;
+  starts_at?: string | null;
+  ends_at?: string | null;
+  service: ServicePlacementService;
 };
 
 // ─── Testimonials ────────────────────────────────────────────────

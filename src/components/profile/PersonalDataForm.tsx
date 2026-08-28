@@ -18,6 +18,7 @@ import { getProfile, updateProfile, uploadAvatar, type UpdateProfileInput } from
 import { updateStoredUser } from "@/lib/auth";
 import { ApiError } from "@/lib/apiError";
 import { digitsOnly } from "@/lib/utils";
+import { AVATAR_UPLOAD_HINT, IMAGE_UPLOAD_ACCEPT } from "@/lib/imageUpload";
 import type { User } from "@/types/api";
 
 const GENDER_OPTIONS = ["Male", "Female", "Other"].map((label) => ({
@@ -283,7 +284,7 @@ export function PersonalDataForm() {
             <input
               ref={fileInputRef}
               type="file"
-              accept="image/*"
+              accept={IMAGE_UPLOAD_ACCEPT}
               className="hidden"
               onChange={(e) => {
                 const file = e.target.files?.[0];
@@ -291,6 +292,9 @@ export function PersonalDataForm() {
                 e.target.value = "";
               }}
             />
+            <p className="max-w-[12rem] text-right text-xs text-text-muted sm:max-w-none">
+              {AVATAR_UPLOAD_HINT}
+            </p>
             {avatarError && <span className="text-xs text-error">{avatarError}</span>}
           </div>
         </div>

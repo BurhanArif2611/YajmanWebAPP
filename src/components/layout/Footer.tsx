@@ -1,12 +1,8 @@
 import { Mail, MapPin, Phone } from "lucide-react";
 import Image from "@/components/ui/AppImage";
 import Link from "next/link";
-import { FOOTER_LINKS } from "@/lib/constants";
-import {
-  FacebookIcon,
-  InstagramIcon,
-  YoutubeIcon,
-} from "@/components/ui/SocialIcons";
+import { FOOTER_LINKS, COMPANY_ADDRESS } from "@/lib/constants";
+import { SocialLinks } from "@/components/layout/SocialLinks";
 
 export function Footer() {
   return (
@@ -30,17 +26,7 @@ export function Footer() {
               This service has taken my business to a whole new level. The
               design and functionality and user friendly.
             </p>
-            <div className="flex items-center gap-4">
-              {[FacebookIcon, YoutubeIcon, InstagramIcon].map((Icon, i) => (
-                <a
-                  key={i}
-                  href="#"
-                  className="text-white/80 transition-colors hover:text-brand-saffron-400"
-                >
-                  <Icon size={18} />
-                </a>
-              ))}
-            </div>
+            <SocialLinks iconClassName="text-white/80" />
           </div>
 
           <FooterColumn heading="Our Services" links={FOOTER_LINKS.services} />
@@ -65,9 +51,7 @@ export function Footer() {
             </a>
             <div className="flex min-w-0 items-start gap-2 text-sm text-white/70">
               <MapPin size={16} className="mt-0.5 shrink-0 text-brand-saffron-400" />
-              <span className="break-words">
-                212 सतगुरु परिणय, एबी रोड, विजय नगर, इंदौर 452010
-              </span>
+              <span className="break-words">{COMPANY_ADDRESS}</span>
             </div>
           </div>
         </div>

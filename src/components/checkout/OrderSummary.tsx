@@ -67,6 +67,7 @@ export function OrderSummary({
   addons,
   bookingInfo,
   requiresPandit,
+  requiresBookingTime,
 }: {
   service: MockService;
   bookingDate?: Date;
@@ -80,6 +81,7 @@ export function OrderSummary({
   addons: ServiceAddon[];
   bookingInfo: BookingInfo;
   requiresPandit: boolean;
+  requiresBookingTime: boolean;
 }) {
   const router = useRouter();
   const { isLoggedIn, phone } = useAuth();
@@ -169,7 +171,7 @@ export function OrderSummary({
       setPayError("Select a puja date.");
       return;
     }
-    if (!bookingTime) {
+    if (requiresBookingTime && !bookingTime) {
       setPayError("Select a time slot.");
       return;
     }
@@ -180,6 +182,10 @@ export function OrderSummary({
     const members = bookingInfo.members.map((m) => m.trim()).filter(Boolean);
     if (!members.length) {
       setPayError("Add at least one member name.");
+      return;
+    }
+    if (members.length > 2) {
+      setPayError("You can add up to 2 member names only.");
       return;
     }
     if (
@@ -201,7 +207,7 @@ export function OrderSummary({
       const result = await createOrder({
         service_id: service.id,
         booking_date: format(bookingDate, "yyyy-MM-dd"),
-        booking_time: bookingTime,
+        ...(requiresBookingTime ? { booking_time: bookingTime } : {}),
         customer_name: bookingInfo.name.trim(),
         customer_phone: phoneDigits,
         customer_whatsapp: phoneDigits,
@@ -333,15 +339,17 @@ export function OrderSummary({
               )}
             </div>
 
-            <div className="mt-5">
-              <p className="mb-2 text-sm font-semibold text-text-primary">Puja Time</p>
-              <Select
-                value={bookingTime}
-                onChange={setBookingTime}
-                options={TIME_SLOTS}
-                placeholder="Select a time"
-              />
-            </div>
+            {requiresBookingTime && (
+              <div className="mt-5">
+                <p className="mb-2 text-sm font-semibold text-text-primary">Puja Time</p>
+                <Select
+                  value={bookingTime}
+                  onChange={setBookingTime}
+                  options={TIME_SLOTS}
+                  placeholder="Select a time"
+                />
+              </div>
+            )}
           </>
         )}
 

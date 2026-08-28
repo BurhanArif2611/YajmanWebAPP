@@ -142,6 +142,7 @@ export default async function ServiceDetailPage({
           <DetailTabs
             keyFeatures={detail.key_features}
             templeName={temple?.name}
+            pujaProcess={detail.puja_process}
             photos={service.gallery}
             faqs={detail.faqs?.length ? detail.faqs : undefined}
             reviews={reviews}

@@ -15,6 +15,24 @@ export const NAV_LINKS: { label: string; href: string; category?: string }[] = [
   { label: "Contact", href: "/contact" },
 ];
 
+export const COMPANY_ADDRESS =
+  "212 Satguru Parinay, AB Road, Vijay Nagar, Indore 452010";
+
+export const SOCIAL_LINKS = [
+  {
+    label: "Facebook",
+    href: "https://www.facebook.com/yajmanapp?mibextid=ZbWKwL",
+  },
+  {
+    label: "YouTube",
+    href: "https://www.youtube.com/@YajmanApp?si=1LxmTam15l12Ln1C",
+  },
+  {
+    label: "Instagram",
+    href: "https://www.instagram.com/yajman.app?igsh=MWhkZ2x0OGIxeGt1YQ%3D%3D",
+  },
+] as const;
+
 /** Card shape used by ServiceCard / BookingWidget / checkout after API mapping. */
 export type MockService = {
   /** Only set for live API services — used as `service_id` for coupon validation. */

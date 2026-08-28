@@ -1,13 +1,11 @@
 import { BlogsHero } from "@/components/blogs/BlogsHero";
 import { BlogCategoryTabs } from "@/components/blogs/BlogCategoryTabs";
 import { BlogCard } from "@/components/blogs/BlogCard";
-import { BlogSidebar } from "@/components/blogs/BlogSidebar";
+import { BlogsPlacementSidebar } from "@/components/blogs/BlogsPlacementSidebar";
 import { BlogsCtaBanner } from "@/components/blogs/BlogsCtaBanner";
 import { PremiumPujaCarousel } from "@/components/blogs/PremiumPujaCarousel";
 import { Pagination } from "@/components/ui/Pagination";
 import { getBlogs } from "@/lib/api/blogs";
-import { getServices } from "@/lib/api/services";
-import { resolveImageUrl } from "@/lib/mappers/service";
 import type { Blog } from "@/types/api";
 
 const PAGE_SIZE = 6;
@@ -43,21 +41,6 @@ export default async function BlogsPage({
     loadError = true;
   }
 
-  let sidebarServices: { id: string; title: string; slug: string; image: string; price: number; category: string }[] = [];
-  try {
-    const svcResult = await getServices({ is_bestseller: true, limit: 5 });
-    sidebarServices = svcResult.data.map((s) => ({
-      id: s.id,
-      title: s.title,
-      slug: s.slug,
-      image: resolveImageUrl(s.feature_image_url),
-      price: Number(s.price),
-      category: s.category_slug,
-    }));
-  } catch {
-    // Sidebar is a decorative widget — fine to just stay empty if this fails.
-  }
-
   return (
     <>
       <BlogsHero />
@@ -87,7 +70,7 @@ export default async function BlogsPage({
               )}
             </div>
 
-            <BlogSidebar services={sidebarServices} />
+            <BlogsPlacementSidebar />
           </div>
         </div>
       </div>

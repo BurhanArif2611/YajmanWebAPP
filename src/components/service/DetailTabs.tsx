@@ -5,8 +5,9 @@ import Image from "@/components/ui/AppImage";
 import { Star } from "lucide-react";
 import { FaqAccordion } from "@/components/service/FaqAccordion";
 import { cn, formatRelativeTime } from "@/lib/utils";
+import { looksLikeHtml, RICH_TEXT_PROSE_CLASS } from "@/lib/richText";
 import { resolveImageUrl } from "@/lib/mappers/service";
-import type { ServiceReview } from "@/types/api";
+import type { PujaProcess, ServiceReview } from "@/types/api";
 
 const TABS = [
   "Key Features",
@@ -28,37 +29,11 @@ const TAB_IDS: Record<Tab, string> = {
   "FAQ's": "faqs",
 };
 
-const PROCESS_INTRO =
-  "From booking to video delivery, every step is handled with care so your puja is performed correctly and you stay updated throughout.";
-
-const PROCESS_STEPS = [
-  {
-    number: "1",
-    title: "Choose Puja",
-    description: "Select the ritual that matches your occasion and preferred date.",
-  },
-  {
-    number: "2",
-    title: "Provide Sankalp details",
-    description: "Enter your name and gotra for the Sankalp performed by the pandit.",
-  },
-  {
-    number: "3",
-    title: "Puja Day Updates",
-    description:
-      "Our experienced pandits perform the sacred puja. You receive real-time updates on your registered WhatsApp number.",
-  },
-  {
-    number: "4",
-    title: "Puja Video",
-    description: "Get the puja video within 3–4 days on WhatsApp.",
-  },
-];
-
 export type DetailTabsProps = {
   keyFeatures?: string[];
   templeName?: string | null;
   templeDescription?: string | null;
+  pujaProcess?: PujaProcess | null;
   photos: string[];
   faqs?: { question: string; answer: string }[];
   reviews?: ServiceReview[];
@@ -68,6 +43,7 @@ export function DetailTabs({
   keyFeatures,
   templeName,
   templeDescription,
+  pujaProcess,
   photos,
   faqs,
   reviews,
@@ -77,6 +53,12 @@ export function DetailTabs({
   const faqItems = faqs?.filter((f) => f.question?.trim()) ?? [];
   const reviewItems = reviews ?? [];
   const hasPhotos = photos.length > 0;
+  const processSteps = useMemo(
+    () =>
+      [...(pujaProcess?.steps ?? [])].sort((a, b) => a.display_order - b.display_order),
+    [pujaProcess]
+  );
+  const hasPujaProcess = Boolean(pujaProcess);
 
   const tabs = useMemo(() => {
     return TABS.filter((tab) => {
@@ -85,11 +67,12 @@ export function DetailTabs({
       if (tab === "Photos") return hasPhotos;
       if (tab === "Reviews") return reviewItems.length > 0;
       if (tab === "FAQ's") return faqItems.length > 0;
-      return true; // Process always shown
+      if (tab === "Process") return hasPujaProcess;
+      return true;
     });
-  }, [hasTemple, features.length, hasPhotos, reviewItems.length, faqItems.length]);
+  }, [hasTemple, features.length, hasPhotos, reviewItems.length, faqItems.length, hasPujaProcess]);
 
-  const [active, setActive] = useState<Tab>(tabs[0] ?? "Process");
+  const [active, setActive] = useState<Tab>(tabs[0] ?? "Key Features");
   const sectionRefs = useRef<Partial<Record<Tab, HTMLDivElement | null>>>({});
   const isClickScrolling = useRef(false);
 
@@ -203,34 +186,61 @@ export function DetailTabs({
         </div>
       )}
 
-      <div
-        id={TAB_IDS.Process}
-        data-tab="Process"
-        ref={(el) => {
-          sectionRefs.current["Process"] = el;
-        }}
-        className="scroll-mt-36 sm:scroll-mt-40"
-      >
-        <h2 className="font-sans text-xl font-semibold text-text-primary sm:text-2xl">
-          Puja Process
-        </h2>
-        <p className="mt-3 max-w-2xl text-sm leading-relaxed text-text-muted">
-          {PROCESS_INTRO}
-        </p>
-        <div className="mt-6 grid grid-cols-1 gap-6 sm:mt-8 sm:grid-cols-2 sm:gap-8 md:grid-cols-4">
-          {PROCESS_STEPS.map((step) => (
-            <div key={step.number} className="flex flex-col gap-2 sm:gap-3">
-              <span className="flex h-10 w-10 items-center justify-center rounded-full bg-surface-peach font-sans text-lg font-semibold text-brand-saffron-400 sm:h-12 sm:w-12 sm:text-xl">
-                {step.number}
-              </span>
-              <h3 className="font-sans text-base font-semibold text-text-primary">
-                {step.title}
-              </h3>
-              <p className="text-sm text-text-muted">{step.description}</p>
-            </div>
-          ))}
+      {hasPujaProcess && (
+        <div
+          id={TAB_IDS.Process}
+          data-tab="Process"
+          ref={(el) => {
+            sectionRefs.current["Process"] = el;
+          }}
+          className="scroll-mt-36 sm:scroll-mt-40"
+        >
+          <h2 className="font-sans text-xl font-semibold text-text-primary sm:text-2xl">
+            {"Puja Process"}
+          </h2>
+          {pujaProcess?.description?.trim() &&
+            (looksLikeHtml(pujaProcess.description) ? (
+              <article
+                className={`${RICH_TEXT_PROSE_CLASS} mt-3 max-w-2xl text-sm sm:text-base`}
+                dangerouslySetInnerHTML={{ __html: pujaProcess.description.trim() }}
+              />
+            ) : (
+              <p className="mt-3 max-w-2xl text-sm leading-relaxed text-text-muted">
+                {pujaProcess.description.trim()}
+              </p>
+            ))}
+          <div
+            className={cn(
+              processSteps.length > 0 && "mt-6 grid grid-cols-1 gap-6 sm:mt-8 sm:grid-cols-2 sm:gap-8",
+              processSteps.length >= 3 && "md:grid-cols-3",
+              processSteps.length >= 4 && "md:grid-cols-4"
+            )}
+          >
+            {processSteps.map((step, index) => {
+              const description = step.description?.trim() ?? "";
+              return (
+                <div key={step.id} className="flex flex-col gap-2 sm:gap-3">
+                  <span className="flex h-10 w-10 items-center justify-center rounded-full bg-surface-peach font-sans text-lg font-semibold text-brand-saffron-400 sm:h-12 sm:w-12 sm:text-xl">
+                    {index + 1}
+                  </span>
+                  <h3 className="font-sans text-base font-semibold text-text-primary">
+                    {step.title}
+                  </h3>
+                  {description &&
+                    (looksLikeHtml(description) ? (
+                      <article
+                        className={`${RICH_TEXT_PROSE_CLASS} text-sm`}
+                        dangerouslySetInnerHTML={{ __html: description }}
+                      />
+                    ) : (
+                      <p className="text-sm text-text-muted">{description}</p>
+                    ))}
+                </div>
+              );
+            })}
+          </div>
         </div>
-      </div>
+      )}
 
       {hasPhotos && (
         <div

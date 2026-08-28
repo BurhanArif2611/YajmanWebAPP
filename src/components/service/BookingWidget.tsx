@@ -14,6 +14,7 @@ import {
   type BookingAvailability,
 } from "@/lib/bookingDates";
 import { hasDiscount } from "@/lib/utils";
+import { looksLikeHtml, RICH_TEXT_PROSE_CLASS } from "@/lib/richText";
 import type { MockService } from "@/lib/constants";
 
 export function BookingWidget({
@@ -54,9 +55,16 @@ export function BookingWidget({
           About this Puja
         </h2>
         {aboutText ? (
-          <p className="mt-3 text-sm leading-relaxed whitespace-pre-line text-text-muted">
-            {aboutText}
-          </p>
+          looksLikeHtml(aboutText) ? (
+            <article
+              className={`${RICH_TEXT_PROSE_CLASS} mt-3 text-sm sm:text-base`}
+              dangerouslySetInnerHTML={{ __html: aboutText }}
+            />
+          ) : (
+            <p className="mt-3 text-sm leading-relaxed whitespace-pre-line text-text-muted">
+              {aboutText}
+            </p>
+          )
         ) : null}
 
         <div className="mt-5 flex flex-wrap items-baseline gap-2">

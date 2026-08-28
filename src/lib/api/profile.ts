@@ -1,4 +1,8 @@
 import { apiFetch } from "@/lib/fetch";
+import {
+  ImageValidationError,
+  validateImageUpload,
+} from "@/lib/imageUpload";
 import type { DeviceToken, User } from "@/types/api";
 
 export function getProfile() {
@@ -24,17 +28,10 @@ export function updateProfile(input: UpdateProfileInput) {
   });
 }
 
-const MAX_AVATAR_BYTES = 10 * 1024 * 1024;
-
-export class AvatarValidationError extends Error { }
+export { ImageValidationError as AvatarValidationError };
 
 export function uploadAvatar(file: File) {
-  if (!file.type.startsWith("image/")) {
-    throw new AvatarValidationError("Please choose an image file.");
-  }
-  if (file.size > MAX_AVATAR_BYTES) {
-    throw new AvatarValidationError("Image must be 10MB or smaller.");
-  }
+  validateImageUpload(file);
 
   const formData = new FormData();
   formData.append("avatar", file);

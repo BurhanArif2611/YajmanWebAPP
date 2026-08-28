@@ -24,12 +24,14 @@ export function CheckoutFlow({
   bookingAvailability,
   addons,
   requiresPandit,
+  requiresBookingTime,
 }: {
   service: MockService;
   initialDate?: string;
   bookingAvailability: BookingAvailability;
   addons: ServiceAddon[];
   requiresPandit: boolean;
+  requiresBookingTime: boolean;
 }) {
   const [name, setName] = useState("");
   const [callingNumber, setCallingNumber] = useState("");
@@ -105,6 +107,7 @@ export function CheckoutFlow({
         bookingUnavailable={bookingUnavailable}
         addons={addons}
         requiresPandit={requiresPandit}
+        requiresBookingTime={requiresBookingTime}
         bookingInfo={{
           name,
           callingNumber,

@@ -38,6 +38,7 @@ export default async function CheckoutPage({
           }}
           addons={detail.is_addon_available ? detail.addons : []}
           requiresPandit={detail.requires_pandit}
+          requiresBookingTime={Boolean(detail.requires_booking_time)}
         />
       ) : (
         <p className="mt-8 text-text-muted">
