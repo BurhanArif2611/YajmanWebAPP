@@ -109,3 +109,4 @@ export default async function BlogDetailPage({ params }: { params: Params }) {
     </>
   );
 }
+//new slug is added
