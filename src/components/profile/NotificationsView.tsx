@@ -163,7 +163,14 @@ export function NotificationsView() {
                   {formatRelativeTime(notification.created_at)}
                 </span>
               </div>
-              <p className="mt-1 break-words text-sm text-text-muted">{notification.message}</p>
+              <p className="mt-1 break-words text-sm text-text-muted">{notification.body}</p>
+              {notification.image_url && (
+                <img
+                  src={notification.image_url}
+                  alt=""
+                  className="mt-3 max-h-40 w-full rounded-lg object-cover"
+                />
+              )}
             </div>
             <button
               onClick={() => deleteMutation.mutate(notification.id)}

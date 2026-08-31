@@ -17,6 +17,7 @@ import {
 import { LogoutConfirmModal } from "@/components/auth/LogoutConfirmModal";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
+import { useCurrentUser } from "@/hooks/useProfile";
 import { useUnreadCount } from "@/hooks/useUnreadCount";
 
 const BOOKING_TABS = [
@@ -38,7 +39,7 @@ function useActiveNavKey() {
 }
 
 function useNavItems() {
-  const { user } = useAuth();
+  const user = useCurrentUser();
   const isPandit = user?.role === "pandit";
 
   return useMemo(() => {
@@ -119,7 +120,7 @@ function DesktopBookingSubnav() {
 function ProfileMobileNav({ onLogoutClick }: { onLogoutClick: () => void }) {
   const router = useRouter();
   const pathname = usePathname();
-  const { user } = useAuth();
+  const user = useCurrentUser();
   const { data: unread } = useUnreadCount();
   const navItems = useNavItems();
   const activeKey = useActiveNavKey();
@@ -249,7 +250,7 @@ function ProfileMobileNav({ onLogoutClick }: { onLogoutClick: () => void }) {
 
 function ProfileDesktopSidebar({ onLogoutClick }: { onLogoutClick: () => void }) {
   const pathname = usePathname();
-  const { user } = useAuth();
+  const user = useCurrentUser();
   const { data: unread } = useUnreadCount();
   const activeKey = useActiveNavKey();
   const isBookings = pathname.startsWith("/profile/bookings");

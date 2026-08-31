@@ -63,18 +63,25 @@ export type DeviceToken = {
 
 export type AppNotification = {
   id: string;
+  user_id?: string;
   title: string;
-  message: string;
+  body: string;
   is_read: boolean;
   read_at: string | null;
   clicked_at: string | null;
   created_at: string;
   type?: string;
   deep_link?: string;
-  action_type?: string;
-  action_value?: string;
-  reference_type?: string;
-  reference_id?: string;
+  image_url?: string | null;
+  action_type?: string | null;
+  action_value?: string | null;
+  reference_type?: string | null;
+  reference_id?: string | null;
+  campaign_id?: string | null;
+  delivery_status?: string;
+  failure_reason?: string | null;
+  delivered_at?: string | null;
+  deleted_at?: string | null;
 };
 
 export type Category = {
@@ -83,6 +90,8 @@ export type Category = {
   slug: string;
   image_url?: string | null;
   is_active: boolean;
+  /** Website sort position — GET /categories already returns them sorted by this, then name. */
+  display_order?: number;
   types?: CategoryType[];
   type_count?: number;
   /** Whether services in this category require online payment (false = e.g. free/pay-later categories). */
