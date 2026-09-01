@@ -185,3 +185,4 @@ export function NotificationsView() {
     </div>
   );
 }
+//this one is added for texting.
