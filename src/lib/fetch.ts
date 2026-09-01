@@ -1,8 +1,14 @@
 import { ApiError, NetworkError } from "@/lib/apiError";
-import { clearSession, getAccessToken, getRefreshToken, setTokens } from "@/lib/auth";
+import {
+  clearSession,
+  getAccessToken,
+  getRefreshToken,
+  setTokens,
+} from "@/lib/auth";
 import type { ApiEnvelope, AuthTokens, Pagination } from "@/types/api";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000/api/v1";
+const API_BASE =
+  process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001/api/v1";
 
 type QueryValue = string | number | boolean | undefined | null;
 
@@ -69,16 +75,25 @@ type EnvelopeResult<T> = { data: T; pagination?: Pagination };
 
 async function apiFetchEnvelope<T>(
   path: string,
-  options: ApiFetchOptions = {}
+  options: ApiFetchOptions = {},
 ): Promise<EnvelopeResult<T>> {
-  const { method = "GET", body, query, auth = false, isFormData = false, signal } = options;
+  const {
+    method = "GET",
+    body,
+    query,
+    auth = false,
+    isFormData = false,
+    signal,
+  } = options;
   const isServer = typeof window === "undefined";
 
   const headers: Record<string, string> = {};
   if (!isFormData) headers["Content-Type"] = "application/json";
 
   if (auth) {
-    const token = isServer ? await resolveServerAccessToken() : getAccessToken();
+    const token = isServer
+      ? await resolveServerAccessToken()
+      : getAccessToken();
     if (token) headers["Authorization"] = `Bearer ${token}`;
   }
 
@@ -86,7 +101,12 @@ async function apiFetchEnvelope<T>(
     fetch(buildUrl(path, query), {
       method,
       headers,
-      body: body === undefined ? undefined : isFormData ? (body as FormData) : JSON.stringify(body),
+      body:
+        body === undefined
+          ? undefined
+          : isFormData
+            ? (body as FormData)
+            : JSON.stringify(body),
       signal,
     });
 
@@ -107,7 +127,12 @@ async function apiFetchEnvelope<T>(
         res = await fetch(buildUrl(path, query), {
           method,
           headers,
-          body: body === undefined ? undefined : isFormData ? (body as FormData) : JSON.stringify(body),
+          body:
+            body === undefined
+              ? undefined
+              : isFormData
+                ? (body as FormData)
+                : JSON.stringify(body),
           signal,
         });
       } catch {
@@ -115,7 +140,11 @@ async function apiFetchEnvelope<T>(
       }
     } else {
       clearSession();
-      throw new ApiError("Your session has expired. Please log in again.", 401, "SESSION_EXPIRED");
+      throw new ApiError(
+        "Your session has expired. Please log in again.",
+        401,
+        "SESSION_EXPIRED",
+      );
     }
   }
 
@@ -126,7 +155,7 @@ async function apiFetchEnvelope<T>(
     throw new ApiError(
       `Unexpected response from server (${res.status}).`,
       res.status,
-      "INVALID_RESPONSE"
+      "INVALID_RESPONSE",
     );
   }
 
@@ -135,7 +164,7 @@ async function apiFetchEnvelope<T>(
       json.error.message,
       json.error.status ?? res.status,
       json.error.code,
-      json.error.details
+      json.error.details,
     );
   }
 
@@ -143,7 +172,10 @@ async function apiFetchEnvelope<T>(
 }
 
 /** Standard call — just the payload. */
-export async function apiFetch<T>(path: string, options?: ApiFetchOptions): Promise<T> {
+export async function apiFetch<T>(
+  path: string,
+  options?: ApiFetchOptions,
+): Promise<T> {
   const { data } = await apiFetchEnvelope<T>(path, options);
   return data;
 }
@@ -151,7 +183,7 @@ export async function apiFetch<T>(path: string, options?: ApiFetchOptions): Prom
 /** For list endpoints that return a `pagination` block alongside `data`. */
 export async function apiFetchPaginated<T>(
   path: string,
-  options?: ApiFetchOptions
+  options?: ApiFetchOptions,
 ): Promise<EnvelopeResult<T>> {
   return apiFetchEnvelope<T>(path, options);
 }

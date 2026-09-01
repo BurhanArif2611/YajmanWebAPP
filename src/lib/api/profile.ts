@@ -3,7 +3,7 @@ import {
   ImageValidationError,
   validateImageUpload,
 } from "@/lib/imageUpload";
-import type { DeviceToken, User } from "@/types/api";
+import type { DeliveryPlatform, DeviceToken, DeviceType, User } from "@/types/api";
 
 export function getProfile() {
   return apiFetch<User>("/profile", { auth: true });
@@ -45,8 +45,10 @@ export function uploadAvatar(file: File) {
 }
 
 export function registerDeviceToken(input: {
-  token: string;
-  platform: "web" | "android" | "ios";
+  device_token: string;
+  platform: DeliveryPlatform;
+  device_type?: DeviceType;
+  browser?: string;
   device_info?: Record<string, unknown>;
 }) {
   return apiFetch<DeviceToken>("/profile/device-tokens", {
@@ -64,6 +66,6 @@ export function deleteDeviceToken(token: string) {
   return apiFetch<null>("/profile/device-tokens", {
     method: "DELETE",
     auth: true,
-    body: { token },
+    body: { device_token: token },
   });
 }

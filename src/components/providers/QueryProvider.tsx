@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { NotificationToastProvider } from "@/components/notifications/NotificationToastProvider";
+import { DeviceTokenSync } from "@/components/providers/DeviceTokenSync";
 
 export function QueryProvider({ children }: { children: React.ReactNode }) {
   const [client] = useState(
@@ -17,5 +19,12 @@ export function QueryProvider({ children }: { children: React.ReactNode }) {
       })
   );
 
-  return <QueryClientProvider client={client}>{children}</QueryClientProvider>;
+  return (
+    <QueryClientProvider client={client}>
+      <NotificationToastProvider>
+        <DeviceTokenSync />
+        {children}
+      </NotificationToastProvider>
+    </QueryClientProvider>
+  );
 }

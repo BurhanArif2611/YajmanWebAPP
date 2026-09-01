@@ -7,6 +7,7 @@ import { Checkbox } from "@/components/ui/Checkbox";
 import { OtpInput } from "@/components/auth/OtpInput";
 import { useAuth } from "@/hooks/useAuth";
 import { sendOtp, verifyOtp } from "@/lib/api/auth";
+import { persistDeviceToken, resolveDeviceToken } from "@/lib/deviceToken";
 import { setSession } from "@/lib/auth";
 import { ApiError } from "@/lib/apiError";
 import { digitsOnly } from "@/lib/utils";
@@ -75,7 +76,9 @@ export function ContactDetailsSection({
     setError(null);
     setVerifying(true);
     try {
-      const result = await verifyOtp(digitsOnly(phone), code);
+      const deviceToken = await resolveDeviceToken();
+      const result = await verifyOtp(digitsOnly(phone), code, "+91", { deviceToken });
+      if (deviceToken) persistDeviceToken(deviceToken);
       setSession(
         {
           access_token: result.access_token,

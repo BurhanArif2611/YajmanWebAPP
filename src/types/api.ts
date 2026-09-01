@@ -53,10 +53,21 @@ export type VerifyOtpResponse = AuthTokens & {
   is_new_user: boolean;
 };
 
+/** Analytics/session label on login — not the push platform. */
+export type DeviceSource = "web" | "app" | "portal";
+
+/** Delivery channel sent by clients. */
+export type DeliveryPlatform = "app" | "web";
+
+export type DeviceType = "android" | "ios" | "browser";
+
+/** Stored FCM routing value returned by the API. */
+export type PushPlatform = "web" | "android" | "ios";
+
 export type DeviceToken = {
   id: string;
   token: string;
-  platform: "web" | "android" | "ios";
+  platform: PushPlatform;
   device_info?: Record<string, unknown>;
   created_at: string;
 };

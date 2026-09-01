@@ -8,6 +8,7 @@ import {
   getStoredUser,
 } from "@/lib/auth";
 import { logoutRequest } from "@/lib/api/auth";
+import { clearStoredDeviceToken, getStoredDeviceToken } from "@/lib/deviceToken";
 import type { User } from "@/types/api";
 
 export function useAuth() {
@@ -35,10 +36,12 @@ export function useAuth() {
     // background and ignore failures — the user is logged out locally
     // either way.
     const refreshToken = getRefreshToken();
-    clearSession();
+    const deviceToken = getStoredDeviceToken();
     if (refreshToken) {
-      logoutRequest(refreshToken).catch(() => {});
+      logoutRequest(refreshToken, deviceToken).catch(() => {});
     }
+    clearStoredDeviceToken();
+    clearSession();
   }, []);
 
   return { user, phone: user?.phone ?? null, isLoggedIn: Boolean(user), ready, logout };

@@ -181,6 +181,14 @@ const theme: Config["theme"] = {
         "0%": { opacity: "0", transform: "translateY(12px)" },
         "100%": { opacity: "1", transform: "translateY(0)" },
       },
+      "toast-in": {
+        "0%": { opacity: "0", transform: "translateX(16px)" },
+        "100%": { opacity: "1", transform: "translateX(0)" },
+      },
+      "toast-out": {
+        "0%": { opacity: "1", transform: "translateX(0)" },
+        "100%": { opacity: "0", transform: "translateX(16px)" },
+      },
     },
     animation: {
       "fade-in-up": "fade-in-up 0.5s ease-out forwards",
@@ -192,6 +200,8 @@ const theme: Config["theme"] = {
       "overlay-in": "overlay-in 0.3s ease-out forwards",
       "overlay-out": "overlay-out 0.25s ease-in forwards",
       "stagger-in": "stagger-in 0.4s ease-out forwards",
+      "toast-in": "toast-in 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards",
+      "toast-out": "toast-out 0.2s ease-in forwards",
     },
 
     // ─── TRANSITION ─────────────────────────────────────────

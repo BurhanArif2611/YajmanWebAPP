@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { CheckCircle2, X, XCircle } from "lucide-react";
+import { CheckCircle2, Bell, X, XCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export function Toast({
@@ -12,7 +12,7 @@ export function Toast({
   durationMs = 4000,
 }: {
   message: string;
-  variant?: "success" | "error";
+  variant?: "success" | "error" | "info";
   visible: boolean;
   onDismiss: () => void;
   durationMs?: number;
@@ -25,7 +25,8 @@ export function Toast({
 
   if (!visible) return null;
 
-  const Icon = variant === "success" ? CheckCircle2 : XCircle;
+  const Icon =
+    variant === "success" ? CheckCircle2 : variant === "error" ? XCircle : Bell;
 
   return (
     <div
@@ -37,7 +38,9 @@ export function Toast({
         size={20}
         className={cn(
           "mt-0.5 shrink-0",
-          variant === "success" ? "text-success" : "text-error"
+          variant === "success" && "text-success",
+          variant === "error" && "text-error",
+          variant === "info" && "text-brand-saffron-400"
         )}
       />
       <p className="min-w-0 flex-1 text-sm font-medium text-text-primary">{message}</p>
