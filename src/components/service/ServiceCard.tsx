@@ -29,13 +29,15 @@ export function ServiceCard({ service }: { service: MockService }) {
       </div>
 
       <div className="flex flex-1 flex-col gap-3 p-5">
-        <div className="flex flex-wrap gap-2">
-          {service.tags.map((tag, i) => (
-            <Badge key={i} variant="peach">
-              {tag}
-            </Badge>
-          ))}
-        </div>
+        {service.benefits.length > 0 && (
+          <div className="flex flex-wrap gap-2">
+            {service.benefits.slice(0, 2).map((benefit, i) => (
+              <Badge key={i} variant="peach">
+                {benefit}
+              </Badge>
+            ))}
+          </div>
+        )}
 
         <h3 className="font-sans text-lg font-semibold leading-snug text-text-primary line-clamp-2">
           {service.title}

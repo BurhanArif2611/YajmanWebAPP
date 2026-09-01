@@ -8,7 +8,7 @@ export function SupportSection() {
         <SectionHeader
           eyebrow="our support team"
           heading="We're here to help!"
-          subtitle="Connect with our expert travel consultants to plan your next trip."
+          subtitle="We are always with you on your spiritual journey. Contact us for any puja, ritual, or service."
         />
 
         <div className="mt-6 flex flex-col items-center justify-center gap-5 sm:mt-10 sm:flex-row sm:gap-16">

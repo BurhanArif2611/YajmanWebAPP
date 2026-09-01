@@ -139,7 +139,7 @@ function FilterSidebarInner() {
 
   const filterBlocks = (
     <>
-      <FilterBlock title="Filter by Price">
+      {/* <FilterBlock title="Filter by Price">
         {priceRangeQuery.isLoading ? (
           <Skeleton className="h-10 w-full" />
         ) : (
@@ -159,25 +159,25 @@ function FilterSidebarInner() {
             </p>
           </>
         )}
-      </FilterBlock>
+      </FilterBlock> */}
 
       <FilterBlock title="Category">
         <ul className="flex flex-col gap-3">
           {categoriesQuery.isLoading
             ? Array.from({ length: 6 }).map((_, i) => (
-                <li key={i}>
-                  <Skeleton className="h-5 w-3/4" />
-                </li>
-              ))
+              <li key={i}>
+                <Skeleton className="h-5 w-3/4" />
+              </li>
+            ))
             : categories.map((cat) => (
-                <li key={cat.id}>
-                  <Checkbox
-                    checked={currentCategory === cat.id}
-                    onChange={() => toggleCategory(cat.id)}
-                    label={<span className="text-sm text-text-secondary">{cat.label}</span>}
-                  />
-                </li>
-              ))}
+              <li key={cat.id}>
+                <Checkbox
+                  checked={currentCategory === cat.id}
+                  onChange={() => toggleCategory(cat.id)}
+                  label={<span className="text-sm text-text-secondary">{cat.label}</span>}
+                />
+              </li>
+            ))}
         </ul>
       </FilterBlock>
 
@@ -185,19 +185,19 @@ function FilterSidebarInner() {
         <ul className="flex flex-col gap-3">
           {typesQuery.isLoading
             ? Array.from({ length: 5 }).map((_, i) => (
-                <li key={i}>
-                  <Skeleton className="h-5 w-2/3" />
-                </li>
-              ))
+              <li key={i}>
+                <Skeleton className="h-5 w-2/3" />
+              </li>
+            ))
             : types.map((type) => (
-                <li key={type.id}>
-                  <Checkbox
-                    checked={currentTypes.includes(type.id)}
-                    onChange={() => toggleType(type.id)}
-                    label={<span className="text-sm text-text-secondary">{type.label}</span>}
-                  />
-                </li>
-              ))}
+              <li key={type.id}>
+                <Checkbox
+                  checked={currentTypes.includes(type.id)}
+                  onChange={() => toggleType(type.id)}
+                  label={<span className="text-sm text-text-secondary">{type.label}</span>}
+                />
+              </li>
+            ))}
         </ul>
       </FilterBlock>
     </>
@@ -318,42 +318,42 @@ function FilterSidebarInner() {
         {filterBlocks}
 
         {(blogsQuery.isLoading || topRated.length > 0) && (
-          <FilterBlock title="Top Rated News">
+          <FilterBlock title="Blogs">
             <ul className="flex flex-col gap-4">
               {blogsQuery.isLoading
                 ? Array.from({ length: TOP_RATED_LIMIT }).map((_, i) => (
-                    <li key={i} className="flex gap-3">
-                      <Skeleton className="h-14 w-14 shrink-0 rounded-lg" />
-                      <div className="flex-1">
-                        <Skeleton className="h-4 w-full" />
-                        <Skeleton className="mt-2 h-3 w-1/3" />
-                      </div>
-                    </li>
-                  ))
+                  <li key={i} className="flex gap-3">
+                    <Skeleton className="h-14 w-14 shrink-0 rounded-lg" />
+                    <div className="flex-1">
+                      <Skeleton className="h-4 w-full" />
+                      <Skeleton className="mt-2 h-3 w-1/3" />
+                    </div>
+                  </li>
+                ))
                 : topRated.map((post) => (
-                    <li key={post.id} className="flex gap-3">
-                      <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-lg">
-                        <Image
-                          src={resolveImageUrl(post.feature_image_url)}
-                          alt={post.title}
-                          fill
-                          sizes="56px"
-                          className="object-cover"
-                        />
-                      </div>
-                      <div>
-                        <p className="text-sm font-semibold leading-snug text-text-primary line-clamp-2">
-                          {post.title}
-                        </p>
-                        <Link
-                          href={`/blogs/${post.slug}`}
-                          className="text-xs flex items-center gap-1 font-semibold text-brand-saffron-400"
-                        >
-                          Read More <ArrowRight size={18} className="ml-2" />
-                        </Link>
-                      </div>
-                    </li>
-                  ))}
+                  <li key={post.id} className="flex gap-3">
+                    <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-lg">
+                      <Image
+                        src={resolveImageUrl(post.feature_image_url)}
+                        alt={post.title}
+                        fill
+                        sizes="56px"
+                        className="object-cover"
+                      />
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold leading-snug text-text-primary line-clamp-2">
+                        {post.title}
+                      </p>
+                      <Link
+                        href={`/blogs/${post.slug}`}
+                        className="text-xs flex items-center gap-1 font-semibold text-brand-saffron-400"
+                      >
+                        Read More <ArrowRight size={18} className="ml-2" />
+                      </Link>
+                    </div>
+                  </li>
+                ))}
             </ul>
           </FilterBlock>
         )}

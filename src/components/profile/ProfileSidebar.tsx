@@ -144,12 +144,17 @@ function ProfileMobileNav({ onLogoutClick }: { onLogoutClick: () => void }) {
     <div className="flex flex-col gap-3 lg:hidden">
       <div className="flex items-center gap-3 rounded-2xl bg-white p-4 shadow-card">
         <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-full bg-surface-muted">
-          <Image
+          {/* <Image
             src={user?.avatar_url || "/images/testimonials/avatar-3.png"}
             alt={user?.name ?? "Profile photo"}
             fill
             sizes="48px"
             className="object-cover"
+          /> */}
+          <img
+            src={user?.avatar_url || "/images/testimonials/avatar-3.png"}
+            className="object-cover h-full w-full"
+            alt={user?.name || "Profile photo"}
           />
         </div>
         <div className="min-w-0 flex-1">

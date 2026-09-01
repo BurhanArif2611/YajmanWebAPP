@@ -59,7 +59,7 @@ export function CategorySection() {
       <SectionHeader
         eyebrow="Sacred Services"
         heading="Explore by Category"
-        subtitle="This service has taken my business to a whole new level. The design & functionality are both outstanding and user friendly."
+        subtitle="Every Prayer Has a Purpose. Find Yours."
       />
 
       {categoriesQuery.isLoading ? (

@@ -40,6 +40,7 @@ export function mapServiceToCard(service: Service): MockService {
     discountPercent: Number(service.discount_percent) || 0,
     featured: service.is_featured,
     tags: detail.tags?.length ? detail.tags.map((t) => t.name) : [],
+    benefits: service.benefits?.length ? service.benefits : [],
     detailTags: detail.types?.length ? detail.types.map((t) => t.name) : [],
     rating: Math.round(Number(service.rating_avg)),
     reviewCount: service.total_reviews,

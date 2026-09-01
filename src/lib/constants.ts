@@ -51,6 +51,7 @@ export type MockService = {
   discountPercent: number;
   featured: boolean;
   tags: string[];
+  benefits: string[];
   detailTags: string[];
   rating: number;
   reviewCount: number;

@@ -23,8 +23,7 @@ export function Footer() {
               />
             </Link>
             <p className="text-sm text-white/70">
-              This service has taken my business to a whole new level. The
-              design and functionality and user friendly.
+              Yajman is India's leading digital devotional platform, bringing authentic Vedic rituals to your doorstep — with verified Pandits
             </p>
             <SocialLinks iconClassName="text-white/80" />
           </div>
