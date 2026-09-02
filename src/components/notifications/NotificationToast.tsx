@@ -55,7 +55,7 @@ export function NotificationToast({
   }, [notification.id]);
 
   const href = resolveNotificationHref(notification);
-  const timeLabel = formatRelativeTime(notification.receivedAt);
+  const timeLabel = formatRelativeTime(new Date(notification.receivedAt));
   const timeText = timeLabel === "just now" ? "Just now" : timeLabel;
 
   const handleOpen = () => {
