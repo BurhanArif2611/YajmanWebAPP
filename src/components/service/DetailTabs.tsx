@@ -19,14 +19,39 @@ const TABS = [
 
 type Tab = (typeof TABS)[number];
 
-const REVIEW_TEXT =
-  "Our trip with Crown Tours was absolutely amazing! Every detail, from flights to hotels and local activities, was perfectly planned guides were knowledgeable and friendly, making our journey smooth and unforgettable.";
-
 const STATIC_REVIEWS = [
-  { id: "r1", name: "Eleanor Fanta", date: "06 March, 2023", avatar: "/images/testimonials/avatar-1.png" },
-  { id: "r2", name: "Duc Trung", date: "06 March, 2025", avatar: "/images/testimonials/avatar-2.png" },
-  { id: "r3", name: "Mohaymina", date: "06 March, 2025", avatar: "/images/testimonials/avatar-3.png" },
-  { id: "r4", name: "Mauro", date: "06 March, 2023", avatar: "/images/testimonials/avatar-1.png" },
+  {
+    id: "r1",
+    name: "Aarti Sharma",
+    date: "18 January, 2026",
+    avatar: "/images/testimonials/avatar-1.png",
+    rating: "9.6 Super",
+    text: "Booked this puja for my father's first barsi while we were living in Dubai. The pandit ji called a day before to confirm our names and gotra, sent the live video link exactly on time, and did the complete sankalp in our name. The prasad and tirth reached us within a week. It genuinely felt like we were sitting in the temple back home.",
+  },
+  {
+    id: "r2",
+    name: "Rajesh Iyer",
+    date: "27 December, 2025",
+    avatar: "/images/testimonials/avatar-2.png",
+    rating: "9.3 Excellent",
+    text: "What I liked most is the transparency. You can see the temple, the assigned pandit's details and the muhurat before making any payment. The ritual was performed at the exact time slot shown on the site, and I received the photos and the full recording the same evening. No repeated calls asking for extra donations.",
+  },
+  {
+    id: "r3",
+    name: "Sneha Kulkarni",
+    date: "09 November, 2025",
+    avatar: "/images/testimonials/avatar-3.png",
+    rating: "9.1 Excellent",
+    text: "Arranged a Satyanarayan puja at home through Yajman. The pandit arrived on time with all the samagri, explained every step in Marathi so my mother-in-law could follow along, and wrapped up within the duration mentioned during booking. Paying and choosing the date on the website was very simple.",
+  },
+  {
+    id: "r4",
+    name: "Vikram Nair",
+    date: "03 October, 2025",
+    avatar: "/images/testimonials/avatar-1.png",
+    rating: "9.8 Super",
+    text: "I first took the astrology consultation and then booked a Navagraha Shanti puja based on that report. Clear pricing, a verified pandit, and the team kept me updated on WhatsApp at every stage — sankalp, aarti and completion. Prasad along with a small kalash came by courier. Booking our Diwali Lakshmi puja here next.",
+  },
 ] as const;
 
 const TAB_IDS: Record<Tab, string> = {
@@ -55,12 +80,10 @@ export function DetailTabs({
   pujaProcess,
   photos,
   faqs,
-  reviews,
 }: DetailTabsProps) {
   const hasTemple = Boolean(templeName?.trim() || templeDescription?.trim());
   const features = keyFeatures?.filter((f) => f.trim()) ?? [];
   const faqItems = faqs?.filter((f) => f.question?.trim()) ?? [];
-  const reviewItems = reviews ?? [];
   const hasPhotos = photos.length > 0;
   const processSteps = useMemo(
     () =>
@@ -79,7 +102,7 @@ export function DetailTabs({
       if (tab === "Process") return hasPujaProcess;
       return true;
     });
-  }, [hasTemple, features.length, hasPhotos, reviewItems.length, faqItems.length, hasPujaProcess]);
+  }, [hasTemple, features.length, hasPhotos, faqItems.length, hasPujaProcess]);
 
   const [active, setActive] = useState<Tab>(tabs[0] ?? "Key Features");
   const sectionRefs = useRef<Partial<Record<Tab, HTMLDivElement | null>>>({});
@@ -312,9 +335,9 @@ export function DetailTabs({
               </div>
               <p className="flex items-center gap-1 text-sm font-semibold text-brand-saffron-400">
                 <Star size={14} fill="currentColor" strokeWidth={0} />
-                9.5 Super
+                {review.rating}
               </p>
-              <p className="text-sm text-text-muted">{REVIEW_TEXT}</p>
+              <p className="text-sm text-text-muted">{review.text}</p>
             </div>
           ))}
         </div>

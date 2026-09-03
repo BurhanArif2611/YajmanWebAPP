@@ -43,7 +43,9 @@ function FilterSidebarInner() {
 
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  const currentCategory = searchParams.get("category");
+  const currentCategories = (searchParams.get("category") ?? "")
+    .split(",")
+    .filter(Boolean);
   const currentTypes = (searchParams.get("type") ?? "").split(",").filter(Boolean);
   const maxPriceParam = searchParams.get("max_price");
   const [price, setPrice] = useState(
@@ -90,7 +92,10 @@ function FilterSidebarInner() {
   };
 
   const toggleCategory = (id: string) => {
-    setParam("category", currentCategory === id ? null : id);
+    const next = currentCategories.includes(id)
+      ? currentCategories.filter((c) => c !== id)
+      : [...currentCategories, id];
+    setParam("category", next.length ? next.join(",") : null);
   };
 
   const toggleType = (id: string) => {
@@ -111,7 +116,7 @@ function FilterSidebarInner() {
   };
 
   const activeCount =
-    (currentCategory ? 1 : 0) + currentTypes.length + (maxPriceParam ? 1 : 0);
+    currentCategories.length + currentTypes.length + (maxPriceParam ? 1 : 0);
 
   // Public, unauthenticated catalog data — skeleton while loading; hide lists if empty.
   const categoriesQuery = useQuery({
@@ -139,6 +144,21 @@ function FilterSidebarInner() {
 
   const filterBlocks = (
     <>
+      {activeCount > 0 && (
+        <div className="flex items-center justify-between">
+          <span className="text-sm font-medium text-text-secondary">
+            {activeCount} filter{activeCount > 1 ? "s" : ""} applied
+          </span>
+          <button
+            onClick={clearAllFilters}
+            className="flex items-center gap-1 text-sm font-semibold text-brand-saffron-400 hover:underline"
+          >
+            <RotateCcw size={14} />
+            Clear Filters
+          </button>
+        </div>
+      )}
+
       {/* <FilterBlock title="Filter by Price">
         {priceRangeQuery.isLoading ? (
           <Skeleton className="h-10 w-full" />
@@ -172,7 +192,7 @@ function FilterSidebarInner() {
             : categories.map((cat) => (
               <li key={cat.id}>
                 <Checkbox
-                  checked={currentCategory === cat.id}
+                  checked={currentCategories.includes(cat.id)}
                   onChange={() => toggleCategory(cat.id)}
                   label={<span className="text-sm text-text-secondary">{cat.label}</span>}
                 />
@@ -181,25 +201,27 @@ function FilterSidebarInner() {
         </ul>
       </FilterBlock>
 
-      <FilterBlock title="Types">
-        <ul className="flex flex-col gap-3">
-          {typesQuery.isLoading
-            ? Array.from({ length: 5 }).map((_, i) => (
-              <li key={i}>
-                <Skeleton className="h-5 w-2/3" />
-              </li>
-            ))
-            : types.map((type) => (
-              <li key={type.id}>
-                <Checkbox
-                  checked={currentTypes.includes(type.id)}
-                  onChange={() => toggleType(type.id)}
-                  label={<span className="text-sm text-text-secondary">{type.label}</span>}
-                />
-              </li>
-            ))}
-        </ul>
-      </FilterBlock>
+      {(typesQuery.isLoading || types.length > 0) && (
+        <FilterBlock title="Types">
+          <ul className="flex flex-col gap-3">
+            {typesQuery.isLoading
+              ? Array.from({ length: 5 }).map((_, i) => (
+                <li key={i}>
+                  <Skeleton className="h-5 w-2/3" />
+                </li>
+              ))
+              : types.map((type) => (
+                <li key={type.id}>
+                  <Checkbox
+                    checked={currentTypes.includes(type.id)}
+                    onChange={() => toggleType(type.id)}
+                    label={<span className="text-sm text-text-secondary">{type.label}</span>}
+                  />
+                </li>
+              ))}
+          </ul>
+        </FilterBlock>
+      )}
     </>
   );
 
@@ -208,19 +230,21 @@ function FilterSidebarInner() {
       {/* Mobile: active filter chips only (search + filter icon live in ServicesHero) */}
       {activeCount > 0 && (
         <div className="mb-3 flex flex-wrap items-center gap-2 lg:hidden">
-          {currentCategory && (
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-brand-saffron-200 bg-brand-saffron-50 px-3 py-1 text-xs font-medium text-brand-saffron-400">
-              Category:{" "}
-              {categories.find((c) => c.id === currentCategory)?.label || currentCategory}
+          {currentCategories.map((cId) => (
+            <span
+              key={cId}
+              className="inline-flex items-center gap-1.5 rounded-full border border-brand-saffron-200 bg-brand-saffron-50 px-3 py-1 text-xs font-medium text-brand-saffron-400"
+            >
+              {categories.find((c) => c.id === cId)?.label || cId}
               <button
-                onClick={() => toggleCategory(currentCategory)}
-                aria-label="Remove category filter"
+                onClick={() => toggleCategory(cId)}
+                aria-label={`Remove category filter ${cId}`}
                 className="hover:text-error"
               >
                 <X size={13} />
               </button>
             </span>
-          )}
+          ))}
           {currentTypes.map((tId) => (
             <span
               key={tId}
