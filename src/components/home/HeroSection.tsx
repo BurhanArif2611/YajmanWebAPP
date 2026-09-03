@@ -51,14 +51,14 @@ function TypesStrip({ types, isLoading }: { types: Type[]; isLoading: boolean })
 
   if (isLoading) {
     return (
-      <div className="flex gap-2 overflow-hidden sm:gap-3">
+      <div className="flex gap-4 overflow-hidden sm:gap-6 md:gap-8">
         {Array.from({ length: 8 }).map((_, i) => (
           <div
             key={i}
-            className="flex w-[72px] shrink-0 flex-col items-center gap-2 sm:w-[80px] md:w-[88px]"
+            className="flex w-[84px] shrink-0 flex-col items-center gap-2 sm:w-[100px] md:w-[112px]"
           >
-            <Skeleton className="h-10 w-10 rounded-full sm:h-11 sm:w-11" />
-            <Skeleton className="h-3 w-12" />
+            <Skeleton className="h-11 w-11 rounded-full sm:h-12 sm:w-12" />
+            <Skeleton className="h-3 w-14" />
           </div>
         ))}
       </div>
@@ -86,30 +86,30 @@ function TypesStrip({ types, isLoading }: { types: Type[]; isLoading: boolean })
         ref={emblaRef}
         className={cn("overflow-hidden", showArrows && "mx-4 sm:mx-5 md:mx-6")}
       >
-        <div className="flex">
+        <div className="flex sm:justify-center">
           {types.map((type) => {
             const iconSrc = type.icon_url || type.image_url;
             return (
               <div
                 key={type.id}
-                className="min-w-0 shrink-0 grow-0 basis-[72px] px-1 sm:basis-[80px] sm:px-1.5 md:basis-[88px] md:px-2"
+                className="min-w-0 shrink-0 grow-0 basis-[84px] px-2 sm:basis-[104px] sm:px-3 md:basis-[120px] md:px-4"
               >
                 <Link
                   href={`/services?type=${type.id}`}
-                  className="flex flex-col items-center gap-1.5 text-center sm:gap-2"
+                  className="flex flex-col items-center gap-2 text-center"
                 >
-                  <span className="relative flex h-10 w-10 items-center justify-center rounded-full bg-surface-peach text-brand-saffron-400 sm:h-11 sm:w-11">
+                  <span className="relative flex h-11 w-11 items-center justify-center rounded-full bg-surface-peach text-brand-saffron-400 sm:h-12 sm:w-12">
                     {iconSrc ? (
                       <Image
                         src={iconSrc}
                         alt=""
                         fill
-                        sizes="44px"
-                        className="object-contain p-2 sm:p-2.5"
+                        sizes="48px"
+                        className="object-contain p-2.5 sm:p-3"
                       />
                     ) : null}
                   </span>
-                  <span className="line-clamp-2 w-full text-[10px] font-semibold leading-tight text-text-secondary sm:text-xs md:text-sm">
+                  <span className="line-clamp-1 w-full text-xs font-semibold leading-tight text-text-secondary sm:text-sm">
                     {type.name}
                   </span>
                 </Link>
@@ -230,15 +230,15 @@ export function HeroSection() {
             </div>
           ) : (
             popularSearches.length > 0 && (
-              <div className="flex flex-wrap items-center gap-2 text-sm">
-                <span className="font-medium text-text-secondary">
-                  Popular Search:
+              <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm">
+                <span className="text-sm font-medium text-text-muted">
+                  Popular Search :
                 </span>
                 {popularSearches.map((item) => (
                   <Link
                     key={item.id}
                     href={item.link_url}
-                    className="rounded-full border border-border-dark px-3 py-1 text-sm text-text-secondary transition-colors hover:border-brand-saffron-400 hover:text-brand-saffron-400"
+                    className="rounded-full border border-brand-saffron-200 bg-white px-4 py-1.5 text-sm font-medium text-brand-saffron-500 shadow-sm transition-colors hover:border-brand-saffron-400 hover:bg-brand-saffron-400 hover:text-white"
                   >
                     {item.label}
                   </Link>

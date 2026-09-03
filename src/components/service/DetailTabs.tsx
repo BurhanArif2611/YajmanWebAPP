@@ -4,9 +4,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "@/components/ui/AppImage";
 import { Star } from "lucide-react";
 import { FaqAccordion } from "@/components/service/FaqAccordion";
-import { cn, formatRelativeTime } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { looksLikeHtml, RICH_TEXT_PROSE_CLASS } from "@/lib/richText";
-import { resolveImageUrl } from "@/lib/mappers/service";
 import type { PujaProcess, ServiceReview } from "@/types/api";
 
 const TABS = [
@@ -19,6 +18,16 @@ const TABS = [
 ] as const;
 
 type Tab = (typeof TABS)[number];
+
+const REVIEW_TEXT =
+  "Our trip with Crown Tours was absolutely amazing! Every detail, from flights to hotels and local activities, was perfectly planned guides were knowledgeable and friendly, making our journey smooth and unforgettable.";
+
+const STATIC_REVIEWS = [
+  { id: "r1", name: "Eleanor Fanta", date: "06 March, 2023", avatar: "/images/testimonials/avatar-1.png" },
+  { id: "r2", name: "Duc Trung", date: "06 March, 2025", avatar: "/images/testimonials/avatar-2.png" },
+  { id: "r3", name: "Mohaymina", date: "06 March, 2025", avatar: "/images/testimonials/avatar-3.png" },
+  { id: "r4", name: "Mauro", date: "06 March, 2023", avatar: "/images/testimonials/avatar-1.png" },
+] as const;
 
 const TAB_IDS: Record<Tab, string> = {
   "Key Features": "key-features",
@@ -65,7 +74,7 @@ export function DetailTabs({
       if (tab === "Temple Details") return hasTemple;
       if (tab === "Key Features") return features.length > 0;
       if (tab === "Photos") return hasPhotos;
-      if (tab === "Reviews") return reviewItems.length > 0;
+      if (tab === "Reviews") return true;
       if (tab === "FAQ's") return faqItems.length > 0;
       if (tab === "Process") return hasPujaProcess;
       return true;
@@ -270,59 +279,46 @@ export function DetailTabs({
         </div>
       )}
 
-      {reviewItems.length > 0 && (
-        <div
-          id={TAB_IDS.Reviews}
-          data-tab="Reviews"
-          ref={(el) => {
-            sectionRefs.current["Reviews"] = el;
-          }}
-          className="scroll-mt-36 sm:scroll-mt-40"
-        >
-          <h2 className="font-sans text-xl font-semibold text-text-primary sm:text-2xl">
-            Reviews &amp; Ratings
-          </h2>
-          <div className="mt-4 grid grid-cols-1 gap-6 md:grid-cols-2">
-            {reviewItems.map((review) => (
-              <div key={review.id} className="flex flex-col gap-2">
-                <div className="flex items-center gap-3">
-                  <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-full bg-surface-muted">
-                    {review.avatar_url ? (
-                      <Image
-                        src={resolveImageUrl(review.avatar_url)}
-                        alt={review.customer_name || "Reviewer"}
-                        fill
-                        sizes="40px"
-                        className="object-cover"
-                      />
-                    ) : null}
-                  </div>
-                  <div className="min-w-0">
-                    <p className="font-sans text-sm font-semibold text-text-primary">
-                      {review.customer_name || "Yajman customer"}
-                    </p>
-                    <p className="text-xs text-text-muted">
-                      {formatRelativeTime(review.created_at)}
-                    </p>
-                  </div>
+      <div
+        id={TAB_IDS.Reviews}
+        data-tab="Reviews"
+        ref={(el) => {
+          sectionRefs.current["Reviews"] = el;
+        }}
+        className="scroll-mt-36 sm:scroll-mt-40"
+      >
+        <h2 className="font-sans text-xl font-semibold text-text-primary sm:text-2xl">
+          Reviews &amp; Ratings
+        </h2>
+        <div className="mt-4 grid grid-cols-1 gap-6 md:grid-cols-2">
+          {STATIC_REVIEWS.map((review) => (
+            <div key={review.id} className="flex flex-col gap-2">
+              <div className="flex items-center gap-3">
+                <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-full bg-surface-muted">
+                  <Image
+                    src={review.avatar}
+                    alt={review.name}
+                    fill
+                    sizes="40px"
+                    className="object-cover"
+                  />
                 </div>
-                <p className="flex items-center gap-1 text-sm font-semibold text-brand-saffron-400">
-                  <Star size={14} fill="currentColor" strokeWidth={0} />
-                  {review.rating.toFixed(1)}
-                </p>
-                {review.title && (
+                <div className="min-w-0">
                   <p className="font-sans text-sm font-semibold text-text-primary">
-                    {review.title}
+                    {review.name}
                   </p>
-                )}
-                {review.comment && (
-                  <p className="text-sm text-text-muted">{review.comment}</p>
-                )}
+                  <p className="text-xs text-text-muted">{review.date}</p>
+                </div>
               </div>
-            ))}
-          </div>
+              <p className="flex items-center gap-1 text-sm font-semibold text-brand-saffron-400">
+                <Star size={14} fill="currentColor" strokeWidth={0} />
+                9.5 Super
+              </p>
+              <p className="text-sm text-text-muted">{REVIEW_TEXT}</p>
+            </div>
+          ))}
         </div>
-      )}
+      </div>
 
       {faqItems.length > 0 && (
         <div

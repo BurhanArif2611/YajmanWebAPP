@@ -2,9 +2,24 @@ import { Mail, MapPin, Phone } from "lucide-react";
 import Image from "@/components/ui/AppImage";
 import Link from "next/link";
 import { FOOTER_LINKS, COMPANY_ADDRESS } from "@/lib/constants";
+import { getLegalPages } from "@/lib/api/legal";
 import { SocialLinks } from "@/components/layout/SocialLinks";
 
-export function Footer() {
+async function getLegalLinks() {
+  try {
+    const pages = await getLegalPages();
+    return pages.map((p) => ({
+      label: p.title,
+      href: `/legal/${p.slug}`,
+    }));
+  } catch {
+    return [];
+  }
+}
+
+export async function Footer() {
+  const legalLinks = await getLegalLinks();
+
   return (
     <footer className="relative -mt-8 overflow-hidden rounded-t-[40px] bg-[#1f1f1f]">
       <div className="h-[60px] w-full bg-white rounded-b-2xl"></div>
@@ -23,14 +38,16 @@ export function Footer() {
               />
             </Link>
             <p className="text-sm text-white/70">
-              Yajman is India's leading digital devotional platform, bringing authentic Vedic rituals to your doorstep — with verified Pandits
+              Yajman is India&apos;s leading digital devotional platform, bringing authentic Vedic rituals to your doorstep — with verified Pandits
             </p>
             <SocialLinks iconClassName="text-white/80" />
           </div>
 
           <FooterColumn heading="Our Services" links={FOOTER_LINKS.services} />
           <FooterColumn heading="Quick Links" links={FOOTER_LINKS.quickLinks} />
-          <FooterColumn heading="Terms" links={FOOTER_LINKS.terms} />
+          {legalLinks.length > 0 && (
+            <FooterColumn heading="Terms" links={legalLinks} />
+          )}
 
           <div className="col-span-2 flex min-w-0 flex-col gap-4 sm:col-span-1">
             <h3 className="font-sans text-base font-semibold text-white">Contact</h3>

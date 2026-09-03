@@ -69,11 +69,4 @@ export const FOOTER_LINKS = {
     { label: "Blogs", href: "/blogs" },
     { label: "Contact", href: "/contact" },
   ],
-  terms: [
-    { label: "Terms & condition", href: "/terms" },
-    { label: "Privacy Policy", href: "/privacy" },
-    { label: "Cookies Policy", href: "/cookies" },
-    { label: "Disclaimer", href: "/disclaimer" },
-    { label: "Return Policy", href: "/return-policy" },
-  ],
 };

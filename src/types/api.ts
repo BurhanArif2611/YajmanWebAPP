@@ -715,6 +715,31 @@ export type ServiceInquiryPayload = {
   message?: string;
 };
 
+// ─── Legal pages (Terms, Privacy, Cookies, Disclaimer, Return Policy) ────
+
+/** One row from `GET /legal` — the list used for the footer / sitemap. */
+export type LegalPageListItem = {
+  slug: string;
+  title: string;
+  meta_title?: string | null;
+  meta_description?: string | null;
+  updated_at: string;
+};
+
+/** Full page from `GET /legal/:slug`. */
+export type LegalPage = {
+  id: string;
+  slug: string;
+  title: string;
+  content: string;
+  meta_title?: string | null;
+  meta_description?: string | null;
+  is_active?: boolean;
+  updated_by?: string | null;
+  created_at?: string;
+  updated_at: string;
+};
+
 // ─── General contact form ─────────────────────────────────────────
 
 export type ContactPayload = {

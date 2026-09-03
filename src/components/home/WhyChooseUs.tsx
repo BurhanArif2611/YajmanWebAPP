@@ -1,27 +1,31 @@
 import Image from "@/components/ui/AppImage";
-import { MapPin, PiggyBank, ThumbsUp } from "lucide-react";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { TopoDoodle } from "@/components/ui/TopoDoodle";
 
-const FEATURES = [
+const STEPS = [
   {
-    icon: '/icons/package.svg',
-    title: "Complete Package",
+    number: "01",
+    title: "Choose Your Service",
     description:
-      "All items, flowers, and ritual materials included in a single price.",
+      "Choose from our wide range of pujas, thaals or bhajan services.",
   },
   {
-    icon: '/icons/locate.png',
-
-    title: "Live Ritual Coverage",
+    number: "02",
+    title: "Book Date & Venue",
     description:
-      "Stream ceremonies in real-time for families across the globe.",
+      "Select a convenient auspicious time and specify your venue.",
   },
   {
-    icon: "/icons/thumbs.svg",
-    title: "Flexible Booking",
+    number: "03",
+    title: "Pandit Ji Arrives",
     description:
-      "Reschedule freely with auspicious date suggestions from our priests.",
+      "Our verified, learned Pandit Ji arrives with all the necessary ritual materials.",
+  },
+  {
+    number: "04",
+    title: "Receive Aashirwad",
+    description:
+      "Complete the rituals peacefully and receive divine blessings and Aashirwad.",
   },
 ];
 
@@ -52,8 +56,8 @@ export function WhyChooseUs() {
             </div>
             <div className="relative h-48 w-full overflow-hidden rounded-xl md:h-72">
               <Image
-                src="/images/misc/promo-items.png"
-                alt="Puja samagri and sacred texts"
+                src="/images/misc/stat-pandits.png"
+                alt="Pandit performing puja"
                 fill
                 sizes="(max-width: 1024px) 100vw, 25vw"
                 className="object-cover rounded-b-lg bottom-0"
@@ -70,8 +74,8 @@ export function WhyChooseUs() {
             </div>
             <div className="relative h-48 w-full flex-1 md:h-56">
               <Image
-                src="/images/misc/stat-pandits.png"
-                alt="Pandit performing puja"
+                src="/images/misc/promo-items.png"
+                alt="Puja samagri and sacred texts"
                 fill
                 sizes="(max-width: 1024px) 100vw, 25vw"
                 className="object-cover rounded-t-lg"
@@ -79,14 +83,14 @@ export function WhyChooseUs() {
             </div>
           </div>
 
-          <div className="flex flex-col justify-center gap-4">
-            {FEATURES.map(({ icon, title, description }) => (
+          <div className="flex flex-col justify-center gap-3">
+            {STEPS.map(({ number, title, description }) => (
               <div
-                key={title}
+                key={number}
                 className="flex items-start gap-4 rounded-xl bg-white p-5 shadow-card"
               >
-                <span className="relative flex h-9 w-9 shrink-0 items-center justify-center text-text-primary">
-                  <Image src={icon} alt="trust" width={32} height={32} className="" />
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-saffron-400 font-sans text-sm font-bold text-white">
+                  {number}
                 </span>
                 <div>
                   <h3 className="font-sans text-lg font-bold text-text-primary">
