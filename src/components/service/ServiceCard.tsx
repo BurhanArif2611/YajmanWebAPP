@@ -28,9 +28,9 @@ export function ServiceCard({ service }: { service: MockService }) {
         )}
       </div>
 
-      <div className="flex flex-1 flex-col gap-3 p-5">
+      <div className="flex flex-1 flex-col gap-1.5 p-2.5 sm:gap-3 sm:p-5">
         {service.benefits.length > 0 && (
-          <div className="flex flex-wrap gap-2">
+          <div className="hidden flex-wrap gap-2 sm:flex">
             {service.benefits.slice(0, 2).map((benefit, i) => (
               <Badge key={i} variant="peach">
                 {benefit}
@@ -39,7 +39,7 @@ export function ServiceCard({ service }: { service: MockService }) {
           </div>
         )}
 
-        <h3 className="font-sans text-lg font-semibold leading-snug text-text-primary line-clamp-2">
+        <h3 className="font-sans text-sm font-semibold leading-snug text-text-primary line-clamp-2 sm:text-lg">
           {service.title}
         </h3>
         <ServiceLocationLine
@@ -50,17 +50,17 @@ export function ServiceCard({ service }: { service: MockService }) {
 
         <div className="border-t border-border" />
 
-        <div className="flex items-baseline gap-2">
-          <span className="text-lg font-semibold text-text-primary">
+        <div className="flex items-baseline gap-1.5 sm:gap-2">
+          <span className="text-sm font-semibold text-text-primary sm:text-lg">
             ₹{service.price}
           </span>
           {showDiscount && (
             <>
-              <span className="text-xs text-text-light line-through">
+              <span className="text-[11px] text-text-light line-through sm:text-xs">
                 ₹{service.originalPrice}
               </span>
               {service.discountPercent > 0 && (
-                <span className="text-xs font-medium text-success">
+                <span className="text-[11px] font-medium text-success sm:text-xs">
                   -{service.discountPercent}%
                 </span>
               )}
@@ -70,9 +70,10 @@ export function ServiceCard({ service }: { service: MockService }) {
 
         <Link
           href={`/services/${service.category}/${service.slug}`}
-          className="mt-1 inline-flex min-h-[44px] items-center justify-center gap-2 rounded-full bg-brand-navy px-5 py-3 text-sm font-medium text-white transition-colors duration-200 hover:bg-brand-navy-800"
+          className="mt-1 inline-flex min-h-[38px] items-center justify-center gap-1.5 rounded-full bg-brand-navy px-3 py-2 text-xs font-medium text-white transition-colors duration-200 hover:bg-brand-navy-800 sm:min-h-[44px] sm:gap-2 sm:px-5 sm:py-3 sm:text-sm"
         >
-          Book Now <ArrowRight size={16} />
+          Book Now <ArrowRight size={14} className="sm:hidden" />
+          <ArrowRight size={16} className="hidden sm:block" />
         </Link>
       </div>
     </div>

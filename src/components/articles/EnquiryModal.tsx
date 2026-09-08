@@ -1,12 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { X } from "lucide-react";
+import { format, parseISO, subYears } from "date-fns";
 import { Input } from "@/components/ui/Input";
+import { DateField } from "@/components/ui/DateField";
 import { Button } from "@/components/ui/Button";
 import { submitServiceInquiry } from "@/lib/api/services";
 import { ApiError } from "@/lib/apiError";
 import { digitsOnly } from "@/lib/utils";
+import { useCurrentUser } from "@/hooks/useProfile";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -25,10 +28,42 @@ export function EnquiryModal({
   const [number, setNumber] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
+  const [birthDate, setBirthDate] = useState("");
+  const [birthTime, setBirthTime] = useState("");
+  const [birthPlace, setBirthPlace] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+
+  const currentUser = useCurrentUser();
+
+  const today = useMemo(() => new Date(), []);
+  const birthMinDate = useMemo(() => subYears(today, 120), [today]);
+  const birthDateValue = useMemo(() => {
+    if (!birthDate) return undefined;
+    const parsed = parseISO(birthDate);
+    return Number.isNaN(parsed.getTime()) ? undefined : parsed;
+  }, [birthDate]);
+
+  // Prefill from the logged-in user's profile. Logged out => currentUser is
+  // null and the fields stay empty. Only fill blanks so we never overwrite
+  // what the user has typed.
+  useEffect(() => {
+    if (!currentUser) return;
+    const profileName = currentUser.name?.trim();
+    if (profileName) setName((prev) => prev || profileName);
+    const profilePhone = digitsOnly(currentUser.phone);
+    if (profilePhone) setNumber((prev) => prev || profilePhone);
+    const profileEmail = currentUser.email?.trim();
+    if (profileEmail) setEmail((prev) => prev || profileEmail);
+    const profileBirthDate = currentUser.date_of_birth?.slice(0, 10);
+    if (profileBirthDate) setBirthDate((prev) => prev || profileBirthDate);
+    const profileBirthTime = currentUser.time_of_birth?.slice(0, 5);
+    if (profileBirthTime) setBirthTime((prev) => prev || profileBirthTime);
+    const profileBirthPlace = currentUser.place_of_birth?.trim();
+    if (profileBirthPlace) setBirthPlace((prev) => prev || profileBirthPlace);
+  }, [currentUser]);
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
@@ -69,6 +104,9 @@ export function EnquiryModal({
         phone: phoneDigits,
         email: email.trim() || undefined,
         message: message.trim() || undefined,
+        birth_date: birthDate || undefined,
+        birth_time: birthTime || undefined,
+        birth_place: birthPlace.trim() || undefined,
       });
       setSubmitted(true);
     } catch (err) {
@@ -164,6 +202,32 @@ export function EnquiryModal({
               {fieldErrors.email && (
                 <p className="mt-1 text-xs font-medium text-error">{fieldErrors.email}</p>
               )}
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <DateField
+                selected={birthDateValue}
+                onSelect={(date) => setBirthDate(format(date, "yyyy-MM-dd"))}
+                minDate={birthMinDate}
+                maxDate={today}
+                placeholder="Date of birth"
+              />
+              <Input
+                type="time"
+                placeholder="Time of birth"
+                value={birthTime}
+                onChange={(e) => setBirthTime(e.target.value)}
+                containerClassName="bg-white"
+              />
+            </div>
+
+            <div>
+              <Input
+                placeholder="Place of birth"
+                value={birthPlace}
+                onChange={(e) => setBirthPlace(e.target.value)}
+                containerClassName="bg-white"
+              />
             </div>
 
             <div>

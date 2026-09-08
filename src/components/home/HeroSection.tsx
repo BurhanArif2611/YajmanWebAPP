@@ -176,7 +176,8 @@ export function HeroSection() {
   }, [banners.length]);
 
   return (
-    <section className={`relative bg-surface-peach ${showTypes ? "pb-20 sm:pb-24" : ""}`}>
+    <>
+    <section className={`relative aspect-[3/4] bg-surface-peach sm:aspect-auto ${showTypes ? "pb-20 sm:pb-24" : ""}`}>
       {bannersQuery.isLoading ? (
         <Skeleton className="absolute inset-0 rounded-none" />
       ) : (
@@ -223,14 +224,14 @@ export function HeroSection() {
           </p>
 
           {popularSearchesQuery.isLoading ? (
-            <div className="flex flex-wrap items-center gap-2">
+            <div className="hidden flex-wrap items-center gap-2 sm:flex">
               {Array.from({ length: 4 }).map((_, i) => (
                 <Skeleton key={i} className="h-7 w-28 rounded-full" />
               ))}
             </div>
           ) : (
             popularSearches.length > 0 && (
-              <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm">
+              <div className="mt-1 hidden flex-wrap items-center gap-x-3 gap-y-2 text-sm sm:flex">
                 <span className="text-sm font-medium text-text-muted">
                   Popular Search :
                 </span>
@@ -257,5 +258,31 @@ export function HeroSection() {
         </div>
       )}
     </section>
+
+    {popularSearchesQuery.isLoading ? (
+      <div className="flex flex-wrap items-center gap-2 px-4 pt-4 sm:hidden">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <Skeleton key={i} className="h-7 w-28 rounded-full" />
+        ))}
+      </div>
+    ) : (
+      popularSearches.length > 0 && (
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-2 px-4 pt-4 text-sm sm:hidden">
+          <span className="text-sm font-medium text-text-muted">
+            Popular Search :
+          </span>
+          {popularSearches.map((item) => (
+            <Link
+              key={item.id}
+              href={item.link_url}
+              className="rounded-full border border-brand-saffron-200 bg-white px-4 py-1.5 text-sm font-medium text-brand-saffron-500 shadow-sm transition-colors hover:border-brand-saffron-400 hover:bg-brand-saffron-400 hover:text-white"
+            >
+              {item.label}
+            </Link>
+          ))}
+        </div>
+      )
+    )}
+    </>
   );
 }

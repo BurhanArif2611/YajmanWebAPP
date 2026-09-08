@@ -94,7 +94,7 @@ export function BestSellers() {
 
         <div className="relative mt-6 sm:mt-8 md:mt-10">
           {isLoading ? (
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4">
+            <div className="grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-4">
               {Array.from({ length: VISIBLE }).map((_, i) => (
                 <div key={i} className="flex flex-col gap-3 rounded-xl bg-white p-3 shadow-card">
                   <Skeleton className="aspect-square w-full rounded-lg" />
@@ -107,7 +107,7 @@ export function BestSellers() {
             </div>
           ) : services.length ? (
             <>
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4">
+              <div className="grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-4">
                 {services.map((service, i) => (
                   <div
                     key={`${service.slug}-${offset + i}`}

@@ -73,9 +73,16 @@ export default async function ServiceDetailPage({
 
       <div className="mx-auto max-w-site px-4 pb-28 pt-4 sm:pt-0 md:px-8 lg:px-16 lg:pb-24">
         <div className="flex flex-col gap-3 border-b border-border pb-4 sm:gap-4 sm:pb-6">
-          <h1 className="font-sans text-2xl font-bold break-words text-text-primary sm:text-3xl md:text-4xl">
-            {service.title}
-          </h1>
+          <div className="flex items-start justify-between gap-3">
+            <h1 className="font-sans text-2xl font-bold break-words text-text-primary sm:text-3xl md:text-4xl">
+              {service.title}
+            </h1>
+            <ShareButton
+              title={service.title}
+              text={`Check out ${service.title} on Yajman`}
+              url={`/services/${service.category}/${service.slug}`}
+            />
+          </div>
 
           <div className="flex flex-wrap items-center gap-2 sm:gap-3">
             {service.detailTags.length > 0 && (
@@ -84,36 +91,37 @@ export default async function ServiceDetailPage({
               </p>
             )}
             <Badge variant="peach">{service.categoryLabel}</Badge>
+            {service.benefits.map((benefit, i) => (
+              <Badge
+                key={i}
+                variant="light"
+                className="border border-border text-text-muted"
+              >
+                {benefit}
+              </Badge>
+            ))}
           </div>
 
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div className="flex min-w-0 flex-wrap items-center gap-x-4 gap-y-2 text-sm text-text-muted">
-              <ServiceLocationLine
-                address={service.location}
-                categoryLabel={service.categoryLabel}
-                iconSize={16}
-              />
-              <span className="flex items-center gap-1.5">
-                <span className="flex gap-0.5 text-brand-gold-400">
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <Star
-                      key={i}
-                      size={14}
-                      fill={i < service.rating ? "currentColor" : "none"}
-                    />
-                  ))}
-                </span>
-                <span className="whitespace-nowrap">
-                  ({String(service.reviewCount).padStart(2, "0")} Reviews)
-                </span>
-              </span>
-            </div>
-
-            <ShareButton
-              title={service.title}
-              text={`Check out ${service.title} on Yajman`}
-              url={`/services/${service.category}/${service.slug}`}
+          <div className="flex min-w-0 flex-wrap items-center gap-x-4 gap-y-2 text-sm text-text-muted">
+            <ServiceLocationLine
+              address={service.location}
+              categoryLabel={service.categoryLabel}
+              iconSize={16}
             />
+            {/* <span className="flex items-center gap-1.5">
+              <span className="flex gap-0.5 text-brand-gold-400">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <Star
+                    key={i}
+                    size={14}
+                    fill={i < service.rating ? "currentColor" : "none"}
+                  />
+                ))}
+              </span>
+              <span className="whitespace-nowrap">
+                ({String(service.reviewCount).padStart(2, "0")} Reviews)
+              </span>
+            </span> */}
           </div>
         </div>
 

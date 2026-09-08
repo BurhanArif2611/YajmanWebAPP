@@ -17,7 +17,7 @@ export function ServiceLocationLine({
 }) {
   const addressText = address?.trim() ?? "";
   const category = categoryLabel?.trim() ?? "";
-  const displayText = addressText || category;
+  const displayText = addressText;
 
   if (!displayText) return null;
 

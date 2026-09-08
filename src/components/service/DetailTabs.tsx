@@ -3,6 +3,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "@/components/ui/AppImage";
 import { Star } from "lucide-react";
+import Lightbox from "yet-another-react-lightbox";
+import "yet-another-react-lightbox/styles.css";
 import { FaqAccordion } from "@/components/service/FaqAccordion";
 import { cn } from "@/lib/utils";
 import { looksLikeHtml, RICH_TEXT_PROSE_CLASS } from "@/lib/richText";
@@ -107,6 +109,8 @@ export function DetailTabs({
   const [active, setActive] = useState<Tab>(tabs[0] ?? "Key Features");
   const sectionRefs = useRef<Partial<Record<Tab, HTMLDivElement | null>>>({});
   const isClickScrolling = useRef(false);
+  const [photoIndex, setPhotoIndex] = useState(0);
+  const [photoLightboxOpen, setPhotoLightboxOpen] = useState(false);
 
   useEffect(() => {
     if (tabs.length && !tabs.includes(active)) {
@@ -288,7 +292,15 @@ export function DetailTabs({
           </h2>
           <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-5">
             {photos.map((src, i) => (
-              <div key={i} className="relative aspect-square overflow-hidden rounded-xl">
+              <button
+                key={i}
+                type="button"
+                onClick={() => {
+                  setPhotoIndex(i);
+                  setPhotoLightboxOpen(true);
+                }}
+                className="relative aspect-square cursor-pointer overflow-hidden rounded-xl"
+              >
                 <Image
                   src={src}
                   alt={`Pooja photo ${i + 1}`}
@@ -296,9 +308,17 @@ export function DetailTabs({
                   sizes="(max-width: 768px) 50vw, 20vw"
                   className="object-cover"
                 />
-              </div>
+              </button>
             ))}
           </div>
+
+          <Lightbox
+            open={photoLightboxOpen}
+            close={() => setPhotoLightboxOpen(false)}
+            index={photoIndex}
+            slides={photos.map((src) => ({ src }))}
+            on={{ view: ({ index }) => setPhotoIndex(index) }}
+          />
         </div>
       )}
 

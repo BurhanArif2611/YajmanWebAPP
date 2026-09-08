@@ -698,6 +698,9 @@ export type ContactEntry = {
   service_name: string | null;
   category_id?: string | null;
   category_name?: string | null;
+  birth_date?: string | null;
+  birth_time?: string | null;
+  birth_place?: string | null;
   is_read: boolean;
   admin_notes?: string | null;
   assigned_to?: string | null;
@@ -713,6 +716,9 @@ export type ServiceInquiryPayload = {
   phone: string;
   email?: string;
   message?: string;
+  birth_date?: string;
+  birth_time?: string;
+  birth_place?: string;
 };
 
 // ─── Legal pages (Terms, Privacy, Cookies, Disclaimer, Return Policy) ────

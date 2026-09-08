@@ -7,19 +7,19 @@ const STEPS = [
     number: "1",
     title: "Choose Puja",
     description:
-      "Since our journey began, we've inspired countless travelers to explore breathtaking destinations.",
+      "Find your puja on the basis of your requirement (issues, mode of puja (online/offline)).",
   },
   {
     number: "2",
-    title: "Select Time & Date",
+    title: "Assigned Puja Coordinator",
     description:
-      "Since our journey began, we've inspired countless travelers to explore breathtaking destinations.",
+      "After enquiry, Yajman will assign a puja coordinator for your seamless puja execution.",
   },
   {
     number: "3",
-    title: "Book & Pay",
+    title: "Book Puja & Pay",
     description:
-      "Since our journey began, we've inspired countless travelers to explore breathtaking destinations.",
+      "Book your Puja and pay dakshina for confirmation.",
   },
 ];
 
@@ -36,13 +36,25 @@ export function InstantBookingSection() {
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-16">
         <div className="grid grid-cols-2 gap-3 sm:gap-4">
           {/* Desktop: who-we-are card; mobile: first image */}
-          <div className="hidden flex-col justify-between rounded-2xl bg-surface-muted p-6 sm:flex">
-            <span className="text-sm font-semibold uppercase tracking-wide text-brand-saffron-400">
+          <div className="hidden flex-col justify-between rounded-2xl bg-surface-muted sm:flex">
+            {/* <span className="text-sm font-semibold uppercase tracking-wide text-brand-saffron-400">
               Who we are
-            </span>
-            <p className="mt-8 font-sans text-lg font-semibold leading-snug text-text-primary">
-              Lorem Ipsum is simply dummy text of the printing and typesetting
-            </p>
+            </span> */}
+              <div className="relative aspect-[3/4]   overflow-hidden rounded-2xl bg-[#fc400e] sm:aspect-auto sm:min-h-[200px] bg[url]" >
+            {/* <Image
+              src="/images/misc/home-book.jpg"
+              alt=""
+              width={500}
+              height={500}
+              // fill
+              // sizes="(max-width: 1024px) 50vw, 25vw"
+              className="object-cover h-full w-full"
+            /> */}
+            <img src="/images/misc/home-book.jpg" alt="" className="object-cover h-full w-full" />
+            </div>
+            {/* <p className="mt-8 font-sans text-lg font-semibold leading-snug text-text-primary">
+              Connecting devotees to verified temples and pandits across India
+            </p> */}
           </div>
 
           <div className="relative aspect-[3/4] overflow-hidden rounded-2xl bg-[#fc400e] sm:aspect-auto sm:min-h-[200px]">
@@ -53,7 +65,7 @@ export function InstantBookingSection() {
               sizes="(max-width: 1024px) 50vw, 25vw"
               className="object-cover"
             />
-            <div className="relative flex items-start gap-1 p-4 sm:p-6">
+            {/* <div className="relative flex items-start gap-1 p-4 sm:p-6">
               <div className="flex flex-col text-[10px] font-bold uppercase leading-tight text-white sm:text-xs">
                 <span>Get</span>
                 <span>Up</span>
@@ -66,7 +78,7 @@ export function InstantBookingSection() {
             </div>
             <span className="relative block px-4 pb-4 font-sans text-base font-semibold text-white sm:mt-2 sm:px-6 sm:pb-6 sm:text-lg">
               Off
-            </span>
+            </span> */}
           </div>
 
           {/* Mobile: second image beside promo; desktop: full-width under both */}
@@ -90,10 +102,7 @@ export function InstantBookingSection() {
               Instant Booking
             </h2>
             <p className="mt-3 text-sm text-text-muted sm:mt-4 sm:text-base">
-              Lorem Ipsum is simply dummy text of the printing and typesetting
-              industry. Lorem Ipsum has been the industry&apos;s standard dummy
-              text ever since 1966, when designers at Letraset and James
-              Mosley, the librarian at St Bride Printing Library in London
+              Experience a ride of instant booking in minutes through us.
             </p>
           </div>
 

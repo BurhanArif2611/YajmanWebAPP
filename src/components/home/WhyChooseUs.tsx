@@ -5,27 +5,25 @@ import { TopoDoodle } from "@/components/ui/TopoDoodle";
 const STEPS = [
   {
     number: "01",
-    title: "Choose Your Service",
-    description:
-      "Choose from our wide range of pujas, thaals or bhajan services.",
+    title: "Hybrid Online-Offline Model",
+    description: "Seamless digital + physical execution.",
   },
   {
     number: "02",
-    title: "Book Date & Venue",
+    title: "Personalised Puja Execution",
     description:
-      "Select a convenient auspicious time and specify your venue.",
+      "Tailored rituals for every devotee with puja coordination.",
   },
   {
     number: "03",
-    title: "Pandit Ji Arrives",
-    description:
-      "Our verified, learned Pandit Ji arrives with all the necessary ritual materials.",
+    title: "End-to-End Ayojans",
+    description: "Complete management of devotional events.",
   },
   {
     number: "04",
-    title: "Receive Aashirwad",
+    title: "Samiti Verified Pandits and Artists",
     description:
-      "Complete the rituals peacefully and receive divine blessings and Aashirwad.",
+      "Trusted networks of experienced pandits and artists.",
   },
 ];
 
