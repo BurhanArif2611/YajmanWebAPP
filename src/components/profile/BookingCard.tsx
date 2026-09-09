@@ -34,7 +34,8 @@ export function BookingCard({ booking }: { booking: Booking }) {
             <span className="flex items-center gap-1.5">
               <Calendar size={13} className="shrink-0 text-brand-saffron-400" />
               <span>
-                {format(datetime, "EEE, d MMM yyyy")} · {format(datetime, "h:mm a")}
+                {format(datetime, "EEE, d MMM yyyy")}
+                {booking.requires_booking_time ? ` · ${format(datetime, "h:mm a")}` : ""}
               </span>
             </span>
             <span className="flex items-start gap-1.5">

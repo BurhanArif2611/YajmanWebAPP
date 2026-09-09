@@ -15,7 +15,7 @@ export function AssignmentDetailView({ assignment }: { assignment: PanditAssignm
   const router = useRouter();
   const [modal, setModal] = useState<"accept" | "reject" | "withdraw" | null>(null);
 
-  const datetime = parseISO(`${assignment.booking_date}T${assignment.booking_time}`);
+  const datetime = parseISO(assignment.booking_datetime);
   const respondByPassed = assignment.respond_by ? isPast(parseISO(assignment.respond_by)) : false;
 
   const canAccept = assignment.status === "pending" && !respondByPassed;
@@ -51,10 +51,12 @@ export function AssignmentDetailView({ assignment }: { assignment: PanditAssignm
             {format(datetime, "d")}
           </p>
           <p className="text-base font-medium text-text-muted">{format(datetime, "MMM yyyy")}</p>
-          <p className="flex items-center gap-1.5 text-sm text-text-muted">
-            <Clock size={14} />
-            {format(datetime, "h:mm a")}
-          </p>
+          {assignment.requires_booking_time && (
+            <p className="flex items-center gap-1.5 text-sm text-text-muted">
+              <Clock size={14} />
+              {format(datetime, "h:mm a")}
+            </p>
+          )}
         </div>
       </div>
 

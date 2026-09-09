@@ -389,7 +389,10 @@ export type Booking = {
   gotra?: string | null;
   gotra_unknown: boolean;
   booking_date: string;
-  booking_time: string;
+  /** Null for date-only bookings (no real customer-chosen time slot). */
+  booking_time: string | null;
+  /** Mirrors booking_time === null — kept for convenience/clarity in the UI. */
+  requires_booking_time?: boolean;
   booking_datetime: string;
   address?: string | null;
   city?: string | null;
@@ -499,7 +502,13 @@ export type PanditAssignment = {
   booking_id: string;
   order_number: string;
   booking_date: string;
-  booking_time: string;
+  /** Null for date-only bookings (no real customer-chosen time slot). */
+  booking_time: string | null;
+  /** Mirrors booking_time === null — kept for convenience/clarity in the UI. */
+  requires_booking_time?: boolean;
+  /** Always a real instant (anchored internally even when booking_time is
+   * null) — parse this, not `${booking_date}T${booking_time}`. */
+  booking_datetime: string;
   customer_name: string;
   address?: string | null;
   city?: string | null;

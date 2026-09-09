@@ -5,7 +5,7 @@ import { AssignmentStatusBadge } from "@/components/profile/AssignmentStatusBadg
 import type { PanditAssignment } from "@/types/api";
 
 export function AssignmentCard({ assignment }: { assignment: PanditAssignment }) {
-  const datetime = parseISO(`${assignment.booking_date}T${assignment.booking_time}`);
+  const datetime = parseISO(assignment.booking_datetime);
   const location = [assignment.address, assignment.city].filter(Boolean).join(", ") || "Address not provided";
 
   return (
@@ -18,7 +18,8 @@ export function AssignmentCard({ assignment }: { assignment: PanditAssignment })
         <div className="mt-1.5 flex flex-col gap-1.5 text-xs text-text-muted sm:mt-1 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4">
           <span className="flex items-center gap-1.5">
             <Calendar size={13} className="shrink-0 text-brand-saffron-400" />
-            {format(datetime, "EEE, d MMM yyyy")} · {format(datetime, "h:mm a")}
+            {format(datetime, "EEE, d MMM yyyy")}
+            {assignment.requires_booking_time ? ` · ${format(datetime, "h:mm a")}` : ""}
           </span>
           <span className="flex min-w-0 items-start gap-1.5">
             <MapPin size={13} className="mt-0.5 shrink-0 text-brand-saffron-400" />

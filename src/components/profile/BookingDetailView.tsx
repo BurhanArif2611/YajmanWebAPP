@@ -95,10 +95,12 @@ export function BookingDetailView({ booking }: { booking: BookingDetail }) {
             <p className="text-sm font-medium text-text-muted sm:text-base">
               {format(datetime, "MMM yyyy")}
             </p>
-            <p className="mt-0.5 flex items-center justify-end gap-1.5 text-sm text-text-muted">
-              <Clock size={14} />
-              {format(datetime, "h:mm a")}
-            </p>
+            {booking.requires_booking_time && (
+              <p className="mt-0.5 flex items-center justify-end gap-1.5 text-sm text-text-muted">
+                <Clock size={14} />
+                {format(datetime, "h:mm a")}
+              </p>
+            )}
           </div>
         </div>
       </div>
@@ -215,7 +217,9 @@ export function BookingDetailView({ booking }: { booking: BookingDetail }) {
           <div className="mt-3 flex flex-col gap-3 text-sm">
             <Row label="Booking ID" value={booking.order_number} />
             <Row label="Date" value={format(datetime, "EEE, d MMM yyyy")} />
-            <Row label="Time" value={format(datetime, "h:mm a")} />
+            {booking.requires_booking_time && (
+              <Row label="Time" value={format(datetime, "h:mm a")} />
+            )}
             <Row
               label="Address"
               value={
