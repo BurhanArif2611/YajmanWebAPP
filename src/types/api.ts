@@ -140,6 +140,8 @@ export type PopularSearch = {
   row_number: number;
   is_active: boolean;
   created_at: string;
+  /** true when this search has a curated service list — route to /services?popular={id} instead of link_url */
+  has_curated_services: boolean;
 };
 
 export type Tag = {
@@ -235,6 +237,7 @@ export type Service = {
   available_dates?: string[];
   category_name: string;
   category_slug: string;
+  requires_payment: boolean;
   created_at: string;
   updated_at: string;
 };
@@ -459,6 +462,7 @@ export type BookingDetail = Booking & {
   payment: BookingPayment | null;
   review: BookingReview | null;
   service_duration_minutes?: number | null;
+  preferences?: string[];
 };
 
 export type BookingInvoice = {
@@ -526,6 +530,7 @@ export type PanditAssignmentDetail = PanditAssignment & {
   customer_phone: string;
   pincode?: string | null;
   total_amount: string;
+  preferences?: string[];
 };
 
 // ─── Checkout / Payment ──────────────────────────────────────────
@@ -551,6 +556,7 @@ export type CreateOrderPayload = {
   birth_date?: string;
   birth_time?: string;
   birth_place?: string;
+  preferences?: string[];
 };
 
 export type RazorpayOrderInfo = {

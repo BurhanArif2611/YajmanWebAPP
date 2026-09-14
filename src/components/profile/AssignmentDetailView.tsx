@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/Button";
 import { AssignmentStatusBadge } from "@/components/profile/AssignmentStatusBadge";
 import { AssignmentActionModal } from "@/components/profile/AssignmentActionModal";
 import { formatPrice } from "@/lib/utils";
+import { bookingPreferenceLabel } from "@/lib/bookingPreferences";
 import type { PanditAssignmentDetail } from "@/types/api";
 
 export function AssignmentDetailView({ assignment }: { assignment: PanditAssignmentDetail }) {
@@ -74,6 +75,22 @@ export function AssignmentDetailView({ assignment }: { assignment: PanditAssignm
             }
           />
         </div>
+
+        {Boolean(assignment.preferences?.length) && (
+          <div className="mt-6 border-t border-border pt-6">
+            <h3 className="font-sans text-lg font-bold text-text-primary">Customer Preferences</h3>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {assignment.preferences!.map((key) => (
+                <span
+                  key={key}
+                  className="rounded-full bg-surface-peach px-3 py-1 text-xs font-medium text-text-primary"
+                >
+                  {bookingPreferenceLabel(key)}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
 
         <div className="mt-6 flex items-center justify-between border-t border-border pt-6">
           <span className="font-sans text-base font-bold text-text-primary">Total Amount</span>

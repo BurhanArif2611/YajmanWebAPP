@@ -40,6 +40,8 @@ export type MockService = {
   slug: string;
   category: string;
   categoryLabel: string;
+  /** Only set for live API services. Non-payment services route to /articles/{slug} instead of /services/{category}/{slug}. */
+  requiresPayment?: boolean;
   title: string;
   location: string;
   /** Only set for live API services. */

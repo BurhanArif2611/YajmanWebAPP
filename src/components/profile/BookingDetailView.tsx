@@ -14,6 +14,7 @@ import { getBookingInvoice } from "@/lib/api/bookings";
 import { resolveImageUrl } from "@/lib/mappers/service";
 import { formatPrice } from "@/lib/utils";
 import { ApiError } from "@/lib/apiError";
+import { bookingPreferenceLabel } from "@/lib/bookingPreferences";
 import type { BookingDetail } from "@/types/api";
 
 const CANCELLABLE_STATUSES = new Set(["pending", "confirmed", "pandit_assigned", "in_progress"]);
@@ -128,6 +129,19 @@ export function BookingDetailView({ booking }: { booking: BookingDetail }) {
             Gotra: {booking.gotra_unknown ? "Not known" : booking.gotra || "Not provided"}
           </span>
         </div>
+
+        {Boolean(booking.preferences?.length) && (
+          <div className="mt-4 flex flex-wrap gap-2">
+            {booking.preferences!.map((key) => (
+              <span
+                key={key}
+                className="rounded-full bg-surface-peach px-3 py-1 text-xs font-medium text-text-primary"
+              >
+                {bookingPreferenceLabel(key)}
+              </span>
+            ))}
+          </div>
+        )}
 
         {booking.pandit && (
           <div className="mt-6 flex flex-col gap-3 border-t border-border pt-6 sm:flex-row sm:items-center sm:justify-between sm:gap-4">

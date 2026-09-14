@@ -4,6 +4,7 @@ import { SortBar } from "@/components/service/SortBar";
 import { ServiceCard } from "@/components/service/ServiceCard";
 import { Pagination } from "@/components/ui/Pagination";
 import { getServices } from "@/lib/api/services";
+import { getPopularSearchServices } from "@/lib/api/popularSearches";
 import { mapServiceToCard } from "@/lib/mappers/service";
 import type { ServiceSortOption } from "@/types/api";
 
@@ -28,6 +29,7 @@ export default async function ServicesPage({
   const maxPrice = first(params.max_price);
   const rating = first(params.rating);
   const sort = first(params.sort) as ServiceSortOption | undefined;
+  const popular = first(params.popular);
 
   let services: ReturnType<typeof mapServiceToCard>[] = [];
   let pageCount = 1;
@@ -35,34 +37,41 @@ export default async function ServicesPage({
   let loadError = false;
 
   try {
-    const result = await getServices({
-      page,
-      limit: PAGE_SIZE,
-      search,
-      category,
-      type,
-      min_price: minPrice ? Number(minPrice) : undefined,
-      max_price: maxPrice ? Number(maxPrice) : undefined,
-      rating: rating ? Number(rating) : undefined,
-      sort,
-      requires_payment: true,
-    });
+    if (popular) {
+      // Curated set from a popular-search chip — flat list, no pagination/filters.
+      const result = await getPopularSearchServices(popular);
+      services = result.map(mapServiceToCard);
+      total = services.length;
+    } else {
+      const result = await getServices({
+        page,
+        limit: PAGE_SIZE,
+        search,
+        category,
+        type,
+        min_price: minPrice ? Number(minPrice) : undefined,
+        max_price: maxPrice ? Number(maxPrice) : undefined,
+        rating: rating ? Number(rating) : undefined,
+        sort,
+        requires_payment: true,
+      });
 
-    services = result.data.map(mapServiceToCard);
-    pageCount = result.pagination?.total_pages ?? 1;
-    total = result.pagination?.total ?? result.data.length;
+      services = result.data.map(mapServiceToCard);
+      pageCount = result.pagination?.total_pages ?? 1;
+      total = result.pagination?.total ?? result.data.length;
+    }
   } catch {
     loadError = true;
   }
 
   return (
     <>
-      <ServicesHero title="Our Services" showMobileFilters />
+      <ServicesHero title="Our Services" showMobileFilters={!popular} />
 
       <div className="relative z-10 bg-white pt-2 sm:-mt-8 sm:rounded-t-[32px] sm:pt-10 md:-mt-10">
         <div className="mx-auto max-w-site px-4 pb-16 md:px-8 md:pb-20 lg:px-16 lg:pb-24">
-          <div className="grid grid-cols-1 gap-4 lg:grid-cols-[280px_1fr] lg:gap-8">
-            <FilterSidebar />
+          <div className={popular ? "" : "grid grid-cols-1 gap-4 lg:grid-cols-[280px_1fr] lg:gap-8"}>
+            {!popular && <FilterSidebar />}
 
             <div>
               <SortBar resultCount={services.length} total={total} />
@@ -79,7 +88,7 @@ export default async function ServicesPage({
                     ))}
                   </div>
 
-                  <Pagination pageCount={pageCount} />
+                  {!popular && <Pagination pageCount={pageCount} />}
                 </>
               ) : (
                 <p className="mt-8 text-center text-text-muted">No services found.</p>

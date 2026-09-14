@@ -7,6 +7,7 @@ import { CalendarX2 } from "lucide-react";
 import Image from "@/components/ui/AppImage";
 import { Button } from "@/components/ui/Button";
 import { DatePickerField } from "@/components/service/DatePickerField";
+import { Checkbox } from "@/components/ui/Checkbox";
 import {
   BOOKING_UNAVAILABLE_MESSAGE,
   getBookingDateConstraints,
@@ -15,6 +16,7 @@ import {
 } from "@/lib/bookingDates";
 import { hasDiscount } from "@/lib/utils";
 import { looksLikeHtml, RICH_TEXT_PROSE_CLASS } from "@/lib/richText";
+import { BOOKING_PREFERENCES, BOOKING_PREFERENCES_STORAGE_KEY } from "@/lib/bookingPreferences";
 import type { MockService } from "@/lib/constants";
 
 export function BookingWidget({
@@ -29,6 +31,13 @@ export function BookingWidget({
   const router = useRouter();
   const [date, setDate] = useState<Date | undefined>();
   const [dateError, setDateError] = useState(false);
+  const [preferences, setPreferences] = useState<string[]>([]);
+
+  const togglePreference = (key: string) => {
+    setPreferences((prev) =>
+      prev.includes(key) ? prev.filter((p) => p !== key) : [...prev, key]
+    );
+  };
 
   const bookingUnavailable = isBookingUnavailable(bookingAvailability);
   const { minDate, maxDate, fixedDates } = getBookingDateConstraints(bookingAvailability);
@@ -44,6 +53,11 @@ export function BookingWidget({
     if (!date) {
       setDateError(true);
       return;
+    }
+    try {
+      sessionStorage.setItem(BOOKING_PREFERENCES_STORAGE_KEY, JSON.stringify(preferences));
+    } catch {
+      // sessionStorage unavailable (private mode etc.) — checkout just won't prefill preferences
     }
     router.push(`/checkout?slug=${service.slug}&date=${format(date, "yyyy-MM-dd")}`);
   };
@@ -113,6 +127,22 @@ export function BookingWidget({
               )}
             </div>
 
+            <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-3">
+              {BOOKING_PREFERENCES.map((pref) => (
+                <div
+                  key={pref.key}
+                  className="flex items-center rounded-xl border border-border bg-white px-3 py-2.5 transition-colors hover:border-brand-saffron-300"
+                >
+                  <Checkbox
+                    checked={preferences.includes(pref.key)}
+                    onChange={() => togglePreference(pref.key)}
+                    label={pref.label}
+                    containerClassName="gap-2 text-sm font-medium"
+                  />
+                </div>
+              ))}
+            </div>
+
             <Button
               size="lg"
               className="mt-4 w-full justify-center rounded-full"
@@ -131,16 +161,6 @@ export function BookingWidget({
       </div>
 
       <div className="flex flex-col items-center gap-2 rounded-2xl bg-surface-peach p-4 text-center sm:p-6">
-        <div className="relative h-12 w-12 overflow-hidden rounded-full bg-white shadow-card">
-          <Image
-            src="/images/logo/logo.svg"
-            alt="Yajman"
-            fill
-            sizes="48px"
-            className="object-contain p-1.5"
-          />
-        </div>
-        <p className="font-sans text-lg font-semibold text-text-primary">Yajman Support</p>
         <p className="text-sm text-text-muted">Need help? Talk to an expert.</p>
         <a
           href="https://wa.me/918109181057"

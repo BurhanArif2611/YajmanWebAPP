@@ -24,35 +24,30 @@ type Tab = (typeof TABS)[number];
 const STATIC_REVIEWS = [
   {
     id: "r1",
-    name: "Aarti Sharma",
-    date: "18 January, 2026",
+    name: "AmoL MeshraM",
+    date: "07 September, 2026",
     avatar: "/images/testimonials/avatar-1.png",
-    rating: "9.6 Super",
-    text: "Booked this puja for my father's first barsi while we were living in Dubai. The pandit ji called a day before to confirm our names and gotra, sent the live video link exactly on time, and did the complete sankalp in our name. The prasad and tirth reached us within a week. It genuinely felt like we were sitting in the temple back home.",
+    rating: "5.0",
+    title: "Baglamukhi Hawan",
+    text: "June 2026 mein maine Yajman App ke through Baglamukhi Hawan karwaya tha. Overall experience bahut hi achha raha. Pandit ji bahut knowledgeable aur achhe se vidhi karwane wale the. Puri process smooth aur hassle-free rahi. Yajman App ke through ye spiritual experience kaafi convenient aur satisfying raha. Highly recommended!",
   },
   {
     id: "r2",
-    name: "Rajesh Iyer",
-    date: "27 December, 2025",
+    name: "Sumriddhi Rao",
+    date: "23 August, 2026",
     avatar: "/images/testimonials/avatar-2.png",
-    rating: "9.3 Excellent",
-    text: "What I liked most is the transparency. You can see the temple, the assigned pandit's details and the muhurat before making any payment. The ritual was performed at the exact time slot shown on the site, and I received the photos and the full recording the same evening. No repeated calls asking for extra donations.",
+    rating: "5.0",
+    title: "Panchamrit Rudrabhishek Puja",
+    text: "Booked Panchamrit Rudrabhishek Puja at Omkareshwar Kshetra. Even during peak Sawan season (20th Aug 2026) the Puja was seamless. Pandit ji coordinated well and assisted for Mandir darshan and later Rudrabhishek was done. All samagri were ready in advance. Overall experience was satisfactory.",
   },
   {
     id: "r3",
-    name: "Sneha Kulkarni",
-    date: "09 November, 2025",
+    name: "Kaushambi Shanker",
+    date: "31 August, 2026",
     avatar: "/images/testimonials/avatar-3.png",
-    rating: "9.1 Excellent",
-    text: "Arranged a Satyanarayan puja at home through Yajman. The pandit arrived on time with all the samagri, explained every step in Marathi so my mother-in-law could follow along, and wrapped up within the duration mentioned during booking. Paying and choosing the date on the website was very simple.",
-  },
-  {
-    id: "r4",
-    name: "Vikram Nair",
-    date: "03 October, 2025",
-    avatar: "/images/testimonials/avatar-1.png",
-    rating: "9.8 Super",
-    text: "I first took the astrology consultation and then booked a Navagraha Shanti puja based on that report. Clear pricing, a verified pandit, and the team kept me updated on WhatsApp at every stage — sankalp, aarti and completion. Prasad along with a small kalash came by courier. Booking our Diwali Lakshmi puja here next.",
+    rating: "5.0",
+    title: "Omkareshwar Darshan & Puja",
+    text: "Amazing experience! Our visit and darshan organized by them was truly a once-in-a-lifetime memory. Even during the peak Sawan month, my family enjoyed a smooth visit, a wonderful trip, and a blessed puja experience at the Omkareshwar temple. Highly recommended!",
   },
 ] as const;
 
@@ -288,7 +283,7 @@ export function DetailTabs({
           className="scroll-mt-36 sm:scroll-mt-40"
         >
           <h2 className="font-sans text-xl font-semibold text-text-primary sm:text-2xl">
-            Pooja Photos
+            Puja Photos
           </h2>
           <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-5">
             {photos.map((src, i) => (
@@ -303,7 +298,7 @@ export function DetailTabs({
               >
                 <Image
                   src={src}
-                  alt={`Pooja photo ${i + 1}`}
+                  alt={`Puja photo ${i + 1}`}
                   fill
                   sizes="(max-width: 768px) 50vw, 20vw"
                   className="object-cover"
@@ -357,6 +352,11 @@ export function DetailTabs({
                 <Star size={14} fill="currentColor" strokeWidth={0} />
                 {review.rating}
               </p>
+              {review.title && (
+                <p className="font-sans text-sm font-semibold text-text-primary">
+                  {review.title}
+                </p>
+              )}
               <p className="text-sm text-text-muted">{review.text}</p>
             </div>
           ))}

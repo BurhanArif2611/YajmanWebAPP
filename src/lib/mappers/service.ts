@@ -25,6 +25,7 @@ export function mapServiceToCard(service: Service): MockService {
     slug: service.slug,
     category: service.category_slug,
     categoryLabel: service.category_name,
+    requiresPayment: service.requires_payment,
     title: service.title,
     location: formatServiceAddress(service),
     shortDescription: service.short_description ?? undefined,

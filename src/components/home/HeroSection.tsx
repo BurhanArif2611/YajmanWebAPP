@@ -11,10 +11,16 @@ import { getTypes } from "@/lib/api/catalog";
 import { getPopularSearches } from "@/lib/api/popularSearches";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { cn } from "@/lib/utils";
-import type { Type } from "@/types/api";
+import type { PopularSearch, Type } from "@/types/api";
 
 const POPULAR_SEARCH_ROW = 1;
 const SLIDE_INTERVAL = 6000;
+
+/** Curated searches (health, festivals, etc.) route to a dedicated results
+ * page instead of the generic search/category link_url. */
+function popularSearchHref(item: PopularSearch) {
+  return item.has_curated_services ? `/services?popular=${item.id}` : item.link_url;
+}
 
 function TypesStrip({ types, isLoading }: { types: Type[]; isLoading: boolean }) {
   const [emblaRef, emblaApi] = useEmblaCarousel({
@@ -238,7 +244,7 @@ export function HeroSection() {
                 {popularSearches.map((item) => (
                   <Link
                     key={item.id}
-                    href={item.link_url}
+                    href={popularSearchHref(item)}
                     className="rounded-full border border-brand-saffron-200 bg-white px-4 py-1.5 text-sm font-medium text-brand-saffron-500 shadow-sm transition-colors hover:border-brand-saffron-400 hover:bg-brand-saffron-400 hover:text-white"
                   >
                     {item.label}
@@ -274,7 +280,7 @@ export function HeroSection() {
           {popularSearches.map((item) => (
             <Link
               key={item.id}
-              href={item.link_url}
+              href={popularSearchHref(item)}
               className="rounded-full border border-brand-saffron-200 bg-white px-4 py-1.5 text-sm font-medium text-brand-saffron-500 shadow-sm transition-colors hover:border-brand-saffron-400 hover:bg-brand-saffron-400 hover:text-white"
             >
               {item.label}

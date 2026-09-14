@@ -13,8 +13,16 @@ export function ServiceCard({ service }: { service: MockService }) {
     service.discountPercent
   );
 
+  const href =
+    service.requiresPayment === false
+      ? `/articles/${service.slug}`
+      : `/services/${service.category}/${service.slug}`;
+
   return (
-    <div className="group flex flex-col overflow-hidden rounded-xl bg-white shadow-card transition-shadow duration-300 hover:shadow-card-hover">
+    <Link
+      href={href}
+      className="group flex flex-col overflow-hidden rounded-xl bg-white shadow-card transition-shadow duration-300 hover:shadow-card-hover"
+    >
       <div className="relative aspect-square w-full overflow-hidden">
         <Image
           src={service.image}
@@ -68,15 +76,12 @@ export function ServiceCard({ service }: { service: MockService }) {
           )}
         </div>
 
-        <Link
-          href={`/services/${service.category}/${service.slug}`}
-          className="mt-1 inline-flex min-h-[38px] items-center justify-center gap-1.5 rounded-full bg-brand-navy px-3 py-2 text-xs font-medium text-white transition-colors duration-200 hover:bg-brand-navy-800 sm:min-h-[44px] sm:gap-2 sm:px-5 sm:py-3 sm:text-sm"
-        >
+        <span className="mt-1 inline-flex min-h-[38px] items-center justify-center gap-1.5 rounded-full bg-brand-navy px-3 py-2 text-xs font-medium text-white transition-colors duration-200 group-hover:bg-brand-navy-800 sm:min-h-[44px] sm:gap-2 sm:px-5 sm:py-3 sm:text-sm">
           Book Now <ArrowRight size={14} className="sm:hidden" />
           <ArrowRight size={16} className="hidden sm:block" />
-        </Link>
+        </span>
       </div>
-    </div>
+    </Link>
   );
 }
 

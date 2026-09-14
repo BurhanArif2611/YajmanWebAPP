@@ -84,7 +84,7 @@ export function InstantBookingSection() {
           {/* Mobile: second image beside promo; desktop: full-width under both */}
           <div className="relative aspect-[3/4] overflow-hidden rounded-2xl sm:col-span-2 sm:aspect-auto sm:h-[400px]">
             <Image
-              src="/images/blog/blog-sidebar-3.png"
+              src="/images/misc/home-book-1.png"
               alt="Puja samagri and sacred texts"
               fill
               sizes="(max-width: 1024px) 50vw, 50vw"

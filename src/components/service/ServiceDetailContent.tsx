@@ -33,7 +33,7 @@ function buildSections({
   };
 
   add("short_description", "Overview", shortDescription);
-  add("about_puja", "About this Puja", aboutPuja);
+  // add("about_puja", "About this Puja", aboutPuja);
   add("description", "Description", description);
   add("custom_content", "Additional Details", customContent);
 

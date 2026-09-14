@@ -18,6 +18,7 @@ import { loadRazorpayScript } from "@/lib/razorpay";
 import { useAuth } from "@/hooks/useAuth";
 import { ApiError } from "@/lib/apiError";
 import { BOOKING_UNAVAILABLE_MESSAGE } from "@/lib/bookingDates";
+import { BOOKING_PREFERENCES_STORAGE_KEY } from "@/lib/bookingPreferences";
 import { resolveImageUrl } from "@/lib/mappers/service";
 import type { MockService } from "@/lib/constants";
 import type { Coupon, ServiceAddon } from "@/types/api";
@@ -45,6 +46,15 @@ const TIME_SLOTS = [
 
 function digitsOnly(phone: string) {
   return phone.replace(/\D/g, "").slice(-10);
+}
+
+function readStoredPreferences(): string[] {
+  try {
+    const raw = sessionStorage.getItem(BOOKING_PREFERENCES_STORAGE_KEY);
+    return raw ? (JSON.parse(raw) as string[]) : [];
+  } catch {
+    return [];
+  }
 }
 
 type PendingCoupon = {
@@ -224,7 +234,13 @@ export function OrderSummary({
         city: requiresPandit ? bookingInfo.city.trim() || undefined : undefined,
         pincode: requiresPandit ? bookingInfo.pincode.trim() || undefined : undefined,
         special_instructions: bookingInfo.specialInstructions.trim() || undefined,
+        preferences: readStoredPreferences(),
       });
+      try {
+        sessionStorage.removeItem(BOOKING_PREFERENCES_STORAGE_KEY);
+      } catch {
+        // ignore
+      }
 
       if (result.payment_required && result.razorpay) {
         const loaded = await loadRazorpayScript();
