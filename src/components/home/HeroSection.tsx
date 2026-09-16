@@ -98,7 +98,7 @@ function TypesStrip({ types, isLoading }: { types: Type[]; isLoading: boolean })
             return (
               <div
                 key={type.id}
-                className="min-w-0 shrink-0 grow-0 basis-[84px] px-2 sm:basis-[104px] sm:px-3 md:basis-[120px] md:px-4"
+                className="min-w-0 shrink-0 grow-0 basis-[76px] px-1.5 sm:basis-[104px] sm:px-3 md:basis-[120px] md:px-4"
               >
                 <Link
                   href={`/services?type=${type.id}`}
@@ -115,7 +115,7 @@ function TypesStrip({ types, isLoading }: { types: Type[]; isLoading: boolean })
                       />
                     ) : null}
                   </span>
-                  <span className="line-clamp-1 w-full text-xs font-semibold leading-tight text-text-secondary sm:text-sm">
+                  <span className="line-clamp-2 w-full text-[11px] font-semibold leading-tight text-text-secondary sm:text-sm">
                     {type.name}
                   </span>
                 </Link>
@@ -183,7 +183,7 @@ export function HeroSection() {
 
   return (
     <>
-    <section className={`relative aspect-[3/4] bg-surface-peach sm:aspect-auto ${showTypes ? "pb-20 sm:pb-24" : ""}`}>
+    <section className="relative aspect-[3/4] bg-surface-peach sm:aspect-auto">
       {bannersQuery.isLoading ? (
         <Skeleton className="absolute inset-0 rounded-none" />
       ) : (
@@ -256,32 +256,33 @@ export function HeroSection() {
         </div>
       </div>
 
-      {showTypes && (
-        <div className="absolute bottom-0 left-1/2 z-30 w-[calc(100%-2rem)] max-w-site -translate-x-1/2 translate-y-1/2 sm:w-[90%] lg:w-[75%]">
-          <div className="w-full rounded-2xl bg-white px-2 py-3 shadow-card-hover sm:px-3 sm:py-4 md:px-4 md:py-6">
-            <TypesStrip types={types} isLoading={typesQuery.isLoading} />
-          </div>
-        </div>
-      )}
     </section>
 
+    {showTypes && (
+      <div className="relative z-30 px-4 -mt-9 sm:-mt-11 md:-mt-14 md:px-8 lg:px-16">
+        <div className="mx-auto w-full max-w-site rounded-2xl bg-white px-2 py-3 shadow-card-hover sm:w-[90%] sm:px-3 sm:py-4 md:px-4 md:py-6 lg:w-[75%]">
+          <TypesStrip types={types} isLoading={typesQuery.isLoading} />
+        </div>
+      </div>
+    )}
+
     {popularSearchesQuery.isLoading ? (
-      <div className="flex flex-wrap items-center gap-2 px-4 pt-4 sm:hidden">
+      <div className="flex flex-wrap items-center gap-2 px-4 pt-6 sm:hidden">
         {Array.from({ length: 4 }).map((_, i) => (
           <Skeleton key={i} className="h-7 w-28 rounded-full" />
         ))}
       </div>
     ) : (
       popularSearches.length > 0 && (
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-2 px-4 pt-4 text-sm sm:hidden">
-          <span className="text-sm font-medium text-text-muted">
-            Popular Search :
+        <div className="flex items-center gap-2 overflow-x-auto px-4 pt-6 text-sm [-ms-overflow-style:none] [scrollbar-width:none] sm:hidden [&::-webkit-scrollbar]:hidden">
+          <span className="shrink-0 text-sm font-medium text-text-muted">
+            Popular :
           </span>
           {popularSearches.map((item) => (
             <Link
               key={item.id}
               href={popularSearchHref(item)}
-              className="rounded-full border border-brand-saffron-200 bg-white px-4 py-1.5 text-sm font-medium text-brand-saffron-500 shadow-sm transition-colors hover:border-brand-saffron-400 hover:bg-brand-saffron-400 hover:text-white"
+              className="shrink-0 rounded-full border border-brand-saffron-200 bg-white px-4 py-1.5 text-sm font-medium text-brand-saffron-500 shadow-sm transition-colors hover:border-brand-saffron-400 hover:bg-brand-saffron-400 hover:text-white"
             >
               {item.label}
             </Link>
