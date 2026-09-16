@@ -13,6 +13,7 @@ export type BookingPreferenceKey = (typeof BOOKING_PREFERENCES)[number]["key"];
 /** sessionStorage key BookingWidget writes to on "Book Now" and the checkout
  * flow reads from — one-shot handoff between the service page and /checkout. */
 export const BOOKING_PREFERENCES_STORAGE_KEY = "yajman:booking-preferences";
+export const BOOKING_QUANTITY_STORAGE_KEY = "yajman:booking-quantity";
 
 export function bookingPreferenceLabel(key: string): string {
   return BOOKING_PREFERENCES.find((p) => p.key === key)?.label ?? key;

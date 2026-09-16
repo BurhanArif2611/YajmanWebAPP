@@ -99,6 +99,7 @@ export type Category = {
   id: string;
   name: string;
   slug: string;
+  description?: string | null;
   image_url?: string | null;
   is_active: boolean;
   /** Website sort position — GET /categories already returns them sorted by this, then name. */
@@ -238,6 +239,8 @@ export type Service = {
   category_name: string;
   category_slug: string;
   requires_payment: boolean;
+  allow_quantity?: boolean;
+  max_quantity?: number;
   created_at: string;
   updated_at: string;
 };
@@ -339,7 +342,6 @@ export type Coupon = {
   per_user_limit?: number | null;
   valid_from: string;
   valid_until: string;
-  applicable_categories: string[];
   applicable_services: string[];
 };
 
@@ -405,6 +407,8 @@ export type Booking = {
   longitude?: number | null;
   /** Decimal fields — pg returns these as strings. Number() before math/display. */
   base_price: string;
+  quantity?: number | string;
+  unit_price?: string | number;
   discount_amount: string;
   convenience_fee: string;
   total_amount: string;
@@ -530,6 +534,7 @@ export type PanditAssignmentDetail = PanditAssignment & {
   customer_phone: string;
   pincode?: string | null;
   total_amount: string;
+  quantity?: number | string;
   preferences?: string[];
 };
 
@@ -545,6 +550,7 @@ export type CreateOrderPayload = {
   customer_calling_number?: string;
   customer_email?: string;
   members: string[];
+  quantity?: number;
   addon_ids?: string[];
   gotra?: string;
   gotra_unknown?: boolean;

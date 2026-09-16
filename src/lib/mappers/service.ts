@@ -45,5 +45,7 @@ export function mapServiceToCard(service: Service): MockService {
     detailTags: detail.types?.length ? detail.types.map((t) => t.name) : [],
     rating: Math.round(Number(service.rating_avg)),
     reviewCount: service.total_reviews,
+    allowQuantity: Boolean(service.allow_quantity),
+    maxQuantity: Number(service.max_quantity) || 10,
   };
 }

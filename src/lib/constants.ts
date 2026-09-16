@@ -8,7 +8,7 @@ export const NAV_LINKS: { label: string; href: string; category?: string }[] = [
     category: "PanditJi At Home",
   },
   { label: "Premium Puja", href: "/services?category=premium-puja", category: "Premium Puja" },
-  { label: "Astrology", href: "/services?category=astrology", category: "Astrology" },
+  // { label: "Astrology", href: "/services?category=astrology", category: "Astrology" },
   { label: "Aayojan", href: "/aayojan" },
   { label: "Articles", href: "/articles" },
   { label: "Blogs", href: "/blogs" },
@@ -57,6 +57,8 @@ export type MockService = {
   detailTags: string[];
   rating: number;
   reviewCount: number;
+  allowQuantity?: boolean;
+  maxQuantity?: number;
 };
 
 export const FOOTER_LINKS = {
@@ -64,7 +66,7 @@ export const FOOTER_LINKS = {
     { label: "E-Puja", href: "/services?category=e-puja" },
     { label: "Premium Puja", href: "/services?category=premium-puja" },
     { label: "Pandit Ji At Home", href: "/services?category=panditji-at-home" },
-    { label: "Astrology", href: "/services?category=astrology" },
+    // { label: "Astrology", href: "/services?category=astrology" },
   ],
   quickLinks: [
     { label: "Services", href: "/services" },

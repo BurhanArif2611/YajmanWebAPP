@@ -9,6 +9,7 @@ import { GotraSection } from "@/components/checkout/GotraSection";
 import { AddressSection } from "@/components/checkout/AddressSection";
 import { OrderSummary } from "@/components/checkout/OrderSummary";
 import type { MockService } from "@/lib/constants";
+import { BOOKING_QUANTITY_STORAGE_KEY } from "@/lib/bookingPreferences";
 import { getBookingDateConstraints, isBookingUnavailable, type BookingAvailability } from "@/lib/bookingDates";
 import type { ServiceAddon } from "@/types/api";
 
@@ -18,9 +19,24 @@ function parseInitialDate(value?: string) {
   return Number.isNaN(parsed.getTime()) ? undefined : parsed;
 }
 
+function clampQuantity(value: number, max: number) {
+  if (!Number.isFinite(value) || value < 1) return 1;
+  return Math.min(Math.floor(value), max);
+}
+
+function readStoredQuantity() {
+  try {
+    const raw = sessionStorage.getItem(BOOKING_QUANTITY_STORAGE_KEY);
+    return raw ? Number(raw) : 0;
+  } catch {
+    return 0;
+  }
+}
+
 export function CheckoutFlow({
   service,
   initialDate,
+  initialQuantity,
   bookingAvailability,
   addons,
   requiresPandit,
@@ -28,6 +44,7 @@ export function CheckoutFlow({
 }: {
   service: MockService;
   initialDate?: string;
+  initialQuantity?: number;
   bookingAvailability: BookingAvailability;
   addons: ServiceAddon[];
   requiresPandit: boolean;
@@ -46,6 +63,12 @@ export function CheckoutFlow({
   const [bookingDate, setBookingDate] = useState<Date | undefined>(() =>
     parseInitialDate(initialDate)
   );
+  const allowQuantity = Boolean(service.allowQuantity);
+  const maxQuantity = service.maxQuantity ?? 10;
+  const [quantity, setQuantity] = useState(() => {
+    if (!allowQuantity) return 1;
+    return clampQuantity(initialQuantity || readStoredQuantity() || 1, maxQuantity);
+  });
 
   const dateConstraints = useMemo(
     () => getBookingDateConstraints(bookingAvailability),
@@ -103,6 +126,8 @@ export function CheckoutFlow({
         service={service}
         bookingDate={bookingDate}
         onBookingDateChange={setBookingDate}
+        quantity={quantity}
+        onQuantityChange={setQuantity}
         dateConstraints={dateConstraints}
         bookingUnavailable={bookingUnavailable}
         addons={addons}

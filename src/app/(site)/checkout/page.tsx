@@ -15,6 +15,8 @@ export default async function CheckoutPage({
   const params = await searchParams;
   const slug = first(params.slug);
   const date = first(params.date);
+  const qtyRaw = first(params.qty);
+  const initialQuantity = qtyRaw ? Number(qtyRaw) : undefined;
 
   const detail = slug
     ? await getServiceBySlug(slug).catch(() => null)
@@ -30,6 +32,7 @@ export default async function CheckoutPage({
         <CheckoutFlow
           service={mapServiceToCard(detail)}
           initialDate={date}
+          initialQuantity={initialQuantity}
           bookingAvailability={{
             minAdvanceDays: detail.advance_booking_days ?? 0,
             availabilityStart: detail.availability_start_date,

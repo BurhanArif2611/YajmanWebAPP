@@ -74,6 +74,7 @@ export function BookingDetailView({ booking }: { booking: BookingDetail }) {
           <div className="min-w-0">
             <h1 className="font-sans text-lg font-semibold break-words text-text-primary sm:text-xl">
               {booking.service_title}
+              {Number(booking.quantity ?? 1) > 1 ? ` × ${booking.quantity}` : ""}
             </h1>
             <p className="mt-1 text-sm text-text-muted">Order {booking.order_number}</p>
             {booking.pandit ? (
@@ -195,7 +196,7 @@ export function BookingDetailView({ booking }: { booking: BookingDetail }) {
         <div className="mt-6 border-t border-border pt-6">
           <h3 className="font-sans text-lg font-bold text-text-primary">Price</h3>
           <div className="mt-3 flex items-center justify-between gap-3 text-sm text-text-secondary">
-            <span>Puja Fees</span>
+            <span>Puja Fees{Number(booking.quantity ?? 1) > 1 ? ` (× ${booking.quantity})` : ""}</span>
             <span className="shrink-0">{formatPrice(basePrice)}</span>
           </div>
           {addonsTotal > 0 && (
@@ -230,6 +231,9 @@ export function BookingDetailView({ booking }: { booking: BookingDetail }) {
           <h3 className="font-sans text-lg font-bold text-text-primary">Booking Details</h3>
           <div className="mt-3 flex flex-col gap-3 text-sm">
             <Row label="Booking ID" value={booking.order_number} />
+            {Number(booking.quantity ?? 1) > 1 && (
+              <Row label="Quantity" value={String(booking.quantity)} />
+            )}
             <Row label="Date" value={format(datetime, "EEE, d MMM yyyy")} />
             {booking.requires_booking_time && (
               <Row label="Time" value={format(datetime, "h:mm a")} />

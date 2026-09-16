@@ -11,6 +11,7 @@ import { Skeleton } from "@/components/ui/Skeleton";
 import { Select } from "@/components/ui/Select";
 import { CouponSuccessModal } from "@/components/checkout/CouponSuccessModal";
 import { DatePickerField } from "@/components/service/DatePickerField";
+import { QuantityStepper } from "@/components/service/QuantityStepper";
 import { ServiceLocationLine } from "@/components/service/ServiceLocationLine";
 import { getCoupons, validateCoupon } from "@/lib/api/coupons";
 import { createOrder, verifyPayment } from "@/lib/api/checkout";
@@ -72,6 +73,8 @@ export function OrderSummary({
   service,
   bookingDate,
   onBookingDateChange,
+  quantity,
+  onQuantityChange,
   dateConstraints,
   bookingUnavailable = false,
   addons,
@@ -82,6 +85,8 @@ export function OrderSummary({
   service: MockService;
   bookingDate?: Date;
   onBookingDateChange: (date: Date) => void;
+  quantity: number;
+  onQuantityChange: (quantity: number) => void;
   dateConstraints: {
     minDate: Date;
     maxDate?: Date;
@@ -115,9 +120,9 @@ export function OrderSummary({
   };
 
   const couponsQuery = useQuery({
-    queryKey: ["coupons"],
-    queryFn: getCoupons,
-    enabled: isLoggedIn,
+    queryKey: ["coupons", service.id],
+    queryFn: () => getCoupons(service.id!),
+    enabled: isLoggedIn && Boolean(service.id),
     staleTime: 5 * 60_000,
   });
 
@@ -134,19 +139,60 @@ export function OrderSummary({
     return () => document.removeEventListener("mousedown", onMouseDown);
   }, []);
 
-  const subtotal = service.price;
+  const allowQuantity = Boolean(service.allowQuantity);
+  const maxQuantity = service.maxQuantity ?? 10;
+  const subtotal = service.price * (allowQuantity ? quantity : 1);
   const discount = applied?.discountAmount ?? 0;
   const addonsTotal = addons
     .filter((addon) => selectedAddonIds.includes(addon.id))
     .reduce((sum, addon) => sum + Number(addon.price), 0);
   const total = subtotal - discount + addonsTotal;
 
+  useEffect(() => {
+    if (!applied || !service.id) return;
+    let cancelled = false;
+    void (async () => {
+      try {
+        const result = await validateCoupon(applied.code, subtotal, service.id!, quantity);
+        if (cancelled) return;
+        if (!result.valid) {
+          setApplied(null);
+          setCouponError(result.message);
+          return;
+        }
+        setApplied((prev) =>
+          prev
+            ? {
+                ...prev,
+                discountAmount: result.discount_amount,
+                discountLabel: `₹${result.discount_amount} OFF`,
+              }
+            : null
+        );
+      } catch {
+        if (!cancelled) {
+          setApplied(null);
+          setCouponError("Couldn't validate this coupon. Try again.");
+        }
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+    // Re-check min-order / percentage discount when quantity changes.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [quantity]);
+
   const applyCode = async (couponCode: string, coupon?: Coupon) => {
     if (!couponCode.trim()) return;
+    if (!service.id) {
+      setCouponError("Couldn't validate this coupon. Try again.");
+      return;
+    }
     setCouponError(null);
     setValidating(true);
     try {
-      const result = await validateCoupon(couponCode.trim(), subtotal, service.id);
+      const result = await validateCoupon(couponCode.trim(), subtotal, service.id, quantity);
       if (result.valid) {
         setPending({
           coupon: coupon ?? {
@@ -157,7 +203,6 @@ export function OrderSummary({
             discount_value: String(result.discount_amount),
             valid_from: "",
             valid_until: "",
-            applicable_categories: [],
             applicable_services: [],
           },
           discountAmount: result.discount_amount,
@@ -226,6 +271,7 @@ export function OrderSummary({
             ? digitsOnly(bookingInfo.callingNumber)
             : undefined,
         members,
+        quantity: allowQuantity ? quantity : 1,
         addon_ids: selectedAddonIds.length ? selectedAddonIds : undefined,
         gotra: bookingInfo.gotraUnknown ? undefined : bookingInfo.gotra.trim() || undefined,
         gotra_unknown: bookingInfo.gotraUnknown,
@@ -315,7 +361,7 @@ export function OrderSummary({
                 {service.title}
               </h3>
               <span className="shrink-0 whitespace-nowrap font-sans text-base font-semibold text-text-primary">
-                ₹{service.price}
+                ₹{subtotal}
               </span>
             </div>
             <ServiceLocationLine
@@ -354,6 +400,22 @@ export function OrderSummary({
                 <p className="mt-2 text-sm font-medium text-error">Please select a puja date.</p>
               )}
             </div>
+
+            {allowQuantity && (
+              <div className="mt-5">
+                <QuantityStepper
+                  value={quantity}
+                  max={maxQuantity}
+                  onChange={(next) => {
+                    onQuantityChange(next);
+                    setCouponError(null);
+                  }}
+                />
+                <p className="mt-2 text-sm text-text-muted">
+                  ₹{service.price} × {quantity} = ₹{subtotal}
+                </p>
+              </div>
+            )}
 
             {requiresBookingTime && (
               <div className="mt-5">
@@ -492,7 +554,7 @@ export function OrderSummary({
 
         <div className="mt-5 flex flex-col gap-2 border-t border-border pt-5 text-sm">
           <div className="flex items-center justify-between text-text-secondary">
-            <span>Subtotal</span>
+            <span>{allowQuantity && quantity > 1 ? `Subtotal (₹${service.price} × ${quantity})` : "Subtotal"}</span>
             <span>₹{subtotal.toFixed(2)}</span>
           </div>
           {addonsTotal > 0 && (

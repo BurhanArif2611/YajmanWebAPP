@@ -1,7 +1,8 @@
 import { ServicesHero } from "@/components/service/ServicesHero";
 import { CategoryServicesSection } from "@/components/articles/CategoryServicesSection";
+import { ArticlesInlineAdCarousel } from "@/components/articles/ArticlesInlineAdCarousel";
 import { BlogsCtaBanner } from "@/components/blogs/BlogsCtaBanner";
-import { PremiumPujaCarousel } from "@/components/blogs/PremiumPujaCarousel";
+import { BestSellers } from "@/components/home/BestSellers";
 
 export const metadata = {
   title: "Articles | Yajman",
@@ -20,8 +21,15 @@ export default function ArticlesPage() {
         </div>
       </div>
 
+      <ArticlesInlineAdCarousel />
       <BlogsCtaBanner />
-      <PremiumPujaCarousel />
+      <BestSellers
+        eyebrow="Explore"
+        heading="Popular Services"
+        includeAllServices
+        maxTabs={3}
+        compact
+      />
     </>
   );
 }

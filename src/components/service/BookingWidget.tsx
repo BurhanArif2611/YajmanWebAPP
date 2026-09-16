@@ -7,7 +7,6 @@ import { CalendarX2 } from "lucide-react";
 import Image from "@/components/ui/AppImage";
 import { Button } from "@/components/ui/Button";
 import { DatePickerField } from "@/components/service/DatePickerField";
-import { Checkbox } from "@/components/ui/Checkbox";
 import {
   BOOKING_UNAVAILABLE_MESSAGE,
   getBookingDateConstraints,
@@ -16,8 +15,15 @@ import {
 } from "@/lib/bookingDates";
 import { hasDiscount } from "@/lib/utils";
 import { looksLikeHtml, RICH_TEXT_PROSE_CLASS } from "@/lib/richText";
-import { BOOKING_PREFERENCES, BOOKING_PREFERENCES_STORAGE_KEY } from "@/lib/bookingPreferences";
+import { BOOKING_PREFERENCES, BOOKING_PREFERENCES_STORAGE_KEY, BOOKING_QUANTITY_STORAGE_KEY } from "@/lib/bookingPreferences";
+import { QuantityStepper } from "@/components/service/QuantityStepper";
 import type { MockService } from "@/lib/constants";
+
+const PREFERENCE_ICONS: Record<(typeof BOOKING_PREFERENCES)[number]["key"], string> = {
+  experienced_pandit: "🛕",
+  shastriya_vidhi: "✨",
+  full_video: "🎥",
+};
 
 export function BookingWidget({
   service,
@@ -31,13 +37,10 @@ export function BookingWidget({
   const router = useRouter();
   const [date, setDate] = useState<Date | undefined>();
   const [dateError, setDateError] = useState(false);
-  const [preferences, setPreferences] = useState<string[]>([]);
+  const [quantity, setQuantity] = useState(1);
 
-  const togglePreference = (key: string) => {
-    setPreferences((prev) =>
-      prev.includes(key) ? prev.filter((p) => p !== key) : [...prev, key]
-    );
-  };
+  const allowQuantity = Boolean(service.allowQuantity);
+  const maxQuantity = service.maxQuantity ?? 10;
 
   const bookingUnavailable = isBookingUnavailable(bookingAvailability);
   const { minDate, maxDate, fixedDates } = getBookingDateConstraints(bookingAvailability);
@@ -55,11 +58,17 @@ export function BookingWidget({
       return;
     }
     try {
-      sessionStorage.setItem(BOOKING_PREFERENCES_STORAGE_KEY, JSON.stringify(preferences));
+      sessionStorage.removeItem(BOOKING_PREFERENCES_STORAGE_KEY);
+      if (allowQuantity) {
+        sessionStorage.setItem(BOOKING_QUANTITY_STORAGE_KEY, String(quantity));
+      } else {
+        sessionStorage.removeItem(BOOKING_QUANTITY_STORAGE_KEY);
+      }
     } catch {
-      // sessionStorage unavailable (private mode etc.) — checkout just won't prefill preferences
+      // sessionStorage may be unavailable in private browsing modes.
     }
-    router.push(`/checkout?slug=${service.slug}&date=${format(date, "yyyy-MM-dd")}`);
+    const qtyQuery = allowQuantity && quantity > 1 ? `&qty=${quantity}` : "";
+    router.push(`/checkout?slug=${service.slug}&date=${format(date, "yyyy-MM-dd")}${qtyQuery}`);
   };
 
   return (
@@ -112,6 +121,36 @@ export function BookingWidget({
         ) : (
           <>
             <div className="mt-4">
+              <p className="flex items-center gap-2 text-sm font-semibold text-text-primary">
+                <span aria-hidden="true" className="text-brand-gold-400">
+                  ☆
+                </span>
+                Included with Your Puja
+              </p>
+
+              <div className="mt-3 flex snap-x snap-mandatory gap-2 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:grid sm:grid-cols-3 sm:overflow-visible sm:pb-0">
+                {BOOKING_PREFERENCES.map((preference) => (
+                  <div
+                    key={preference.key}
+                    className="flex min-w-[72%] snap-start flex-col overflow-hidden rounded-xl border border-dashed border-brand-saffron-200 bg-[#fffdf8] sm:min-w-0"
+                  >
+                    <div className="flex min-h-28 flex-1 flex-col items-center justify-center px-3 py-4 text-center">
+                      <span aria-hidden="true" className="text-2xl">
+                        {PREFERENCE_ICONS[preference.key]}
+                      </span>
+                      <p className="mt-2 text-sm font-semibold leading-snug text-text-primary">
+                        {preference.label}
+                      </p>
+                    </div>
+                    <div className="bg-brand-navy px-2 py-2 text-center text-[10px] font-semibold uppercase tracking-wider text-brand-saffron-200">
+                      ✓ Included
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="mt-4">
               <DatePickerField
                 selected={date}
                 onSelect={(d) => {
@@ -127,21 +166,18 @@ export function BookingWidget({
               )}
             </div>
 
-            <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-3">
-              {BOOKING_PREFERENCES.map((pref) => (
-                <div
-                  key={pref.key}
-                  className="flex items-center rounded-xl border border-border bg-white px-3 py-2.5 transition-colors hover:border-brand-saffron-300"
-                >
-                  <Checkbox
-                    checked={preferences.includes(pref.key)}
-                    onChange={() => togglePreference(pref.key)}
-                    label={pref.label}
-                    containerClassName="gap-2 text-sm font-medium"
-                  />
-                </div>
-              ))}
-            </div>
+            {allowQuantity && (
+              <div className="mt-4">
+                <QuantityStepper
+                  value={quantity}
+                  max={maxQuantity}
+                  onChange={setQuantity}
+                />
+                <p className="mt-2 text-sm text-text-muted">
+                  ₹{service.price} × {quantity} = ₹{service.price * quantity}
+                </p>
+              </div>
+            )}
 
             <Button
               size="lg"

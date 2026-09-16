@@ -138,7 +138,11 @@ function FilterSidebarInner() {
 
   const categories = (categoriesQuery.data ?? [])
     .filter((c) => c.requires_payment === true)
-    .map((c) => ({ id: c.id, label: c.name }));
+    .map((c) => ({
+      id: c.id,
+      label: c.name,
+      description: c.description?.trim() || null,
+    }));
 
   const types = (typesQuery.data ?? []).map((t) => ({ id: t.id, label: t.name }));
 
@@ -194,7 +198,17 @@ function FilterSidebarInner() {
                 <Checkbox
                   checked={currentCategories.includes(cat.id)}
                   onChange={() => toggleCategory(cat.id)}
-                  label={<span className="text-sm text-text-secondary">{cat.label}</span>}
+                  containerClassName="items-start"
+                  label={
+                    <span className="min-w-0">
+                      <span className="block text-sm text-text-secondary">{cat.label}</span>
+                      {cat.description && (
+                        <span className="mt-1 block text-xs font-normal leading-relaxed text-text-light">
+                          {cat.description}
+                        </span>
+                      )}
+                    </span>
+                  }
                 />
               </li>
             ))}

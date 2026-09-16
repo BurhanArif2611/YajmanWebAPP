@@ -218,18 +218,18 @@ export function HeroSection() {
         })
       )}
 
-      <div className="relative mx-auto max-w-site px-4 pb-10 pt-10 md:px-8 md:pb-16 md:pt-14 lg:px-16 lg:pb-28 lg:pt-16">
-        <div className="flex max-w-3xl flex-col gap-3 text-left sm:gap-4 md:gap-6 lg:pl-[100px] xl:pl-[150px]">
-          <h1 className="font-sans text-3xl font-bold leading-tight text-text-primary sm:text-4xl md:text-5xl lg:text-7xl lg:leading-[1.1] xl:text-9xl">
+      <div className="relative mx-auto max-w-site px-6 pb-10 pt-10 md:px-8 md:pb-16 md:pt-14 lg:px-16 lg:pb-28 lg:pt-16">
+        <div className="mx-auto flex max-w-[19rem] flex-col items-center gap-3 text-center sm:mx-0 sm:max-w-3xl sm:items-start sm:gap-4 sm:text-left md:gap-6 lg:pl-[100px] xl:pl-[150px]">
+          <h1 className="text-balance font-sans text-2xl font-bold leading-tight text-text-primary min-[375px]:text-3xl sm:text-4xl md:text-5xl lg:text-7xl lg:leading-[1.1] xl:text-9xl">
             Connect With{" "}
             <span className="text-brand-saffron-400">Divinity.</span> Book Puja
             In Minutes
           </h1>
-          <p className="text-sm font-medium text-text-secondary sm:text-base md:text-lg">
+          <p className="max-w-[18rem] text-xs font-medium leading-relaxed text-text-secondary min-[375px]:text-sm sm:max-w-none sm:text-base md:text-lg">
             Verified Pandit | Authentic Rituals | Peace Of Mind
           </p>
 
-          {popularSearchesQuery.isLoading ? (
+          {/* {popularSearchesQuery.isLoading ? (
             <div className="hidden flex-wrap items-center gap-2 sm:flex">
               {Array.from({ length: 4 }).map((_, i) => (
                 <Skeleton key={i} className="h-7 w-28 rounded-full" />
@@ -252,7 +252,7 @@ export function HeroSection() {
                 ))}
               </div>
             )
-          )}
+          )} */}
         </div>
       </div>
 
@@ -266,7 +266,7 @@ export function HeroSection() {
       </div>
     )}
 
-    {popularSearchesQuery.isLoading ? (
+    {/* {popularSearchesQuery.isLoading ? (
       <div className="flex flex-wrap items-center gap-2 px-4 pt-6 sm:hidden">
         {Array.from({ length: 4 }).map((_, i) => (
           <Skeleton key={i} className="h-7 w-28 rounded-full" />
@@ -289,7 +289,7 @@ export function HeroSection() {
           ))}
         </div>
       )
-    )}
+    )} */}
     </>
   );
 }

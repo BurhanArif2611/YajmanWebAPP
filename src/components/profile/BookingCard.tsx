@@ -29,6 +29,7 @@ export function BookingCard({ booking }: { booking: Booking }) {
         <div className="min-w-0 flex-1">
           <h3 className="font-sans text-base font-semibold text-text-primary sm:text-lg">
             {booking.service_title}
+            {Number(booking.quantity ?? 1) > 1 ? ` × ${booking.quantity}` : ""}
           </h3>
           <div className="mt-1.5 flex flex-col gap-1.5 text-xs text-text-muted sm:mt-1 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4">
             <span className="flex items-center gap-1.5">

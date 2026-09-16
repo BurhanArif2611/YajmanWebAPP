@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { Suspense } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { ArticleServiceCard } from "@/components/articles/ArticleServiceCard";
@@ -9,6 +9,7 @@ import { Pagination } from "@/components/ui/Pagination";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { getCategories } from "@/lib/api/catalog";
 import { getServices } from "@/lib/api/services";
+import { isArticleCategory } from "@/hooks/useNavLinks";
 import { mapServiceToCard } from "@/lib/mappers/service";
 import { cn } from "@/lib/utils";
 
@@ -33,8 +34,7 @@ function CategoryServicesSectionInner() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const page = Number(searchParams.get("page") ?? 1) || 1;
-
-  const [activeId, setActiveId] = useState<string | null>(null);
+  const requestedCategoryId = searchParams.get("category");
 
   const categoriesQuery = useQuery({
     queryKey: ["categories"],
@@ -42,21 +42,23 @@ function CategoryServicesSectionInner() {
     staleTime: 5 * 60_000,
   });
 
-  // Only categories that don't require online payment show up as tabs here.
-  const freeCategories = categoriesQuery.data?.filter((c) => c.requires_payment === false) ?? [];
-  const activeCategoryId = activeId ?? freeCategories[0]?.id ?? null;
+  const articleCategories = categoriesQuery.data?.filter(isArticleCategory) ?? [];
+  const activeCategoryId =
+    articleCategories.some((category) => category.id === requestedCategoryId)
+      ? requestedCategoryId
+      : articleCategories[0]?.id ?? null;
 
   const servicesQuery = useQuery({
     queryKey: ["services", "articles-category", activeCategoryId, page],
     queryFn: () =>
-      getServices({ category: activeCategoryId!, page, limit: PAGE_SIZE, requires_payment: false }),
+      getServices({ category: activeCategoryId!, page, limit: PAGE_SIZE }),
     enabled: !!activeCategoryId,
     staleTime: 5 * 60_000,
   });
 
   const selectTab = (id: string) => {
-    setActiveId(id);
     const params = new URLSearchParams(searchParams.toString());
+    params.set("category", id);
     params.delete("page");
     router.push(`${pathname}?${params.toString()}`, { scroll: false });
   };
@@ -72,9 +74,9 @@ function CategoryServicesSectionInner() {
             <Skeleton key={i} className="h-6 w-24" />
           ))}
         </div>
-      ) : freeCategories.length ? (
+      ) : articleCategories.length ? (
         <div className="flex gap-4 overflow-x-auto border-b border-border pb-4 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:flex-wrap sm:items-center sm:justify-center sm:gap-6 sm:overflow-visible">
-          {freeCategories.map((cat) => (
+          {articleCategories.map((cat) => (
             <button
               key={cat.id}
               onClick={() => selectTab(cat.id)}

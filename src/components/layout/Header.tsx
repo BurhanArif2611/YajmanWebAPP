@@ -10,7 +10,7 @@ import Link from "next/link";
 import { ButtonLink } from "@/components/ui/Button";
 import { useAuth } from "@/hooks/useAuth";
 import { useUnreadCount } from "@/hooks/useUnreadCount";
-import { useNavLinks } from "@/hooks/useNavLinks";
+import { useArticleNavCategories, useNavLinks } from "@/hooks/useNavLinks";
 
 /** Query-string links (e.g. /services?category=x) only count as active when every one of their params matches the current URL — otherwise every category link would light up together on /services. */
 function isNavLinkActive(href: string, pathname: string, searchParams: URLSearchParams) {
@@ -28,11 +28,55 @@ function NavLinks() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const navLinks = useNavLinks();
+  const articleCategories = useArticleNavCategories();
 
   return (
     <nav className="hidden items-center gap-5 xl:gap-8 lg:flex">
       {navLinks.map((link) => {
         const isActive = isNavLinkActive(link.href, pathname, searchParams);
+        if (link.label === "Articles" && articleCategories.length) {
+          return (
+            <div key={link.href} className="group relative">
+              <Link
+                href="/articles"
+                className={`flex items-center gap-1 whitespace-nowrap py-3 text-sm font-medium transition-colors hover:text-brand-saffron-400 ${
+                  pathname.startsWith("/articles")
+                    ? "text-brand-saffron-400"
+                    : "text-text-primary"
+                }`}
+              >
+                Articles
+                <ChevronDown
+                  size={14}
+                  className="transition-transform group-hover:rotate-180 group-focus-within:rotate-180"
+                />
+              </Link>
+
+              <div className="invisible absolute left-1/2 top-full z-50 w-60 -translate-x-1/2 pt-2 opacity-0 transition-all group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
+                <div className="max-h-[70vh] overflow-y-auto rounded-xl border border-border bg-white p-2 shadow-card-hover">
+                  {articleCategories.map((category) => {
+                    const href = `/articles?category=${category.id}`;
+                    const categoryActive = isNavLinkActive(href, pathname, searchParams);
+                    return (
+                      <Link
+                        key={category.id}
+                        href={href}
+                        className={`block break-words rounded-lg px-3 py-2.5 text-sm leading-snug transition-colors hover:bg-surface-muted hover:text-brand-saffron-400 ${
+                          categoryActive
+                            ? "bg-surface-muted text-brand-saffron-400"
+                            : "text-text-primary"
+                        }`}
+                      >
+                        {category.name}
+                      </Link>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          );
+        }
+
         return (
           <Link
             key={link.href}

@@ -14,7 +14,21 @@ import { cn } from "@/lib/utils";
 const VISIBLE = 4;
 const FETCH_LIMIT = 8;
 
-export function BestSellers() {
+type BestSellersProps = {
+  eyebrow?: string;
+  heading?: string;
+  includeAllServices?: boolean;
+  maxTabs?: number;
+  compact?: boolean;
+};
+
+export function BestSellers({
+  eyebrow = "Discover",
+  heading = "Best Sellers",
+  includeAllServices = false,
+  maxTabs,
+  compact = false,
+}: BestSellersProps = {}) {
   const [activeTab, setActiveTab] = useState(0);
   const [offset, setOffset] = useState(0);
 
@@ -24,22 +38,46 @@ export function BestSellers() {
     staleTime: 5 * 60_000,
   });
 
-  const tabs = (categoriesQuery.data ?? []).filter((c) => c.requires_payment !== false);
+  const paidCategories = (categoriesQuery.data ?? []).filter(
+    (c) => c.requires_payment !== false
+  );
+  const tabs = maxTabs ? paidCategories.slice(0, maxTabs) : paidCategories;
   const activeCategory = tabs[activeTab];
 
   const servicesQuery = useQuery({
-    queryKey: ["services", "bestseller", activeCategory?.id],
-    queryFn: () =>
-      getServices({
+    queryKey: [
+      "services",
+      includeAllServices ? "all-category-services" : "bestseller",
+      activeCategory?.id,
+    ],
+    queryFn: async () => {
+      const filters = {
         category: activeCategory?.id,
-        is_bestseller: true,
-        limit: FETCH_LIMIT,
-      }),
+        is_bestseller: includeAllServices ? undefined : true,
+        limit: includeAllServices ? 100 : FETCH_LIMIT,
+      };
+      const firstPage = await getServices(filters);
+
+      if (!includeAllServices || (firstPage.pagination?.total_pages ?? 1) <= 1) {
+        return firstPage.data;
+      }
+
+      const remainingPages = await Promise.all(
+        Array.from(
+          { length: firstPage.pagination!.total_pages - 1 },
+          (_, index) => getServices({ ...filters, page: index + 2 })
+        )
+      );
+      return [
+        ...firstPage.data,
+        ...remainingPages.flatMap((result) => result.data),
+      ];
+    },
     enabled: !!activeCategory,
     staleTime: 5 * 60_000,
   });
 
-  const pool = servicesQuery.data?.data.map(mapServiceToCard) ?? [];
+  const pool = servicesQuery.data?.map(mapServiceToCard) ?? [];
   const isLoading =
     categoriesQuery.isLoading || (!!activeCategory && servicesQuery.isLoading);
 
@@ -54,11 +92,16 @@ export function BestSellers() {
 
   return (
     <section className="bg-white">
-      <div className="mx-auto max-w-site px-4 py-10 md:px-8 md:py-16 lg:px-16 lg:py-24">
+      <div
+        className={cn(
+          "mx-auto max-w-site px-4 md:px-8 lg:px-16",
+          compact ? "py-8 md:py-10 lg:py-12" : "py-10 md:py-16 lg:py-24"
+        )}
+      >
         <div className="flex flex-col items-center justify-between gap-4 sm:flex-row sm:items-end sm:gap-6">
           <SectionHeader
-            eyebrow="Discover"
-            heading="Best Sellers"
+            eyebrow={eyebrow}
+            heading={heading}
             align="left"
             className="items-center text-center sm:items-start sm:text-left"
           />
@@ -124,14 +167,14 @@ export function BestSellers() {
                   <button
                     aria-label="Previous services"
                     onClick={() => setOffset((o) => o - 1)}
-                    className="absolute left-0 top-1/2 hidden h-11 w-11 -translate-x-5 -translate-y-1/2 items-center justify-center rounded-full bg-white text-text-primary shadow-card-hover lg:flex"
+                    className="absolute left-1 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/95 text-text-primary shadow-card-hover lg:left-0 lg:h-11 lg:w-11 lg:-translate-x-5"
                   >
                     <ChevronLeft size={20} />
                   </button>
                   <button
                     aria-label="Next services"
                     onClick={() => setOffset((o) => o + 1)}
-                    className="absolute right-0 top-1/2 hidden h-11 w-11 -translate-y-1/2 translate-x-5 items-center justify-center rounded-full bg-brand-saffron-400 text-white shadow-card-hover lg:flex"
+                    className="absolute right-1 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-brand-saffron-400 text-white shadow-card-hover lg:right-0 lg:h-11 lg:w-11 lg:translate-x-5"
                   >
                     <ChevronRight size={20} />
                   </button>

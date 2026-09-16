@@ -42,6 +42,7 @@ export function AssignmentDetailView({ assignment }: { assignment: PanditAssignm
         <div>
           <h1 className="font-sans text-xl font-semibold text-text-primary">
             {assignment.service_title}
+            {Number(assignment.quantity ?? 1) > 1 ? ` × ${assignment.quantity}` : ""}
           </h1>
           <p className="mt-1 text-sm text-text-muted">Order {assignment.order_number}</p>
         </div>
