@@ -8,6 +8,9 @@ import { BlogPreview } from "@/components/home/BlogPreview";
 import { SupportSection } from "@/components/home/SupportSection";
 import { GalleryStrip } from "@/components/home/GalleryStrip";
 import { RevealOnScroll } from "@/components/ui/RevealOnScroll";
+import { CmsBannerStrip } from "@/components/cms/CmsBannerStrip";
+import { HomeCatalogPlacements } from "@/components/placements/HomeCatalogPlacements";
+import { PlacementInlineAd } from "@/components/placements/PlacementInlineAd";
 
 export default function Home() {
   return (
@@ -18,12 +21,29 @@ export default function Home() {
         <CategorySection />
       </RevealOnScroll>
 
+      <CmsBannerStrip position="category_banner" variant="category" />
+
+      <RevealOnScroll>
+        <HomeCatalogPlacements />
+      </RevealOnScroll>
+
       <RevealOnScroll>
         <BestSellers />
       </RevealOnScroll>
 
+      <CmsBannerStrip position="middle_ad" variant="middle" />
+
       <RevealOnScroll>
         <WhyChooseUs />
+      </RevealOnScroll>
+
+      <RevealOnScroll>
+        <PlacementInlineAd
+          page="home"
+          eyebrow="Featured"
+          heading="Services Chosen for You"
+          subtitle="Thoughtfully selected pujas for peace, prosperity, and every sacred occasion."
+        />
       </RevealOnScroll>
 
       <RevealOnScroll>
@@ -33,6 +53,8 @@ export default function Home() {
       <RevealOnScroll>
         <InstantBookingSection />
       </RevealOnScroll>
+
+      <CmsBannerStrip position="offer_banner" variant="offer" />
 
       <RevealOnScroll>
         <BlogPreview />

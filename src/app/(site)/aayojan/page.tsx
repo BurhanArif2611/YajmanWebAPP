@@ -8,6 +8,9 @@ import { AayojanTestimonials } from "@/components/aayojan/AayojanTestimonials";
 import { AayojanGalleryStrip } from "@/components/aayojan/AayojanGalleryStrip";
 import { ContactFormSection } from "@/components/aayojan/ContactFormSection";
 import { RevealOnScroll } from "@/components/ui/RevealOnScroll";
+import { PlacementServiceGrid } from "@/components/placements/PlacementServiceGrid";
+import { PlacementInlineAd } from "@/components/placements/PlacementInlineAd";
+import { PujaServicesSidebar } from "@/components/articles/PujaServicesSidebar";
 import { getAayojanPage } from "@/lib/api/aayojan";
 import type { AayojanPageData } from "@/types/api";
 
@@ -40,10 +43,28 @@ export default async function AayojanPage() {
         <EventServicesSection events={data.events} />
       </RevealOnScroll>
 
+      <RevealOnScroll>
+        <PlacementServiceGrid
+          page="aayojan"
+          section="recommended"
+          eyebrow="For Your Event"
+          heading="Recommended Services"
+        />
+      </RevealOnScroll>
+
       <CtaBanner />
 
       <RevealOnScroll>
         <ProcessSection />
+      </RevealOnScroll>
+
+      <RevealOnScroll>
+        <PlacementInlineAd
+          page="aayojan"
+          eyebrow="Plan With Us"
+          heading="Featured Event Services"
+          subtitle="A featured puja or package to pair with your event planning."
+        />
       </RevealOnScroll>
 
       <RevealOnScroll>
@@ -56,6 +77,14 @@ export default async function AayojanPage() {
 
       <RevealOnScroll>
         <AayojanGalleryStrip images={data.gallery} />
+      </RevealOnScroll>
+
+      <RevealOnScroll>
+        <div className="mx-auto max-w-site px-4 pb-8 md:px-8 lg:px-16">
+          <div className="lg:ml-auto lg:max-w-[340px]">
+            <PujaServicesSidebar page="aayojan" />
+          </div>
+        </div>
       </RevealOnScroll>
 
       <RevealOnScroll>

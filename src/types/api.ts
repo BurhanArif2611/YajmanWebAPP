@@ -159,10 +159,13 @@ export type BannerPosition =
 
 export type Banner = {
   id: string;
+  title?: string | null;
+  subtitle?: string | null;
   image_url: string;
   mobile_image_url?: string | null;
   link_url?: string | null;
   position: BannerPosition;
+  display_order?: number;
   starts_at: string | null;
   ends_at: string | null;
   is_active: boolean;
@@ -862,7 +865,10 @@ export type ServicePlacementService = {
   feature_image_url?: string | null;
   short_description?: string | null;
   rating_avg?: number | string;
+  discount_percent?: number | string | null;
   category_slug: string;
+  category_name?: string | null;
+  requires_payment?: boolean;
 };
 
 export type ServicePlacement = {

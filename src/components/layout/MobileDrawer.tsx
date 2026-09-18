@@ -1,9 +1,13 @@
 "use client";
 
 import { ChevronDown, Search, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
-import { useArticleNavCategories, useNavLinks } from "@/hooks/useNavLinks";
+import {
+  useArticleNavCategories,
+  useNavLinks,
+  useOtherServiceNavCategories,
+} from "@/hooks/useNavLinks";
 import { SocialLinks } from "@/components/layout/SocialLinks";
 import Image from "@/components/ui/AppImage";
 import Link from "next/link";
@@ -23,9 +27,11 @@ export function MobileDrawer({
   const { isLoggedIn, logout } = useAuth();
   const navLinks = useNavLinks();
   const articleCategories = useArticleNavCategories();
+  const otherServiceCategories = useOtherServiceNavCategories();
   const [search, setSearch] = useState("");
   const [logoutOpen, setLogoutOpen] = useState(false);
   const [articlesOpen, setArticlesOpen] = useState(false);
+  const [servicesOpen, setServicesOpen] = useState(false);
 
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
@@ -38,6 +44,7 @@ export function MobileDrawer({
     if (!open) {
       setSearch("");
       setArticlesOpen(false);
+      setServicesOpen(false);
     }
   }, [open]);
 
@@ -52,6 +59,113 @@ export function MobileDrawer({
     onClose();
     router.push(href);
   };
+
+  const servicesMenu =
+    otherServiceCategories.length > 0 ? (
+      <div key="other-services">
+        <button
+          type="button"
+          onClick={() => setServicesOpen((value) => !value)}
+          aria-expanded={servicesOpen}
+          className="flex min-h-[44px] w-full items-center justify-between rounded-lg px-3 py-3 text-left text-base font-medium text-text-primary hover:bg-surface-muted"
+        >
+          Services
+          <ChevronDown
+            size={18}
+            className={`transition-transform ${servicesOpen ? "rotate-180" : ""}`}
+          />
+        </button>
+
+        {servicesOpen && (
+          <div className="ml-3 flex max-h-64 flex-col overflow-y-auto border-l border-border bg-surface-muted/30 pl-2">
+            <Link
+              href="/services"
+              onClick={onClose}
+              className="flex min-h-[44px] items-center rounded-lg px-3 py-2.5 text-sm font-medium text-text-secondary hover:bg-surface-muted"
+            >
+              All Services
+            </Link>
+            {otherServiceCategories.map((category) => (
+              <Link
+                key={category.id}
+                href={`/services?category=${category.id}`}
+                onClick={onClose}
+                className="flex min-h-[44px] items-center break-words rounded-lg px-3 py-2.5 text-sm font-medium leading-snug text-text-secondary hover:bg-surface-muted"
+              >
+                {category.name}
+              </Link>
+            ))}
+          </div>
+        )}
+      </div>
+    ) : null;
+
+  const navItems: ReactNode[] = [];
+  let servicesInserted = false;
+
+  for (const link of navLinks) {
+    if (link.label === "Aayojan" && servicesMenu && !servicesInserted) {
+      navItems.push(servicesMenu);
+      servicesInserted = true;
+    }
+
+    if (link.label === "Articles" && articleCategories.length) {
+      navItems.push(
+        <div key={link.href}>
+          <button
+            type="button"
+            onClick={() => setArticlesOpen((value) => !value)}
+            aria-expanded={articlesOpen}
+            className="flex min-h-[44px] w-full items-center justify-between rounded-lg px-3 py-3 text-left text-base font-medium text-text-primary hover:bg-surface-muted"
+          >
+            Articles
+            <ChevronDown
+              size={18}
+              className={`transition-transform ${articlesOpen ? "rotate-180" : ""}`}
+            />
+          </button>
+
+          {articlesOpen && (
+            <div className="ml-3 flex max-h-64 flex-col overflow-y-auto border-l border-border bg-surface-muted/30 pl-2">
+              <Link
+                href="/articles"
+                onClick={onClose}
+                className="flex min-h-[44px] items-center rounded-lg px-3 py-2.5 text-sm font-medium text-text-secondary hover:bg-surface-muted"
+              >
+                All Articles
+              </Link>
+              {articleCategories.map((category) => (
+                <Link
+                  key={category.id}
+                  href={`/articles?category=${category.id}`}
+                  onClick={onClose}
+                  className="flex min-h-[44px] items-center break-words rounded-lg px-3 py-2.5 text-sm font-medium leading-snug text-text-secondary hover:bg-surface-muted"
+                >
+                  {category.name}
+                </Link>
+              ))}
+            </div>
+          )}
+        </div>
+      );
+      continue;
+    }
+
+    navItems.push(
+      <Link
+        key={link.href}
+        href={link.href}
+        onClick={onClose}
+        className="min-h-[44px] rounded-lg px-3 py-3 text-base font-medium text-text-primary hover:bg-surface-muted"
+      >
+        {link.label}
+      </Link>
+    );
+  }
+
+  if (servicesMenu && !servicesInserted) {
+    navItems.push(servicesMenu);
+  }
 
   return (
     <div className="fixed inset-0 z-50 lg:hidden">
@@ -100,61 +214,7 @@ export function MobileDrawer({
           />
         </form>
 
-        <nav className="flex flex-col gap-1">
-          {navLinks.map((link) => {
-            if (link.label === "Articles" && articleCategories.length) {
-              return (
-                <div key={link.href}>
-                  <button
-                    type="button"
-                    onClick={() => setArticlesOpen((value) => !value)}
-                    aria-expanded={articlesOpen}
-                    className="flex min-h-[44px] w-full items-center justify-between rounded-lg px-3 py-3 text-left text-base font-medium text-text-primary hover:bg-surface-muted"
-                  >
-                    Articles
-                    <ChevronDown
-                      size={18}
-                      className={`transition-transform ${articlesOpen ? "rotate-180" : ""}`}
-                    />
-                  </button>
-
-                  {articlesOpen && (
-                    <div className="ml-3 flex max-h-64 flex-col overflow-y-auto border-l border-border bg-surface-muted/30 pl-2">
-                      <Link
-                        href="/articles"
-                        onClick={onClose}
-                        className="flex min-h-[44px] items-center rounded-lg px-3 py-2.5 text-sm font-medium text-text-secondary hover:bg-surface-muted"
-                      >
-                        All Articles
-                      </Link>
-                      {articleCategories.map((category) => (
-                        <Link
-                          key={category.id}
-                          href={`/articles?category=${category.id}`}
-                          onClick={onClose}
-                          className="flex min-h-[44px] items-center break-words rounded-lg px-3 py-2.5 text-sm font-medium leading-snug text-text-secondary hover:bg-surface-muted"
-                        >
-                          {category.name}
-                        </Link>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              );
-            }
-
-            return (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={onClose}
-                className="min-h-[44px] rounded-lg px-3 py-3 text-base font-medium text-text-primary hover:bg-surface-muted"
-              >
-                {link.label}
-              </Link>
-            );
-          })}
-        </nav>
+        <nav className="flex flex-col gap-1">{navItems}</nav>
 
         <div className="mt-auto flex flex-col gap-4 border-t border-border pt-4">
           {isLoggedIn ? (

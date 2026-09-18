@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
+import { X } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/Button";
 import { useNotificationToasts } from "@/components/notifications/NotificationToastProvider";
@@ -19,12 +20,15 @@ export function DeviceTokenSync() {
   const queryClient = useQueryClient();
   const { addNotification } = useNotificationToasts();
   const [showEnable, setShowEnable] = useState(false);
+  const [dismissed, setDismissed] = useState(false);
   const [enabling, setEnabling] = useState(false);
   const [enableError, setEnableError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!ready || !isLoggedIn) {
       setShowEnable(false);
+      // Next login/visit should show the prompt again.
+      if (!isLoggedIn) setDismissed(false);
       return;
     }
 
@@ -94,7 +98,7 @@ export function DeviceTokenSync() {
     }
   };
 
-  if (!showEnable) return null;
+  if (!showEnable || dismissed) return null;
 
   return (
     <div className="fixed bottom-4 left-1/2 z-[55] flex w-[min(28rem,calc(100vw-1.5rem))] -translate-x-1/2 items-center gap-3 rounded-2xl border border-border bg-white p-3 shadow-modal">
@@ -110,6 +114,14 @@ export function DeviceTokenSync() {
       >
         {enabling ? "Enabling..." : "Enable"}
       </Button>
+      <button
+        type="button"
+        aria-label="Dismiss notification prompt"
+        onClick={() => setDismissed(true)}
+        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-text-muted transition-colors hover:bg-surface-muted hover:text-text-primary"
+      >
+        <X size={16} />
+      </button>
     </div>
   );
 }

@@ -4,6 +4,7 @@ import { BlogCard } from "@/components/blogs/BlogCard";
 import { BlogsPlacementSidebar } from "@/components/blogs/BlogsPlacementSidebar";
 import { BlogsCtaBanner } from "@/components/blogs/BlogsCtaBanner";
 import { PremiumPujaCarousel } from "@/components/blogs/PremiumPujaCarousel";
+import { PlacementInlineAd } from "@/components/placements/PlacementInlineAd";
 import { Pagination } from "@/components/ui/Pagination";
 import { getBlogs } from "@/lib/api/blogs";
 import type { Blog } from "@/types/api";
@@ -75,6 +76,12 @@ export default async function BlogsPage({
         </div>
       </div>
 
+      <PlacementInlineAd
+        page="blogs"
+        eyebrow="From the Blog"
+        heading="Services Worth Booking"
+        subtitle="Pujas featured next to our reading list for this season."
+      />
       <BlogsCtaBanner />
       <PremiumPujaCarousel />
     </>

@@ -80,7 +80,7 @@ export default async function ArticleDetailPage({ params }: { params: Params }) 
                   />
                 ))}
               </span>
-              ( {String(service.total_reviews).padStart(2, "0")} Reviews )
+              {/* ( {String(service.total_reviews).padStart(2, "0")} Reviews ) */}
             </span>
             <ShareButton
               title={service.title}

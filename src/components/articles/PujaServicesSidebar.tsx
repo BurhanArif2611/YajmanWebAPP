@@ -11,15 +11,20 @@ import {
 } from "@/lib/mappers/servicePlacement";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { hasDiscount } from "@/lib/utils";
+import type { ServicePlacementPage } from "@/types/api";
 
 const LIMIT = 5;
 
-export function PujaServicesSidebar() {
+export function PujaServicesSidebar({
+  page = "articles",
+}: {
+  page?: ServicePlacementPage;
+}) {
   const placementsQuery = useQuery({
-    queryKey: ["service-placements", "articles", "sidebar", LIMIT],
+    queryKey: ["service-placements", page, "sidebar", LIMIT],
     queryFn: async () =>
       sortPlacements(
-        await getServicePlacements({ page: "articles", section: "sidebar", limit: LIMIT })
+        await getServicePlacements({ page, section: "sidebar", limit: LIMIT })
       ),
     staleTime: 5 * 60_000,
   });
@@ -90,7 +95,7 @@ export function PujaServicesSidebar() {
                       )}
                     </div>
                     <Link
-                      href={`/services/${service.category}/${service.slug}`}
+                      href={service.href}
                       className="mt-1 inline-block rounded-full bg-brand-saffron-400 px-3 py-1 text-xs font-semibold text-white"
                     >
                       {service.ctaText}

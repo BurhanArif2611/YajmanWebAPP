@@ -5,6 +5,7 @@ import { Breadcrumb } from "@/components/layout/Breadcrumb";
 import { BlogDetailHero } from "@/components/blogs/BlogDetailHero";
 import { BlogsPlacementSidebar } from "@/components/blogs/BlogsPlacementSidebar";
 import { RelatedArticles } from "@/components/blogs/RelatedArticles";
+import { PlacementServiceGrid } from "@/components/placements/PlacementServiceGrid";
 import { ShareButton } from "@/components/ui/ShareButton";
 import { getBlogBySlug } from "@/lib/api/blogs";
 import { resolveImageUrl } from "@/lib/mappers/service";
@@ -102,6 +103,14 @@ export default async function BlogDetailPage({ params }: { params: Params }) {
           <BlogsPlacementSidebar />
         </div>
       </div>
+
+      <PlacementServiceGrid
+        page="blogs"
+        section="related"
+        eyebrow="Continue"
+        heading="Related Services"
+        compact
+      />
 
       <div className="mt-12 lg:mt-16">
         <RelatedArticles posts={post.related_blogs} />

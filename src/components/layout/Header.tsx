@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { Suspense, useState, type ReactNode } from "react";
 import { Bell, ChevronDown, Menu, User } from "lucide-react";
 import { TopBar } from "@/components/layout/TopBar";
 import { MobileDrawer } from "@/components/layout/MobileDrawer";
@@ -10,7 +10,12 @@ import Link from "next/link";
 import { ButtonLink } from "@/components/ui/Button";
 import { useAuth } from "@/hooks/useAuth";
 import { useUnreadCount } from "@/hooks/useUnreadCount";
-import { useArticleNavCategories, useNavLinks } from "@/hooks/useNavLinks";
+import {
+  useArticleNavCategories,
+  useNavLinks,
+  useOtherServiceNavCategories,
+} from "@/hooks/useNavLinks";
+import type { Category } from "@/types/api";
 
 /** Query-string links (e.g. /services?category=x) only count as active when every one of their params matches the current URL — otherwise every category link would light up together on /services. */
 function isNavLinkActive(href: string, pathname: string, searchParams: URLSearchParams) {
@@ -24,72 +29,137 @@ function isNavLinkActive(href: string, pathname: string, searchParams: URLSearch
   return Array.from(linkParams.entries()).every(([key, value]) => searchParams.get(key) === value);
 }
 
+function NavDropdown({
+  label,
+  href,
+  active,
+  categories,
+  categoryHref,
+  pathname,
+  searchParams,
+}: {
+  label: string;
+  href: string;
+  active: boolean;
+  categories: Category[];
+  categoryHref: (category: Category) => string;
+  pathname: string;
+  searchParams: URLSearchParams;
+}) {
+  return (
+    <div className="group relative">
+      <Link
+        href={href}
+        className={`flex items-center gap-1 whitespace-nowrap py-3 text-sm font-medium transition-colors hover:text-brand-saffron-400 ${
+          active ? "text-brand-saffron-400" : "text-text-primary"
+        }`}
+      >
+        {label}
+        <ChevronDown
+          size={14}
+          className="transition-transform group-hover:rotate-180 group-focus-within:rotate-180"
+        />
+      </Link>
+
+      <div className="invisible absolute left-1/2 top-full z-50 w-60 -translate-x-1/2 pt-2 opacity-0 transition-all group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
+        <div className="max-h-[70vh] overflow-y-auto rounded-xl border border-border bg-white p-2 shadow-card-hover">
+          {categories.map((category) => {
+            const itemHref = categoryHref(category);
+            const categoryActive = isNavLinkActive(itemHref, pathname, searchParams);
+            return (
+              <Link
+                key={category.id}
+                href={itemHref}
+                className={`block break-words rounded-lg px-3 py-2.5 text-sm leading-snug transition-colors hover:bg-surface-muted hover:text-brand-saffron-400 ${
+                  categoryActive
+                    ? "bg-surface-muted text-brand-saffron-400"
+                    : "text-text-primary"
+                }`}
+              >
+                {category.name}
+              </Link>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function NavLinks() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const navLinks = useNavLinks();
   const articleCategories = useArticleNavCategories();
+  const otherServiceCategories = useOtherServiceNavCategories();
+
+  const servicesActive =
+    pathname.startsWith("/services") &&
+    otherServiceCategories.some((category) =>
+      isNavLinkActive(`/services?category=${category.id}`, pathname, searchParams)
+    );
+
+  const servicesDropdown =
+    otherServiceCategories.length > 0 ? (
+      <NavDropdown
+        key="other-services"
+        label="Services"
+        href="/services"
+        active={servicesActive}
+        categories={otherServiceCategories}
+        categoryHref={(category) => `/services?category=${category.id}`}
+        pathname={pathname}
+        searchParams={searchParams}
+      />
+    ) : null;
+
+  const items: ReactNode[] = [];
+  let servicesInserted = false;
+
+  for (const link of navLinks) {
+    // Insert Services just before Aayojan (after the primary paid category links).
+    if (link.label === "Aayojan" && servicesDropdown && !servicesInserted) {
+      items.push(servicesDropdown);
+      servicesInserted = true;
+    }
+
+    if (link.label === "Articles" && articleCategories.length) {
+      items.push(
+        <NavDropdown
+          key={link.href}
+          label="Articles"
+          href="/articles"
+          active={pathname.startsWith("/articles")}
+          categories={articleCategories}
+          categoryHref={(category) => `/articles?category=${category.id}`}
+          pathname={pathname}
+          searchParams={searchParams}
+        />
+      );
+      continue;
+    }
+
+    items.push(
+      <Link
+        key={link.href}
+        href={link.href}
+        className={`whitespace-nowrap text-sm font-medium transition-colors hover:text-brand-saffron-400 xl:text-sm ${
+          isNavLinkActive(link.href, pathname, searchParams)
+            ? "text-brand-saffron-400"
+            : "text-text-primary"
+        }`}
+      >
+        {link.label}
+      </Link>
+    );
+  }
+
+  if (servicesDropdown && !servicesInserted) {
+    items.push(servicesDropdown);
+  }
 
   return (
-    <nav className="hidden items-center gap-5 xl:gap-8 lg:flex">
-      {navLinks.map((link) => {
-        const isActive = isNavLinkActive(link.href, pathname, searchParams);
-        if (link.label === "Articles" && articleCategories.length) {
-          return (
-            <div key={link.href} className="group relative">
-              <Link
-                href="/articles"
-                className={`flex items-center gap-1 whitespace-nowrap py-3 text-sm font-medium transition-colors hover:text-brand-saffron-400 ${
-                  pathname.startsWith("/articles")
-                    ? "text-brand-saffron-400"
-                    : "text-text-primary"
-                }`}
-              >
-                Articles
-                <ChevronDown
-                  size={14}
-                  className="transition-transform group-hover:rotate-180 group-focus-within:rotate-180"
-                />
-              </Link>
-
-              <div className="invisible absolute left-1/2 top-full z-50 w-60 -translate-x-1/2 pt-2 opacity-0 transition-all group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
-                <div className="max-h-[70vh] overflow-y-auto rounded-xl border border-border bg-white p-2 shadow-card-hover">
-                  {articleCategories.map((category) => {
-                    const href = `/articles?category=${category.id}`;
-                    const categoryActive = isNavLinkActive(href, pathname, searchParams);
-                    return (
-                      <Link
-                        key={category.id}
-                        href={href}
-                        className={`block break-words rounded-lg px-3 py-2.5 text-sm leading-snug transition-colors hover:bg-surface-muted hover:text-brand-saffron-400 ${
-                          categoryActive
-                            ? "bg-surface-muted text-brand-saffron-400"
-                            : "text-text-primary"
-                        }`}
-                      >
-                        {category.name}
-                      </Link>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
-          );
-        }
-
-        return (
-          <Link
-            key={link.href}
-            href={link.href}
-            className={`whitespace-nowrap text-sm font-medium transition-colors hover:text-brand-saffron-400 xl:text-sm ${
-              isActive ? "text-brand-saffron-400" : "text-text-primary"
-            }`}
-          >
-            {link.label}
-          </Link>
-        );
-      })}
-    </nav>
+    <nav className="hidden items-center gap-5 xl:gap-8 lg:flex">{items}</nav>
   );
 }
 
