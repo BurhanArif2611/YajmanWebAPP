@@ -31,7 +31,7 @@ export function GalleryStrip() {
   if (!galleryQuery.isLoading && !gallery.length) return null;
 
   return (
-    <section className="mx-auto max-w-site px-4 pb-10 md:px-8 md:pb-14 lg:px-16 lg:py-16">
+    <section className="mx-auto max-w-site px-4 py-10 md:px-8 md:py-12 lg:px-16 lg:py-16">
       {galleryQuery.isLoading ? (
         <div className="-ml-4 flex">
           {Array.from({ length: 5 }).map((_, i) => (

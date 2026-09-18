@@ -29,7 +29,7 @@ const STEPS = [
 
 export function WhyChooseUs() {
   return (
-    <section className="mx-auto max-w-site px-4 py-10 md:px-8 md:py-16 lg:px-16 lg:py-24 lg:pt-4">
+    <section className="mx-auto max-w-site px-4 py-10 md:px-8 md:py-12 lg:px-16 lg:py-16">
       <div className="relative overflow-hidden rounded-2xl bg-brand-saffron-100 p-6 md:p-10 lg:p-14 ">
         {/* <TopoDoodle className="-left-4 -top-4 text-black/10" /> */}
         {/* <TopoDoodle className="-bottom-6 -right-6 text-black/10" /> */}

@@ -95,7 +95,7 @@ export function BestSellers({
       <div
         className={cn(
           "mx-auto max-w-site px-4 md:px-8 lg:px-16",
-          compact ? "py-8 md:py-10 lg:py-12" : "py-10 md:py-16 lg:py-24"
+          compact ? "py-8 md:py-10 lg:py-12" : "py-10 md:py-12 lg:py-16"
         )}
       >
         <div className="flex flex-col items-center justify-between gap-4 sm:flex-row sm:items-end sm:gap-6">

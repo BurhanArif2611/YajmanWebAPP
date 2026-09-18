@@ -9,8 +9,8 @@ import { SupportSection } from "@/components/home/SupportSection";
 import { GalleryStrip } from "@/components/home/GalleryStrip";
 import { RevealOnScroll } from "@/components/ui/RevealOnScroll";
 import { CmsBannerStrip } from "@/components/cms/CmsBannerStrip";
-import { HomeCatalogPlacements } from "@/components/placements/HomeCatalogPlacements";
 import { PlacementInlineAd } from "@/components/placements/PlacementInlineAd";
+import { PlacementServiceGrid } from "@/components/placements/PlacementServiceGrid";
 
 export default function Home() {
   return (
@@ -24,11 +24,17 @@ export default function Home() {
       <CmsBannerStrip position="category_banner" variant="category" />
 
       <RevealOnScroll>
-        <HomeCatalogPlacements />
+        <BestSellers compact />
       </RevealOnScroll>
 
       <RevealOnScroll>
-        <BestSellers />
+        <PlacementServiceGrid
+          page="home"
+          section="recommended"
+          eyebrow="Handpicked"
+          heading="Recommended for You"
+          compact
+        />
       </RevealOnScroll>
 
       <CmsBannerStrip position="middle_ad" variant="middle" />

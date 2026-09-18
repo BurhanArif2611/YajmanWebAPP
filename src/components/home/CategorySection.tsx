@@ -55,7 +55,7 @@ export function CategorySection() {
   if (!categoriesQuery.isLoading && !categories.length) return null;
 
   return (
-    <section className="relative mx-auto max-w-site px-4 pb-10 pt-24 sm:pt-28 md:px-8 md:pb-14 md:pt-32 lg:px-16 lg:pb-0 lg:py-36">
+    <section className="relative mx-auto max-w-site px-4 pb-10 pt-16 sm:pt-20 md:px-8 md:pb-12 md:pt-18 lg:px-16 lg:pb-12 lg:pt-18">
       <SectionHeader
         eyebrow="Sacred Services"
         heading="Explore by Category"
@@ -63,7 +63,7 @@ export function CategorySection() {
       />
 
       {categoriesQuery.isLoading ? (
-        <div className="mt-8 grid grid-cols-2 gap-4 sm:mt-10 sm:grid-cols-3 sm:gap-5 md:mt-14 lg:grid-cols-5">
+        <div className="mt-6 grid grid-cols-2 gap-4 sm:mt-8 sm:grid-cols-3 sm:gap-5 md:mt-10 lg:grid-cols-5">
           {Array.from({ length: 5 }).map((_, i) => (
             <div key={i} className="flex flex-col items-center gap-4">
               <Skeleton className="aspect-square w-full rounded-xl" />
@@ -73,7 +73,7 @@ export function CategorySection() {
         </div>
       ) : (
         <>
-          <div className="relative mt-8 sm:mt-10 md:mt-14">
+          <div className="relative mt-6 sm:mt-8 md:mt-10">
             <button
               aria-label="Previous categories"
               onClick={() => emblaApi?.scrollPrev()}

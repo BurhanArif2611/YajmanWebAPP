@@ -155,7 +155,7 @@ export function CmsBannerStrip({ position, variant }: CmsBannerStripProps) {
 
   return (
     <section className="bg-white">
-      <div className="mx-auto max-w-site px-4 py-6 md:px-8 md:py-8 lg:px-16">
+      <div className="mx-auto max-w-site px-4 py-4 md:px-8 md:py-6 lg:px-16">
         <div className={cn(frameClass, "bg-surface-peach shadow-card")}>{inner}</div>
       </div>
     </section>

@@ -25,7 +25,7 @@ const STEPS = [
 
 export function InstantBookingSection() {
   return (
-    <section className="relative mx-auto max-w-site px-4 py-10 md:px-8 md:py-16 lg:px-16 lg:py-24">
+    <section className="relative mx-auto max-w-site px-4 py-10 md:px-8 md:py-12 lg:px-16 lg:py-16">
       <Image
         src="/images/decor/side-deco.png"
         alt=""

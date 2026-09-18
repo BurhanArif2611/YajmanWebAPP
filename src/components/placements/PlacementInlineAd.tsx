@@ -84,7 +84,7 @@ export function PlacementInlineAd({
   if (placementsQuery.isLoading) {
     return (
       <section className="border-y border-brand-saffron-100 bg-[#fff8f2]">
-        <div className="mx-auto max-w-site px-4 py-8 sm:py-10 md:px-8 md:py-12 lg:px-16">
+        <div className="mx-auto max-w-site px-4 py-8 md:px-8 md:py-10 lg:px-16 lg:py-12">
           <SectionIntro eyebrow={eyebrow} heading={heading} subtitle={subtitle} />
           <div className="flex flex-col overflow-hidden rounded-2xl border border-border bg-white shadow-card sm:flex-row">
             <Skeleton className="h-52 w-full rounded-none sm:h-72 sm:w-[42%]" />
@@ -117,7 +117,7 @@ export function PlacementInlineAd({
 
   return (
     <section className="border-y border-brand-saffron-100 bg-[#fff8f2]">
-      <div className="mx-auto max-w-site px-4 py-8 sm:py-10 md:px-8 md:py-12 lg:px-16">
+      <div className="mx-auto max-w-site px-4 py-8 md:px-8 md:py-10 lg:px-16 lg:py-12">
         <SectionIntro eyebrow={eyebrow} heading={heading} subtitle={subtitle} />
         <div
           className="relative overflow-hidden rounded-2xl border border-border bg-white shadow-card"

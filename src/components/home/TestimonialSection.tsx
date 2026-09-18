@@ -37,7 +37,7 @@ export function TestimonialSection() {
 
   return (
     <section className="overflow-hidden bg-white">
-      <div className="mx-auto max-w-site px-4 py-10 md:px-8 md:py-16 lg:px-16 lg:py-8">
+      <div className="mx-auto max-w-site px-4 py-10 md:px-8 md:py-12 lg:px-16 lg:py-16">
         <SectionHeader
           eyebrow="Our Testimonial"
           heading="What our customers talk about us."
@@ -46,7 +46,7 @@ export function TestimonialSection() {
       </div>
 
       {testimonialsQuery.isLoading ? (
-        <div className="mt-8 flex flex-col gap-4 px-4 sm:mt-10 sm:gap-6 md:mt-14 md:px-8 lg:px-16">
+        <div className="mt-6 flex flex-col gap-4 px-4 sm:mt-8 sm:gap-6 md:px-8 lg:px-16">
           <div className="flex gap-4 overflow-hidden sm:gap-6">
             {Array.from({ length: 3 }).map((_, i) => (
               <Skeleton key={i} className="h-48 w-[280px] shrink-0 rounded-2xl sm:w-[360px]" />
@@ -59,7 +59,7 @@ export function TestimonialSection() {
           </div>
         </div>
       ) : (
-        <div className="mt-8 flex flex-col gap-4 sm:mt-10 sm:gap-6 md:mt-14">
+        <div className="mt-6 flex flex-col gap-4 pb-10 sm:mt-8 sm:gap-6 md:pb-12 lg:pb-16">
           <MarqueeRow items={row1} reverse />
           <MarqueeRow items={row2} />
         </div>
